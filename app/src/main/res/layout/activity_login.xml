@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LoginActivity">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#101010">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="#111111"
+            android:padding="16dp"
+            android:gravity="center_horizontal"
+            tools:ignore="ExtraText">
+
+            <!-- Logo Netflix -->
+
+            <!-- Email -->
+            <ImageView
+                android:id="@+id/logoNetflix"
+                android:layout_width="162dp"
+                android:layout_height="152dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginBottom="100dp"
+                android:contentDescription="Netflix Logo"
+                android:src="@drawable/netflix_logo_2" />
+
+            <EditText
+                android:id="@+id/etEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Email"
+                android:background="@drawable/edit_text_background"
+                android:padding="12dp"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#CCCCCC"
+                android:inputType="text"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Password -->
+            <EditText
+                android:id="@+id/etPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Password"
+                android:background="@drawable/edit_text_background"
+                android:padding="12dp"
+                android:inputType="textPassword"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#CCCCCC"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Login Button -->
+            <Button
+                android:id="@+id/btnLogin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Login"
+                android:backgroundTint="#E50914"
+                android:textColor="#FFFFFF"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Register Link -->
+            <TextView
+                android:id="@+id/tvRegister"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Don't have an account? Register."
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"
+                android:clickable="true"
+                android:focusable="true" />
+
+            <!-- Forgot Password Link -->
+            <TextView
+                android:id="@+id/tvForgotPassword"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Forgot Password?"
+                android:textColor="#CCCCCC"
+                android:clickable="true"
+                android:focusable="true" />
+
+        </LinearLayout>
+
+        <!-- ProgressBar ở giữa màn hình -->
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            style="?android:attr/progressBarStyleLarge"
+            android:visibility="gone" />
+
+        <!-- Background Poster -->
+        <ImageView
+            android:id="@+id/poster"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="Netflix Poster"
+            android:src="@drawable/poster2"
+            android:scaleType="centerCrop"
+            android:alpha="0.1"
+            android:translationY="200dp" />
+
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
