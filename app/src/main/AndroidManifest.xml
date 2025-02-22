@@ -17,28 +17,28 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".ResetPasswordActivity"
+            android:name=".screen.auth.ResetPasswordActivity"
             android:exported="false" />
         <activity
-            android:name=".VerifyOtpForgotPasswordActivity"
+            android:name=".screen.auth.VerifyOtpForgotPasswordActivity"
             android:exported="false" />
         <activity
-            android:name=".VerifyOtpActivity"
+            android:name=".screen.auth.VerifyOtpActivity"
             android:exported="false" />
         <activity
-            android:name=".ForgotPasswordActivity"
+            android:name=".screen.auth.ForgotPasswordActivity"
             android:exported="false" />
         <activity
-            android:name=".RegisterActivity"
+            android:name=".screen.auth.RegisterActivity"
             android:exported="false" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".screen.auth.LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".HomeActivity"
+            android:name=".screen.HomeActivity"
             android:exported="false" />
         <activity
-            android:name=".SplashActivity"
+            android:name=".screen.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
