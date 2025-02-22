@@ -3,6 +3,8 @@ package com.netflixcloneui.api;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import java.io.IOException;
 
 import okhttp3.Interceptor;
@@ -10,12 +12,13 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class AuthInterceptor implements Interceptor {
-    private SharedPreferences sharedPreferences;
+    private final SharedPreferences sharedPreferences;
 
     public AuthInterceptor(SharedPreferences sharedPreferences) {
         this.sharedPreferences = sharedPreferences;
     }
 
+    @NonNull
     @Override
     public Response intercept(Chain chain) throws IOException {
         // Lấy JWT token từ SharedPreferences

@@ -1,9 +1,8 @@
-package com.netflixcloneui;
+package com.netflixcloneui.screen.auth;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,10 +16,12 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.netflixcloneui.R;
 import com.netflixcloneui.api.ApiService;
 import com.netflixcloneui.api.RetrofitClient;
 import com.netflixcloneui.model.LoginRequest;
 import com.netflixcloneui.model.LoginResponse;
+import com.netflixcloneui.screen.HomeActivity;
 
 import retrofit2.Call;
 import retrofit2.Callback;
