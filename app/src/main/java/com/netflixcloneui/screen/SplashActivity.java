@@ -1,5 +1,6 @@
-package com.netflixcloneui;
+package com.netflixcloneui.screen;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,6 +11,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import com.netflixcloneui.R;
+import com.netflixcloneui.screen.auth.LoginActivity;
 
 public class SplashActivity extends AppCompatActivity {
 
