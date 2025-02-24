@@ -5,8 +5,60 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".screen.HomeActivity"
-    android:background="@color/black">
+    tools:context=".screen.HomeActivity">
+
+    <!-- Header cố định -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
+        tools:ignore="MissingConstraints">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:title="Netflix"
+            app:titleTextColor="@android:color/white"/>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- Nội dung có thể cuộn -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="56dp"
+        android:layout_below="@id/toolbar"
+        android:fillViewport="true"
+        tools:ignore="NotSibling">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Poster chính -->
+            <ImageView
+                android:id="@+id/mainPoster"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/poster1" />
+
+            <!-- Danh sách thể loại -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"/>
+
+            <Button
+                android:id="@+id/btn_logout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Button" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
     <FrameLayout
         android:id="@+id/container"
@@ -15,142 +67,13 @@
         android:layout_weight="1"
         tools:ignore="MissingConstraints" />
 
+    <!-- Bottom Navigation cố định -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#202020"
-        app:itemTextColor="#ffffff"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_gravity="bottom"
         app:menu="@menu/bottom_nav_menu"
         tools:ignore="MissingConstraints" />
-
-    <!--    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:fillViewport="true"-->
-<!--        android:layout_marginBottom="70dp">  &lt;!&ndash; Đảm bảo ScrollView chiếm toàn màn hình &ndash;&gt;-->
-
-<!--        <LinearLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:orientation="vertical"-->
-<!--            android:padding="16dp">-->
-
-<!--            <androidx.constraintlayout.widget.ConstraintLayout-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="match_parent"-->
-<!--                android:layout_marginTop="100dp"-->
-<!--                android:layout_marginBottom="300dp"-->
-<!--                android:layout_marginLeft="20dp"-->
-<!--                android:layout_marginRight="20dp">-->
-
-<!--                &lt;!&ndash; Poster phim &ndash;&gt;-->
-<!--                <ImageView-->
-<!--                    android:id="@+id/posterImage"-->
-<!--                    android:layout_width="0dp"-->
-<!--                    android:layout_height="0dp"-->
-<!--                    android:scaleType="centerCrop"-->
-<!--                    android:src="@drawable/poster1"-->
-<!--                    app:layout_constraintTop_toTopOf="parent"-->
-<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                    app:layout_constraintStart_toStartOf="parent"-->
-<!--                    app:layout_constraintEnd_toEndOf="parent" />-->
-
-<!--                &lt;!&ndash; Mô tả phim &ndash;&gt;-->
-<!--                <TextView-->
-<!--                    android:id="@+id/movieDescription"-->
-<!--                    android:layout_width="0dp"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:text="Một bộ phim hành động kịch tính, đầy bất ngờ và hấp dẫn."-->
-<!--                    android:textColor="#FFFFFF"-->
-<!--                    android:textSize="16sp"-->
-<!--                    android:background="@android:color/transparent"-->
-<!--                    android:padding="16dp"-->
-<!--                    android:maxLines="3"-->
-<!--                    android:ellipsize="end"-->
-<!--                    app:layout_constraintBottom_toTopOf="@+id/playButton"-->
-<!--                    app:layout_constraintStart_toStartOf="parent"-->
-<!--                    app:layout_constraintEnd_toEndOf="parent"-->
-<!--                    app:layout_constraintMarginBottom="16dp" />-->
-
-<!--                &lt;!&ndash; Nút Phát &ndash;&gt;-->
-<!--                <Button-->
-<!--                    android:id="@+id/playButton"-->
-<!--                    android:layout_width="0dp"-->
-<!--                    android:layout_height="50dp"-->
-<!--                    android:text="▶ Phát"-->
-<!--                    android:textSize="18sp"-->
-<!--                    android:textStyle="bold"-->
-<!--                    android:backgroundTint="#E50914"-->
-<!--                    android:textColor="#FFFFFF"-->
-<!--                    android:layout_marginHorizontal="16dp"-->
-<!--                    app:layout_constraintBottom_toTopOf="@+id/myListButton"-->
-<!--                    app:layout_constraintStart_toStartOf="parent"-->
-<!--                    app:layout_constraintEnd_toEndOf="parent" />-->
-
-<!--                &lt;!&ndash; Nút Danh sách của tôi &ndash;&gt;-->
-<!--                <Button-->
-<!--                    android:id="@+id/myListButton"-->
-<!--                    android:layout_width="0dp"-->
-<!--                    android:layout_height="50dp"-->
-<!--                    android:text="+ Danh sách của tôi"-->
-<!--                    android:textSize="16sp"-->
-<!--                    android:textStyle="bold"-->
-<!--                    android:backgroundTint="#333333"-->
-<!--                    android:textColor="#FFFFFF"-->
-<!--                    android:layout_marginHorizontal="16dp"-->
-<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                    app:layout_constraintStart_toStartOf="parent"-->
-<!--                    app:layout_constraintEnd_toEndOf="parent"-->
-<!--                    app:layout_constraintMarginBottom="32dp"/>-->
-
-<!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
-
-<!--            <TextView-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="Tiêu đề"-->
-<!--                android:textSize="24sp"-->
-<!--                android:textStyle="bold"-->
-<!--                android:gravity="center"-->
-<!--                android:padding="10dp"/>-->
-
-<!--            <ImageView-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="200dp"-->
-<!--                android:src="@drawable/poster2"-->
-<!--                android:scaleType="centerCrop"-->
-<!--                android:layout_marginBottom="10dp"/>-->
-
-<!--            <TextView-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="Nội dung dài của ứng dụng sẽ được hiển thị ở đây. Người dùng có thể cuộn lên và xuống để xem thêm."-->
-<!--                android:textSize="18sp"-->
-<!--                android:padding="10dp"/>-->
-
-<!--            <Button-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="Nhấn vào đây"-->
-<!--                android:layout_gravity="center"-->
-<!--                android:padding="10dp"/>-->
-
-<!--        </LinearLayout>-->
-<!--    </ScrollView>-->
-
-    <Button
-        android:id="@+id/btn_logout"
-        android:layout_width="98dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="16dp"
-        android:text="Logout"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.879" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

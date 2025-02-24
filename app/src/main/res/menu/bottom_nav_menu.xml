@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_home"
+        android:icon="@drawable/ic_home"
+        android:title="Trang chủ" />
+
+    <item
+        android:id="@+id/nav_coming_soon"
+        android:icon="@drawable/ic_video_library"
+        android:title="Mới &amp; Hot " />
+
+    <item
+        android:id="@+id/nav_profile"
+        android:icon="@drawable/ic_download_circle"
+        android:title="Netflix của tôi" />
+
+</menu>

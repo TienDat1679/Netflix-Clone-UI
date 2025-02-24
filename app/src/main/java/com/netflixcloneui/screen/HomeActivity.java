@@ -1,5 +1,6 @@
-package com.netflixcloneui;
+package com.netflixcloneui.screen;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -11,10 +12,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.netflixcloneui.R;
+import com.netflixcloneui.screen.auth.LoginActivity;
 
 public class HomeActivity extends AppCompatActivity {
-
-    private Button btnLogout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,10 +31,31 @@ public class HomeActivity extends AppCompatActivity {
             return insets;
         });
 
-        btnLogout = findViewById(R.id.btn_logout);
+        Button btnLogout = findViewById(R.id.btn_logout);
 
         btnLogout.setOnClickListener(v -> {
             logout();
+        });
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+
+        // Load Fragment mặc định
+        getSupportFragmentManager().beginTransaction().replace(R.id.container, new HomeFragment()).commit();
+
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            Fragment selectedFragment = null;
+            if (item.getItemId() == R.id.nav_home) {
+                selectedFragment = new HomeFragment();
+            } else if (item.getItemId() == R.id.nav_coming_soon) {
+                selectedFragment = new ComingSoonFragment();
+            } else if (item.getItemId() == R.id.nav_profile) {
+                selectedFragment = new ProfileFragment();
+            }
+
+            if (selectedFragment != null) {
+                getSupportFragmentManager().beginTransaction().replace(R.id.container, selectedFragment).commit();
+            }
+            return true;
         });
     }
 

@@ -47,4 +47,7 @@ dependencies {
 
     // OkHttp (Optional, but can be used for logging)
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.0")
+
+    // UI
+    implementation("com.facebook.shimmer:shimmer:0.5.0")
 }
