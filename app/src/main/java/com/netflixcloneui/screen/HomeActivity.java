@@ -43,11 +43,11 @@ public class HomeActivity extends AppCompatActivity {
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
             Fragment selectedFragment = null;
-            if (item.getItemId() == R.id.nav_home) {
+            if (item.getItemId() == R.id.navigation_home) {
                 selectedFragment = new FeedFragment();
-            } else if (item.getItemId() == R.id.nav_coming_soon) {
+            } else if (item.getItemId() == R.id.navigation_dashboard) {
                 selectedFragment = new ComingSoonFragment();
-            } else if (item.getItemId() == R.id.nav_profile) {
+            } else if (item.getItemId() == R.id.navigation_notifications) {
                 selectedFragment = new ProfileFragment();
             }
 

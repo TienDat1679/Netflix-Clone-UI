@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Netflix Clone UI</string>
+    <string name="title_activity_bottom_nav">BottomNavActivity</string>
+    <string name="title_home">Trang chủ</string>
+    <string name="title_coming_soon">Mới &amp; Hot</string>
+    <string name="title_my_netflix">Netflix của tôi</string>
 </resources>
