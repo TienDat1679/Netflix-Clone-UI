@@ -1,6 +1,5 @@
 package com.netflixcloneui.screen;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -40,12 +39,12 @@ public class HomeActivity extends AppCompatActivity {
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
 
         // Load Fragment mặc định
-        getSupportFragmentManager().beginTransaction().replace(R.id.container, new HomeFragment()).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.container, new FeedFragment()).commit();
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
             Fragment selectedFragment = null;
             if (item.getItemId() == R.id.nav_home) {
-                selectedFragment = new HomeFragment();
+                selectedFragment = new FeedFragment();
             } else if (item.getItemId() == R.id.nav_coming_soon) {
                 selectedFragment = new ComingSoonFragment();
             } else if (item.getItemId() == R.id.nav_profile) {
