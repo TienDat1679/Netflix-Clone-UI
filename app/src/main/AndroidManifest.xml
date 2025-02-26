@@ -17,7 +17,7 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".screen.BottomNavActivity"
+            android:name=".screen.MovieDetailActivity"
             android:exported="true"
             android:label="@string/title_activity_bottom_nav" >
             <intent-filter>
@@ -26,6 +26,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".screen.BottomNavActivity"
+            android:exported="false" />
         <activity
             android:name=".screen.auth.ResetPasswordActivity"
             android:exported="false" />

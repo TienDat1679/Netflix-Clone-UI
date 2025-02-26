@@ -1,6 +1,7 @@
-package com.netflixcloneui;
+package com.netflixcloneui.screen;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.netflixcloneui.R;
 import com.squareup.picasso.Picasso;
 import android.annotation.SuppressLint;
 import android.graphics.drawable.Drawable;
@@ -59,7 +60,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     }
     private  void getMovieDetail() {
         ApiService apiService = RetrofitClient.getApiService(getApplicationContext());
-        Call<MovieDetail> call = apiService.getMovieDetail(671L); // Không cần chuyển đổi bằng `Long.valueOf()`
+        Call<MovieDetail> call = apiService.getMovieDetail(100402L); // Không cần chuyển đổi bằng `Long.valueOf()`
 
         call.enqueue(new Callback<MovieDetail>() {
             @Override
