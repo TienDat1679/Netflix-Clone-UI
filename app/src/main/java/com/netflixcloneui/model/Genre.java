@@ -1,5 +1,7 @@
 package com.netflixcloneui.model;
 
+
+
 import java.util.List;
 
 public class Genre {
@@ -56,4 +58,5 @@ public class Genre {
     public void setSeries(List<TVSeries> series) {
         this.series = series;
     }
+
 }
