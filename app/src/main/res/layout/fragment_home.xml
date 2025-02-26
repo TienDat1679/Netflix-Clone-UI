@@ -4,57 +4,168 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/black"
     tools:context=".screen.ui.home.HomeFragment">
 
-    <!-- HorizontalScrollView chứa các nút -->
-    <HorizontalScrollView
+    <LinearLayout
+        android:id="@+id/content_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/black"
-        android:paddingTop="?attr/actionBarSize"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >  <!-- Ẩn UI mặc định -->
 
-        <LinearLayout
-            android:id="@+id/button_container"
-            android:layout_width="wrap_content"
+        <HorizontalScrollView
+            app:layout_constraintTop_toBottomOf="@id/button_container"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:background="@color/transparent"
+            android:paddingTop="?attr/actionBarSize"
+            android:layout_marginStart="15dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent">
 
-            <!-- Các nút sẽ được thêm vào đây -->
-            <Button
+            <LinearLayout
+                android:id="@+id/button_container"
+                style="?android:attr/buttonBarStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:text="Series" />
+                android:orientation="horizontal">
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Phim"
-                android:layout_marginEnd="8dp" />
+                <!-- Các nút sẽ được thêm vào đây -->
+                <com.google.android.material.button.MaterialButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    app:strokeWidth="2dp"
+                    app:strokeColor="@color/dark_gray"
+                    android:backgroundTint="@color/transparent"
+                    android:text="Series" />
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Thể loại"
-                android:drawableEnd="@drawable/ic_home"
-                android:layout_marginEnd="8dp" />
-        </LinearLayout>
-    </HorizontalScrollView>
+                <com.google.android.material.button.MaterialButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    app:strokeWidth="2dp"
+                    app:strokeColor="@color/dark_gray"
+                    android:backgroundTint="@color/transparent"
+                    android:text="Phim" />
 
-    <TextView
-        android:id="@+id/text_home"
-        android:layout_width="match_parent"
+                <com.google.android.material.button.MaterialButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    app:strokeWidth="2dp"
+                    app:strokeColor="@color/dark_gray"
+                    android:backgroundTint="@color/transparent"
+                    android:drawableEnd="@drawable/ic_down_arrow"
+                    android:text="Thể loại" />
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="15dp"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+            app:layout_constraintTop_toBottomOf="@id/button_container"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="361dp"
+                    android:layout_height="463dp"
+                    android:layout_gravity="center_horizontal"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="100dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <!-- ImageView -->
+                        <ImageView
+                            android:id="@+id/posterImage"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/poster4" />
+
+                        <!-- Gradient View -->
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/gradient_bottom_top_bg" />
+
+                        <!-- TextView -->
+                        <TextView
+                            android:id="@+id/textView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Chính kịch   •   Bác sĩ   •   Hài hước"
+                            android:textSize="13sp"
+                            android:textColor="@android:color/white"
+                            android:layout_above="@+id/button_play"
+                            android:layout_centerHorizontal="true" />
+
+                        <!-- Button -->
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/button_play"
+                            android:layout_width="135dp"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/black"
+                            android:textSize="18dp"
+                            android:backgroundTint="@color/white"
+                            app:cornerRadius="8dp"
+                            android:text="Phát"
+                            android:drawableLeft="@drawable/ic_play"
+                            android:layout_alignParentBottom="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_margin="16dp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/button_add"
+                            android:layout_width="184dp"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentBottom="true"
+                            android:layout_margin="16dp"
+                            android:backgroundTint="@color/gray_transparent"
+                            android:drawableLeft="@drawable/ic_add"
+                            android:text="Danh sách của tôi"
+                            android:textSize="13dp"
+                            app:cornerRadius="8dp" />
+                    </RelativeLayout>
+
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rcv_genres_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:nestedScrollingEnabled="false"/>
+
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"/> <!-- Ẩn mặc định -->
+
 </androidx.constraintlayout.widget.ConstraintLayout>

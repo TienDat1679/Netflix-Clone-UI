@@ -13,9 +13,11 @@
     <color name="navigation_background">#171717</color>
     // bottom navigation bar color codes ends
 
-    <color name="dark_gray">#262626</color>
+    <color name="dark_gray">#726f6a</color>
+    <color name="gray_transparent">#804D4E47</color>
     <color name="black_transparent">#BF000000</color>
     <color name="text_primary">#E6E6E6</color>
     <color name="text_secondary">#B3B3B3</color>
     <color name="divider">#6F6B6B</color>
+    <color name="transparent">#00FFFFFF</color>
 </resources>

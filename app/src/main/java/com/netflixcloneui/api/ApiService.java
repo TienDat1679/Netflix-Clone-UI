@@ -1,10 +1,14 @@
 package com.netflixcloneui.api;
 
 import com.netflixcloneui.model.ChangePasswordRequest;
+import com.netflixcloneui.model.Genre;
 import com.netflixcloneui.model.LoginRequest;
 import com.netflixcloneui.model.LoginResponse;
+import com.netflixcloneui.model.Movie;
 import com.netflixcloneui.model.MovieDetail;
 import com.netflixcloneui.model.RegisterRequest;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -37,7 +41,10 @@ public interface ApiService {
     @POST("api/forgotPassword/resend-otp/{email}")
     Call<Void> resendOtpFp(@Path("email") String email);
 
-
     @GET("api/movies/search")
     Call<MovieDetail> getMovieDetail(@Query("id") Long id);
+    @GET("api/genres")
+    Call<List<Genre>> getGenres();
+    @GET("api/movies/{genreId}")
+    Call<List<Movie>> getMoviesByGenre(@Path("genreId") Long genreId);
 }
