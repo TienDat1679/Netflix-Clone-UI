@@ -47,10 +47,7 @@ public class MyNetflixFragment extends Fragment {
                 // Xử lý sự kiện khi nhấn vào các nút
                 int id = menuItem.getItemId();
 
-                if (id == R.id.action_search) {
-                    Toast.makeText(requireContext(), "Search clicked", Toast.LENGTH_SHORT).show();
-                    return true;
-                } else if (id == R.id.action_info) {
+                if (id == R.id.action_info) {
                     Toast.makeText(requireContext(), "Custom button clicked", Toast.LENGTH_SHORT).show();
                     return true;
                 }
