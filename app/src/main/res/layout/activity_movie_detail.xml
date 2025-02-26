@@ -1,0 +1,82 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#000"
+
+    android:id="@+id/main">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="250dp">
+        <!-- Video Trailer -->
+        <VideoView
+            android:id="@+id/videoTrailer"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:layout_marginBottom="10dp" />
+
+        <!-- Ảnh bìa phim -->
+        <ImageView
+            android:id="@+id/moviePoster"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            android:visibility="visible"
+            />
+        <!-- Tiêu đề phim -->
+
+    </FrameLayout>
+    <!-- Video Trailer -->
+
+    <TextView
+        android:id="@+id/movieTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="#fff"
+        android:layout_margin="10dp"/>
+
+    <!-- Nút Phát -->
+    <Button
+        android:id="@+id/btnPlay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="▶ Phát"
+        android:textSize="18sp"
+        android:textColor="#fff"
+        android:layout_margin="10dp"
+
+        />
+    <!-- Nút Tải xuống -->
+    <Button
+        android:id="@+id/btnDownload"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="⬇ Tải xuống"
+        android:textSize="18sp"
+
+        android:textColor="#fff"
+        android:layout_margin="10dp" />
+
+    <!-- Danh sách phim liên quan -->
+    <TextView
+        android:id="@+id/movieOverview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textColor="#fff"
+        android:maxLines="3"
+        android:ellipsize="end"
+        android:layout_margin="10dp"
+        android:justificationMode="inter_word"/>
+
+
+<!--    <androidx.recyclerview.widget.RecyclerView-->
+<!--        android:id="@+id/recyclerMovies"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content" />-->
+</LinearLayout>
