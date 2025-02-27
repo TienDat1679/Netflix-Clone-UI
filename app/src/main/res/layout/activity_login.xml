@@ -31,7 +31,7 @@
                 android:layout_marginTop="32dp"
                 android:layout_marginBottom="100dp"
                 android:contentDescription="Netflix Logo"
-                android:src="@drawable/netflix_logo_2" />
+                android:src="@drawable/welcome_to_netflix" />
 
             <EditText
                 android:id="@+id/etEmail"
@@ -108,7 +108,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:contentDescription="Netflix Poster"
-            android:src="@drawable/poster2"
+            android:src="@drawable/poster_bg"
             android:scaleType="centerCrop"
             android:alpha="0.1"
             android:translationY="200dp" />

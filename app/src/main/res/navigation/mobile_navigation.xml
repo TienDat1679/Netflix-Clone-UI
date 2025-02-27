@@ -15,7 +15,7 @@
         android:id="@+id/navigation_dashboard"
         android:name="com.netflixcloneui.screen.ui.coming_soon.ComingSoonFragment"
         android:label="@string/title_coming_soon"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/fragment_coming_soon" />
 
     <fragment
         android:id="@+id/navigation_notifications"

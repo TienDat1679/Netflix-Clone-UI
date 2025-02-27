@@ -2,22 +2,21 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#010C0A</color>
     <color name="colorAccent">#FFFFFF</color>
-
-    // bottom navigation bar color codes start
-    <color name="item_selected">#ffffff</color>
-    <color name="item_unselected">#50ffffff</color>
-    <color name="navigation_background">#171717</color>
-    // bottom navigation bar color codes ends
-
     <color name="dark_gray">#726f6a</color>
+    <color name="light_gray">#E0E0E0</color>
     <color name="gray_transparent">#804D4E47</color>
     <color name="black_transparent">#BF000000</color>
     <color name="text_primary">#E6E6E6</color>
     <color name="text_secondary">#B3B3B3</color>
     <color name="divider">#6F6B6B</color>
     <color name="transparent">#00FFFFFF</color>
+
+    // bottom navigation bar color codes start
+    <color name="item_selected">#ffffff</color>
+    <color name="item_unselected">#50ffffff</color>
+    <color name="navigation_background">#171717</color>
+    // bottom navigation bar color codes ends
 </resources>
