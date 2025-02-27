@@ -12,9 +12,7 @@ public class Movie {
     private boolean adult;
     private boolean video;
     private int runtime;
-    private List<Trailer> trailers;
-    private List<Genre> genres;
-    private List<Credit> credits;
+
 
     public Movie(Long id, String title, String overview, String releaseDate, String posterPath, String backdropPath, boolean adult, boolean video, int runtime, List<Trailer> trailers, List<Genre> genres, List<Credit> credits) {
         this.id = id;
@@ -26,9 +24,7 @@ public class Movie {
         this.adult = adult;
         this.video = video;
         this.runtime = runtime;
-        this.trailers = trailers;
-        this.genres = genres;
-        this.credits = credits;
+
     }
 
     public Long getId() {
@@ -103,27 +99,5 @@ public class Movie {
         this.runtime = runtime;
     }
 
-    public List<Trailer> getTrailers() {
-        return trailers;
-    }
 
-    public void setTrailers(List<Trailer> trailers) {
-        this.trailers = trailers;
-    }
-
-    public List<Genre> getGenres() {
-        return genres;
-    }
-
-    public void setGenres(List<Genre> genres) {
-        this.genres = genres;
-    }
-
-    public List<Credit> getCredits() {
-        return credits;
-    }
-
-    public void setCredits(List<Credit> credits) {
-        this.credits = credits;
-    }
 }

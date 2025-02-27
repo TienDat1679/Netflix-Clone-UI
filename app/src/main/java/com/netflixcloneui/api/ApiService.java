@@ -3,8 +3,11 @@ package com.netflixcloneui.api;
 import com.netflixcloneui.model.ChangePasswordRequest;
 import com.netflixcloneui.model.LoginRequest;
 import com.netflixcloneui.model.LoginResponse;
+import com.netflixcloneui.model.Movie;
 import com.netflixcloneui.model.MovieDetail;
 import com.netflixcloneui.model.RegisterRequest;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -40,4 +43,7 @@ public interface ApiService {
 
     @GET("api/movies/search")
     Call<MovieDetail> getMovieDetail(@Query("id") Long id);
+
+    @GET("/api/movies/search/movie-same")
+    Call<List<Movie>> getListMovieSame(@Query("id") Long id);
 }
