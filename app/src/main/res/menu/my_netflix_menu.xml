@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/action_info"
-        android:title="3 gach"
-        android:icon="@drawable/ic_info"
+        android:title="@string/title_my_netflix"
+        android:icon="@drawable/ic_more_info"
         app:showAsAction="ifRoom"/>
 </menu>

@@ -49,4 +49,9 @@ public interface ApiService {
     Call<List<Movie>> getMoviesByGenre(@Path("genreId") Long genreId);
     @GET("api/movies/12") // api test. Chưa có api thật
     Call<List<Movie>> getComingSoonMovies();
+    @GET("api/movies/16") // api test. Chưa có api thật
+    Call<List<Movie>> getUserFavoriteMovies();
+    @GET("api/movies/12") // api test. Chưa có api thật
+    Call<List<Movie>> getUserMovieList();
+
 }

@@ -38,7 +38,7 @@ public class ComingSoonAdapter extends RecyclerView.Adapter<ComingSoonAdapter.Co
 
         // Load hình ảnh poster
         Glide.with(holder.itemView.getContext())
-                .load("https://image.tmdb.org/t/p/w500" + movie.getPosterPath())
+                .load("https://image.tmdb.org/t/p/original" + movie.getBackdropPath())
                 .placeholder(R.drawable.ic_info)
                 .into(holder.imgItem);
 
