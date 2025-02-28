@@ -52,6 +52,8 @@ public class MovieDetailActivity extends AppCompatActivity {
     private ImageView moviePoster ;
     String imageUrl = "https://image.tmdb.org/t/p/w500";
 
+    private TextView movieRelease;
+    private TextView movieRuntime;
     private RecyclerView recyclerViewMovies;
     private MovieAdapter movieAdapter;
     private List<Movie> movieList;
@@ -123,35 +125,41 @@ public class MovieDetailActivity extends AppCompatActivity {
 
                     moviePoster= (ImageView) findViewById(R.id.moviePoster);
 
-                    String posterUrl = imageUrl + movie.getPosterPath();
+                    String posterUrl = imageUrl + movie.getBackdropPath();
+
+                    movieRelease =findViewById(R.id.movieReleaseDate);
+                    movieRelease.setText(movie.getReleaseDate());
+
+                    movieRuntime = findViewById(R.id.movieRuntime);
+                    movieRuntime.setText(movie.getRuntime() + " phút");
+
+
 
                     Log.d("movie poster", posterUrl);
                     Glide.with(MovieDetailActivity.this)
                             .load(posterUrl)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .centerCrop()
                             .placeholder(R.drawable.load_image)
                             .error(R.drawable.error_image)
                             .into(moviePoster);
 
-                    movieOverview.setOnClickListener(new View.OnClickListener() {
-
-                        @Override
-                        public void onClick(View v) {
-                            if (isExpanded) {
-                                movieOverview.setMaxLines(3);
-                                movieOverview.setEllipsize(TextUtils.TruncateAt.END);
-                            } else {
-                                movieOverview.setMaxLines(Integer.MAX_VALUE);
-                                movieOverview.setEllipsize(null);
-                            }
-                            isExpanded = !isExpanded;
-
-                            // Cập nhật lại layout để RecyclerView di chuyển xuống
-                            movieOverview.requestLayout();
-                            movieOverview.invalidate();
-                        }
-                    });
+//                    movieOverview.setOnClickListener(new View.OnClickListener() {
+//
+//                        @Override
+//                        public void onClick(View v) {
+//                            if (isExpanded) {
+//                                movieOverview.setMaxLines(3);
+//                                movieOverview.setEllipsize(TextUtils.TruncateAt.END);
+//                            } else {
+//                                movieOverview.setMaxLines(Integer.MAX_VALUE);
+//                                movieOverview.setEllipsize(null);
+//                            }
+//                            isExpanded = !isExpanded;
+//
+//                            // Cập nhật lại layout để RecyclerView di chuyển xuống
+//                            movieOverview.requestLayout();
+//                            movieOverview.invalidate();
+//                        }
+//                    });
                 }
 
             else{
