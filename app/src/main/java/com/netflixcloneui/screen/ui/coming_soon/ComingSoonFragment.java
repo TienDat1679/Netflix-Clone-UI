@@ -40,10 +40,7 @@ public class ComingSoonFragment extends Fragment {
         binding.rcvComingSoon.setAdapter(comingSoonAdapter);
 
         // Hiển thị ProgressBar khi tải dữ liệu
-        comingSoonViewModel.isLoading().observe(getViewLifecycleOwner(), isLoading -> {
-            binding.progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
-            binding.rcvComingSoon.setVisibility(isLoading ? View.GONE : View.VISIBLE);
-        });
+        loading();
 
         // Quan sát dữ liệu phim
         comingSoonViewModel.getComingSoonMovies().observe(getViewLifecycleOwner(), movies -> {
@@ -53,6 +50,13 @@ public class ComingSoonFragment extends Fragment {
         });
 
         return root;
+    }
+
+    private void loading() {
+        comingSoonViewModel.isLoading().observe(getViewLifecycleOwner(), isLoading -> {
+            binding.progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+            binding.rcvComingSoon.setVisibility(isLoading ? View.GONE : View.VISIBLE);
+        });
     }
 
     @Override

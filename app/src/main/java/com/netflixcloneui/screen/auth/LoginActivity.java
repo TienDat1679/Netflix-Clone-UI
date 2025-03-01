@@ -21,7 +21,7 @@ import com.netflixcloneui.api.ApiService;
 import com.netflixcloneui.api.RetrofitClient;
 import com.netflixcloneui.model.LoginRequest;
 import com.netflixcloneui.model.LoginResponse;
-import com.netflixcloneui.screen.HomeActivity;
+import com.netflixcloneui.screen.BottomNavActivity;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -106,7 +106,7 @@ public class LoginActivity extends AppCompatActivity {
                     editor.putString("jwt_token", jwtToken);
                     editor.apply();
                     // Chuyển đến HomeActivity
-                    Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+                    Intent intent = new Intent(getApplicationContext(), BottomNavActivity.class);
                     startActivity(intent);
                     finish();
                 } else if (response.code() == 401) {

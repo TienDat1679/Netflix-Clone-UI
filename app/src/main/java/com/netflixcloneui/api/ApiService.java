@@ -7,6 +7,7 @@ import com.netflixcloneui.model.LoginResponse;
 import com.netflixcloneui.model.Movie;
 import com.netflixcloneui.model.MovieDetail;
 import com.netflixcloneui.model.RegisterRequest;
+import com.netflixcloneui.model.TVSeries;
 
 import java.util.List;
 
@@ -45,8 +46,14 @@ public interface ApiService {
     Call<MovieDetail> getMovieDetail(@Query("id") Long id);
     @GET("api/genres")
     Call<List<Genre>> getGenres();
+    @GET("api/genres/movies")
+    Call<List<Genre>> getGenresForMovies();
+    @GET("api/genres/series")
+    Call<List<Genre>> getGenresForSeries();
     @GET("api/movies/{genreId}")
     Call<List<Movie>> getMoviesByGenre(@Path("genreId") Long genreId);
+    @GET("api/series/{genreId}")
+    Call<List<TVSeries>> getSeriesByGenre(@Path("genreId") Long genreId);
     @GET("api/movies/12") // api test. Chưa có api thật
     Call<List<Movie>> getComingSoonMovies();
     @GET("api/movies/16") // api test. Chưa có api thật

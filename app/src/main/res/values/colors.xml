@@ -14,6 +14,7 @@
     <color name="divider">#6F6B6B</color>
     <color name="transparent">#00FFFFFF</color>
     <color name="red">#fe0000</color>
+    <color name="selected_button">#646c6f</color>
 
     // bottom navigation bar color codes start
     <color name="item_selected">#ffffff</color>

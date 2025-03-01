@@ -33,7 +33,27 @@
                 android:orientation="horizontal">
 
                 <!-- Các nút sẽ được thêm vào đây -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cancel_action"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="8dp"
+                    app:cardCornerRadius="20dp"
+                    app:strokeWidth="2dp"
+                    app:strokeColor="@color/dark_gray"
+                    android:layout_gravity="center"
+                    android:visibility="gone"
+                    android:backgroundTint="@color/transparent">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_cancel"/>
+                </com.google.android.material.card.MaterialCardView>
+
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_series"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
@@ -43,6 +63,7 @@
                     android:text="Series" />
 
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_movies"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
@@ -52,6 +73,7 @@
                     android:text="Phim" />
 
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_genres"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
@@ -95,21 +117,22 @@
                             android:id="@+id/posterImage"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:scaleType="centerCrop"
+                            android:scaleType="fitXY"
                             android:src="@drawable/poster_the_trauma_code" />
 
                         <!-- Gradient View -->
+
+                        <!-- TextView -->
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:background="@drawable/gradient_bottom_top_bg" />
 
-                        <!-- TextView -->
                         <TextView
                             android:id="@+id/textView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Chính kịch   •   Bác sĩ   •   Hài hước"
+                            android:text="Hào sữa   •   Quá   •   Đẹp trai"
                             android:textSize="13sp"
                             android:textColor="@android:color/white"
                             android:layout_above="@+id/button_play"
@@ -149,6 +172,12 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rcv_genres_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:nestedScrollingEnabled="false"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rcv_movies_by_genres"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:nestedScrollingEnabled="false"/>
