@@ -135,4 +135,12 @@ public class MediaRepository {
             }
         });
     }
+
+    public void getTrendingMedia(Callback<List<Media>> callback) {
+        apiService.getHotSeriesMovies().enqueue(callback);
+    }
+
+    public void searchMedia(String keyword, Callback<List<Media>> callback) {
+        apiService.searchMedia(keyword).enqueue(callback);
+    }
 }

@@ -76,4 +76,7 @@ public interface ApiService {
     @GET("api/media/trending") // api test. Chưa có api thật
     Call<List<Media>> getUserMovieList();
 
+    // Search
+    @GET("api/media/search")
+    Call<List<Media>> searchMedia(@Query("keyword") String keyword);
 }
