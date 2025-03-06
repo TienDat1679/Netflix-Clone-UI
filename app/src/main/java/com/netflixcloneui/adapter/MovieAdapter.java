@@ -19,7 +19,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     private static final int TYPE_NORMAL = 0;
     private static final int TYPE_FAVORITE = 1;
 
-    private List<Movie> movies;
+    private List<Movie> movieSeries;
     private OnMovieClickListener listener;
     private boolean isFavoriteList; // Biến để xác định danh sách là Favorite hay không
 
@@ -27,14 +27,14 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         void onMovieClick(Movie movie);
     }
 
-    public MovieAdapter(List<Movie> movies, boolean isFavoriteList, OnMovieClickListener listener) {
-        this.movies = movies;
+    public MovieAdapter(List<Movie> movieSeries, boolean isFavoriteList, OnMovieClickListener listener) {
+        this.movieSeries = movieSeries;
         this.isFavoriteList = isFavoriteList;
         this.listener = listener;
     }
 
-    public void setMovies(List<Movie> movies) {
-        this.movies = movies;
+    public void setMovies(List<Movie> movieSeries) {
+        this.movieSeries = movieSeries;
         notifyDataSetChanged();
     }
 
@@ -57,7 +57,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     @Override
     public void onBindViewHolder(@NonNull MovieViewHolder holder, int position) {
-        Movie movie = movies.get(position);
+        Movie movie = this.movieSeries.get(position);
         Glide.with(holder.itemView.getContext())
                 .load("https://image.tmdb.org/t/p/w500" + movie.getPosterPath())
                 .placeholder(R.drawable.ic_info)
@@ -72,7 +72,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     @Override
     public int getItemCount() {
-        return movies != null ? movies.size() : 0;
+        return movieSeries != null ? movieSeries.size() : 0;
     }
 
     public static class MovieViewHolder extends RecyclerView.ViewHolder {

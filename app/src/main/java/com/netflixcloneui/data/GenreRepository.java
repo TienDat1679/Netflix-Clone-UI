@@ -3,6 +3,7 @@ package com.netflixcloneui.data;
 import android.content.Context;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
 import com.netflixcloneui.api.ApiService;
@@ -35,7 +36,7 @@ public class GenreRepository {
             }
 
             @Override
-            public void onFailure(Call<List<Genre>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<Genre>> call, @NonNull Throwable t) {
                 Log.e("API_ERROR", "Lỗi khi lấy thể loại: " + t.getMessage());
                 loadingLiveData.setValue(false);
             }

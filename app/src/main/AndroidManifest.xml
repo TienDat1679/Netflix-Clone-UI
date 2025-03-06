@@ -16,10 +16,14 @@
         android:theme="@style/Theme.NetflixCloneUI"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+
+        <activity
+            android:name=".screen.TvSeriesDetailActivity"
+            android:exported="false" />
         <activity
             android:name=".screen.BottomNavActivity"
             android:exported="true"
-            android:label="@string/title_activity_bottom_nav" >
+            android:label="@string/title_activity_bottom_nav">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -43,18 +47,16 @@
             android:exported="false" />
         <activity
             android:name=".screen.auth.LoginActivity"
-            android:exported="false" />
-        <activity
-            android:name=".screen.HomeActivity"
-            android:exported="false">
-        </activity>
+            android:exported="false" /> <!-- <activity -->
+        <!-- android:name=".screen.HomeActivity" -->
+        <!-- android:exported="false"> -->
+        <!-- </activity> -->
         <activity
             android:name=".screen.SplashActivity"
             android:exported="false" />
         <activity
-            android:name=".MovieDetailActivity"
-            android:exported="false" >
-        </activity>
+            android:name=".screen.MovieDetailActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

@@ -43,7 +43,7 @@ public interface ApiService {
     Call<Void> resendOtpFp(@Path("email") String email);
 
     @GET("api/movies/search")
-    Call<MovieDetail> getMovieDetail(@Query("id") Long id);
+    Call<Movie> getMovieDetail(@Query("movieId") Long id);
     @GET("api/genres")
     Call<List<Genre>> getGenres();
     @GET("api/genres/movies")
@@ -61,4 +61,12 @@ public interface ApiService {
     @GET("api/movies/12") // api test. Chưa có api thật
     Call<List<Movie>> getUserMovieList();
 
+    @GET("/api/movies/search/movie-same")
+    Call<List<Movie>> getListMovieSame(@Query("movieId") Long id);
+
+    @GET("api/series/search")
+    Call<TVSeries> getTvSeriesDetail(@Query("id") Long id);
+
+    @GET("api/series/esp")
+    Call<List<TVSeries>> getEspOfSeries(@Query("seriesId") Long id);
 }

@@ -2,6 +2,7 @@ package com.netflixcloneui.screen.ui.home;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.button.MaterialButton;
-import com.netflixcloneui.MovieDetailActivity;
+import com.netflixcloneui.screen.MovieDetailActivity;
 import com.netflixcloneui.R;
 import com.netflixcloneui.adapter.GenreAdapter;
 import com.netflixcloneui.adapter.MovieAdapter;
@@ -24,7 +25,6 @@ import com.netflixcloneui.databinding.FragmentHomeBinding;
 import com.netflixcloneui.model.Movie;
 import com.netflixcloneui.screen.GenresItemListDialogFragment;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -71,16 +71,21 @@ public class HomeFragment extends Fragment {
         return root;
     }
 
-    private void openMovieDetail(Movie movie) {
-        Intent intent = new Intent(getContext(), MovieDetailActivity.class);
-        intent.putExtra("movie_id", movie.getId()); // Truyền ID phim
-        startActivity(intent);
+    private void openDetail(Movie movie) {
+        if (movie != null && movie.getId() != null) {
+            Intent intent = new Intent(getContext(), MovieDetailActivity.class);
+            Log.d("movie_id", String.valueOf(movie.getId()));
+            intent.putExtra("movie_id", (long) movie.getId());
+            startActivity(intent);
+        } else {
+            Toast.makeText(getContext(), "Không tìm thấy thông tin phim!", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void loadMovieByGenres() {
         moviesByGenreAdapter = new MovieAdapter(null, false, movie -> {
             Toast.makeText(getContext(), "Bạn đã chọn: " + movie.getTitle(), Toast.LENGTH_SHORT).show();
-            openMovieDetail(movie);
+            openDetail(movie);
         });
 
         binding.rcvMoviesByGenres.setLayoutManager(new GridLayoutManager(getContext(), 3));
@@ -109,15 +114,13 @@ public class HomeFragment extends Fragment {
     }
 
     private void loadHomeMovie() {
-        // Xử lý sự kiện khi click vào phim
+
         genreAdapter = new GenreAdapter(movie -> {
             // Hiển thị thông báo hoặc chuyển sang màn hình chi tiết
             Toast.makeText(getContext(), "Clicked: " + movie.getTitle(), Toast.LENGTH_SHORT).show();
-
+            Log.d("movie_id", String.valueOf(movie.getId()));
             // Mở màn hình chi tiết phim
-            Intent intent = new Intent(getContext(), MovieDetailActivity.class);
-            intent.putExtra("movie_id", movie.getId()); // Truyền ID phim sang màn hình khác
-            startActivity(intent);
+            openDetail(movie);
         });
 
         // Cấu hình RecyclerView
