@@ -46,7 +46,7 @@ public class MovieRepository {
 
                     loadedGenres[0]++;
                     if (loadedGenres[0] == totalGenres) {
-                        movies.postValue(new HashMap<>(moviesMap));
+                        movies.setValue(new HashMap<>(moviesMap));
                         loadingLiveData.setValue(false);
                     }
                 }
@@ -57,7 +57,7 @@ public class MovieRepository {
                     moviesMap.put(genre.getId(), new ArrayList<>());
                     loadedGenres[0]++;
                     if (loadedGenres[0] == totalGenres) {
-                        movies.postValue(new HashMap<>(moviesMap));
+                        movies.setValue(new HashMap<>(moviesMap));
                         loadingLiveData.setValue(false);
                     }
                 }

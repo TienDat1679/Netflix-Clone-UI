@@ -22,6 +22,8 @@ public class HomeViewModel extends ViewModel {
 
     private final MutableLiveData<List<Genre>> genres = new MutableLiveData<>();
     private final MutableLiveData<Map<Long, List<Media>>> homeMedia = new MutableLiveData<>();
+    private final MutableLiveData<Map<Long, List<Media>>> homeMovies = new MutableLiveData<>();
+    private final MutableLiveData<Map<Long, List<Media>>> homeSeries = new MutableLiveData<>();
     private final MutableLiveData<List<Media>> moviesLiveDataByGenre = new MutableLiveData<>();
     private final MutableLiveData<Boolean> loadingLiveData = new MutableLiveData<>(false);
     private final MutableLiveData<String> selectedGenreLiveData = new MutableLiveData<>();

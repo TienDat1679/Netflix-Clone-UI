@@ -39,9 +39,9 @@ public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.GenreViewHol
         holder.txtTitle.setText(genre.getName());
 
         // Lấy danh sách phim tương ứng với thể loại
-        List<Media> media = mediaMap != null ? mediaMap.get(genre.getId()) : null;
+        List<Media> media = mediaMap.get(genre.getId());
         MediaAdapter mediaAdapter = new MediaAdapter(media, false);
-        mediaAdapter.setMedia(mediaMap.get(genre.getId()));
+        mediaAdapter.setMedia(media);
         holder.rcvItem.setLayoutManager(new LinearLayoutManager(holder.itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
         holder.rcvItem.setAdapter(mediaAdapter); // Hiển thị danh sách phim
     }

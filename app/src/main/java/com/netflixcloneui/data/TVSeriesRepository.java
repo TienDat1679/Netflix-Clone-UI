@@ -46,7 +46,7 @@ public class TVSeriesRepository {
 
                     loadedGenres[0]++;
                     if (loadedGenres[0] == totalGenres) {
-                        series.postValue(new HashMap<>(seriesMap));
+                        series.setValue(new HashMap<>(seriesMap));
                         loadingLiveData.setValue(false);
                     }
                 }
@@ -57,7 +57,7 @@ public class TVSeriesRepository {
                     seriesMap.put(genre.getId(), new ArrayList<>());
                     loadedGenres[0]++;
                     if (loadedGenres[0] == totalGenres) {
-                        series.postValue(new HashMap<>(seriesMap));
+                        series.setValue(new HashMap<>(seriesMap));
                         loadingLiveData.setValue(false);
                     }
                 }

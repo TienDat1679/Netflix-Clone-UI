@@ -46,7 +46,7 @@ public class MediaRepository {
 
                     loadedGenres[0]++;
                     if (loadedGenres[0] == totalGenres) {
-                        media.postValue(new HashMap<>(mediaMap));
+                        media.setValue(new HashMap<>(mediaMap));
                         loadingLiveData.setValue(false);
                     }
                 }
@@ -57,7 +57,7 @@ public class MediaRepository {
                     mediaMap.put(genre.getId(), new ArrayList<>());
                     loadedGenres[0]++;
                     if (loadedGenres[0] == totalGenres) {
-                        media.postValue(new HashMap<>(mediaMap));
+                        media.setValue(new HashMap<>(mediaMap));
                         loadingLiveData.setValue(false);
                     }
                 }

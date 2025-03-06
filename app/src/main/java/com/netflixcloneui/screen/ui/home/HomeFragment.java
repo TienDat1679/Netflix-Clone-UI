@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -106,9 +107,10 @@ public class HomeFragment extends Fragment {
         // Cấu hình RecyclerView
         binding.rcvGenresContainer.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.rcvGenresContainer.setAdapter(genreAdapter);
+        //binding.rcvGenresContainer.setItemAnimator(new DefaultItemAnimator());
 
         homeViewModel.getMedia().observe(getViewLifecycleOwner(), media -> {
-            if (media != null && !media.isEmpty()) {
+            if (media != null) {
                 genreAdapter.setGenresForMedia(homeViewModel.getGenres().getValue(), media);
             }
         });
