@@ -6,22 +6,24 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.netflixcloneui.R;
+import com.netflixcloneui.model.Media;
 import com.netflixcloneui.model.Movie;
 
 import java.util.List;
 
 public class ComingSoonAdapter extends RecyclerView.Adapter<ComingSoonAdapter.ComingSoonViewHolder> {
 
-    private List<Movie> movies;
+    private List<Media> movieSeries;
 
-    public void setMovies(List<Movie> movies) {
-        this.movies = movies;
+    public void setMedia(List<Media> movieSeries) {
+        this.movieSeries = movieSeries;
         notifyDataSetChanged();
     }
 
@@ -34,7 +36,7 @@ public class ComingSoonAdapter extends RecyclerView.Adapter<ComingSoonAdapter.Co
 
     @Override
     public void onBindViewHolder(@NonNull ComingSoonViewHolder holder, int position) {
-        Movie movie = movies.get(position);
+        Media movie = this.movieSeries.get(position);
 
         // Load hình ảnh poster
         Glide.with(holder.itemView.getContext())
@@ -48,13 +50,13 @@ public class ComingSoonAdapter extends RecyclerView.Adapter<ComingSoonAdapter.Co
 
         // Xử lý sự kiện khi bấm vào nút "Nhắc tôi"
         holder.buttonNotification.setOnClickListener(v -> {
-            // Xử lý logic khi nhấn vào "Nhắc tôi"
+            Toast.makeText(v.getContext(), "Bạn đã nhấn vào Nhac toi", Toast.LENGTH_SHORT).show();
         });
     }
 
     @Override
     public int getItemCount() {
-        return movies != null ? movies.size() : 0;
+        return movieSeries != null ? movieSeries.size() : 0;
     }
 
     public static class ComingSoonViewHolder extends RecyclerView.ViewHolder {

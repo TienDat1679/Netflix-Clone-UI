@@ -4,6 +4,7 @@ import com.netflixcloneui.model.ChangePasswordRequest;
 import com.netflixcloneui.model.Genre;
 import com.netflixcloneui.model.LoginRequest;
 import com.netflixcloneui.model.LoginResponse;
+import com.netflixcloneui.model.Media;
 import com.netflixcloneui.model.Movie;
 import com.netflixcloneui.model.MovieDetail;
 import com.netflixcloneui.model.RegisterRequest;
@@ -44,21 +45,35 @@ public interface ApiService {
 
     @GET("api/movies/search")
     Call<MovieDetail> getMovieDetail(@Query("id") Long id);
+
+    // Home Fragment
     @GET("api/genres")
     Call<List<Genre>> getGenres();
     @GET("api/genres/movies")
     Call<List<Genre>> getGenresForMovies();
     @GET("api/genres/series")
     Call<List<Genre>> getGenresForSeries();
+    @GET("api/media/{genreId}")
+    Call<List<Media>> getMediaByGenre(@Path("genreId") Long genreId);
     @GET("api/movies/{genreId}")
-    Call<List<Movie>> getMoviesByGenre(@Path("genreId") Long genreId);
+    Call<List<Media>> getMoviesByGenre(@Path("genreId") Long genreId);
     @GET("api/series/{genreId}")
-    Call<List<TVSeries>> getSeriesByGenre(@Path("genreId") Long genreId);
-    @GET("api/movies/12") // api test. Chưa có api thật
-    Call<List<Movie>> getComingSoonMovies();
-    @GET("api/movies/16") // api test. Chưa có api thật
-    Call<List<Movie>> getUserFavoriteMovies();
-    @GET("api/movies/12") // api test. Chưa có api thật
-    Call<List<Movie>> getUserMovieList();
+    Call<List<Media>> getSeriesByGenre(@Path("genreId") Long genreId);
+
+    // Coming Soon Fragment
+    @GET("api/media/trending") // api test. Chưa có api thật
+    Call<List<Media>> getComingSoon();
+    @GET("api/media/trending")
+    Call<List<Media>> getHotSeriesMovies();
+    @GET("api/series/top10")
+    Call<List<TVSeries>> getTopSeries();
+    @GET("api/movies/top10")
+    Call<List<Movie>> getTopMovies();
+
+    // My Netflix Fragment
+    @GET("api/media/trending") // api test. Chưa có api thật
+    Call<List<Media>> getUserFavoriteMovies();
+    @GET("api/media/trending") // api test. Chưa có api thật
+    Call<List<Media>> getUserMovieList();
 
 }

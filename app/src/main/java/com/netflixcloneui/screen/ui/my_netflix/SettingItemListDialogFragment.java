@@ -1,4 +1,4 @@
-package com.netflixcloneui.screen;
+package com.netflixcloneui.screen.ui.my_netflix;
 
 import android.content.Intent;
 import android.content.SharedPreferences;

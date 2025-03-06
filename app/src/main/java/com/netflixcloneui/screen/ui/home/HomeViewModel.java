@@ -1,35 +1,28 @@
 package com.netflixcloneui.screen.ui.home;
 
 import android.content.Context;
-import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.netflixcloneui.api.ApiService;
-import com.netflixcloneui.api.RetrofitClient;
 import com.netflixcloneui.data.GenreRepository;
+import com.netflixcloneui.data.MediaRepository;
 import com.netflixcloneui.data.MovieRepository;
+import com.netflixcloneui.data.TVSeriesRepository;
 import com.netflixcloneui.model.Genre;
+import com.netflixcloneui.model.Media;
 import com.netflixcloneui.model.Movie;
+import com.netflixcloneui.model.TVSeries;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
 public class HomeViewModel extends ViewModel {
 
-    private final MutableLiveData<List<Genre>> genresLiveData = new MutableLiveData<>();
-    private final MutableLiveData<Map<Long, List<Movie>>> moviesLiveData = new MutableLiveData<>();
-    private final MutableLiveData<List<Movie>> moviesLiveDataByGenre = new MutableLiveData<>();
+    private final MutableLiveData<List<Genre>> genres = new MutableLiveData<>();
+    private final MutableLiveData<Map<Long, List<Media>>> homeMedia = new MutableLiveData<>();
+    private final MutableLiveData<List<Media>> moviesLiveDataByGenre = new MutableLiveData<>();
     private final MutableLiveData<Boolean> loadingLiveData = new MutableLiveData<>(false);
     private final MutableLiveData<String> selectedGenreLiveData = new MutableLiveData<>();
     private final MutableLiveData<String> selectedMoviePosterLiveData = new MutableLiveData<>();
@@ -39,46 +32,46 @@ public class HomeViewModel extends ViewModel {
     private final MutableLiveData<Boolean> cancelActionState = new MutableLiveData<>(false);
     private final GenreRepository genreRepository;
     private final MovieRepository movieRepository;
+    private final TVSeriesRepository seriesRepository;
+    private final MediaRepository mediaRepository;
 
     public HomeViewModel(Context context) {
         genreRepository = new GenreRepository(context);
         movieRepository = new MovieRepository(context);
+        seriesRepository = new TVSeriesRepository(context);
+        mediaRepository = new MediaRepository(context);
         fetchGenres();
     }
 
     public void fetchGenres() {
-        loadingLiveData.setValue(true); // Bắt đầu loading
-        genreRepository.fetchGenres(genresLiveData, loadingLiveData);
-        genresLiveData.observeForever(genres -> {
+        genreRepository.fetchGenres(genres, loadingLiveData);
+        genres.observeForever(genres -> {
             if (genres != null) {
-                movieRepository.fetchMoviesByGenres(genres, moviesLiveData, loadingLiveData);
+                mediaRepository.fetchMediaByGenres(genres, homeMedia, loadingLiveData);
             }
         });
     }
 
     public void fetchGenresForSeries() {
-        loadingLiveData.setValue(true); // Bắt đầu loading
-        genreRepository.fetchGenresForSeries(genresLiveData, loadingLiveData);
-        genresLiveData.observeForever(genres -> {
+        genreRepository.fetchGenresForSeries(genres, loadingLiveData);
+        genres.observeForever(genres -> {
             if (genres != null) {
-                movieRepository.fetchMoviesByGenres(genres, moviesLiveData, loadingLiveData);
+                seriesRepository.fetchSeriesByGenres(genres, homeMedia, loadingLiveData);
             }
         });
     }
 
     public void fetchGenresForMovies() {
-        loadingLiveData.setValue(true); // Bắt đầu loading
-        genreRepository.fetchGenresForMovies(genresLiveData, loadingLiveData);
-        genresLiveData.observeForever(genres -> {
+        genreRepository.fetchGenresForMovies(genres, loadingLiveData);
+        genres.observeForever(genres -> {
             if (genres != null) {
-                movieRepository.fetchMoviesByGenres(genres, moviesLiveData, loadingLiveData);
+                movieRepository.fetchMoviesByGenres(genres, homeMedia, loadingLiveData);
             }
         });
     }
 
-    public void fetchMovieByGenre(Long genreId) {
-        loadingLiveData.setValue(true);
-        movieRepository.fetchMovieByGenre(genreId, moviesLiveDataByGenre, loadingLiveData);
+    public void fetchMediaByGenre(Long genreId) {
+        mediaRepository.fetchMediaByGenre(genreId, moviesLiveDataByGenre, loadingLiveData);
 
         moviesLiveDataByGenre.observeForever(movies -> {
             if (movies != null && !movies.isEmpty()) {
@@ -97,20 +90,16 @@ public class HomeViewModel extends ViewModel {
     }
 
     public LiveData<List<Genre>> getGenres() {
-        return genresLiveData;
+        return genres;
     }
 
-    public LiveData<Map<Long, List<Movie>>> getMovies() {
-        return moviesLiveData;
+    public LiveData<Map<Long, List<Media>>> getMedia() {
+        return homeMedia;
     }
 
-    public LiveData<List<Movie>> getMoviesByGenre() {
+    public LiveData<List<Media>> getMoviesByGenre() {
         return moviesLiveDataByGenre;
     }
-
-//    public void setMoviesByGenre(List<Movie> movies) {
-//        moviesLiveDataByGenre.setValue(movies);
-//    }
 
     public LiveData<Boolean> isLoading() {
         return loadingLiveData;

@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -19,12 +18,10 @@ import com.google.android.material.button.MaterialButton;
 import com.netflixcloneui.MovieDetailActivity;
 import com.netflixcloneui.R;
 import com.netflixcloneui.adapter.GenreAdapter;
-import com.netflixcloneui.adapter.MovieAdapter;
+import com.netflixcloneui.adapter.MediaAdapter;
 import com.netflixcloneui.databinding.FragmentHomeBinding;
 import com.netflixcloneui.model.Movie;
-import com.netflixcloneui.screen.GenresItemListDialogFragment;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -32,8 +29,8 @@ public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
     private GenreAdapter genreAdapter;
-    private MovieAdapter moviesByGenreAdapter;
-    private MovieAdapter.OnMovieClickListener movieClickListener;
+    private MediaAdapter moviesByGenreAdapter;
+    //private MovieAdapter.OnMovieClickListener movieClickListener;
     private HomeViewModel homeViewModel;
     private List<String> seriesPoster = Arrays.asList(
             "/zvEHDQsiTNMYdp1jppXZKmYmXLO.jpg",
@@ -61,9 +58,8 @@ public class HomeFragment extends Fragment {
         binding.cancelAction.setOnClickListener(v -> resetSelection());
         loadButtonState(); // Load lại trạng thái khi chọn
 
-        loadMovieByGenres();
-
         loadHomeMovie();
+        loadMovieByGenres();
 
         // Theo dõi trạng thái loading của data
         loading();
@@ -78,11 +74,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void loadMovieByGenres() {
-        moviesByGenreAdapter = new MovieAdapter(null, false, movie -> {
-            Toast.makeText(getContext(), "Bạn đã chọn: " + movie.getTitle(), Toast.LENGTH_SHORT).show();
-            openMovieDetail(movie);
-        });
-
+        moviesByGenreAdapter = new MediaAdapter(null, false);
         binding.rcvMoviesByGenres.setLayoutManager(new GridLayoutManager(getContext(), 3));
         binding.rcvMoviesByGenres.setAdapter(moviesByGenreAdapter);
 
@@ -103,30 +95,21 @@ public class HomeFragment extends Fragment {
             if (movies != null) {
                 binding.rcvMoviesByGenres.setVisibility(View.VISIBLE);
                 binding.rcvGenresContainer.setVisibility(View.GONE);
-                moviesByGenreAdapter.setMovies(movies);
+                moviesByGenreAdapter.setMedia(movies);
             }
         });
     }
 
     private void loadHomeMovie() {
-        // Xử lý sự kiện khi click vào phim
-        genreAdapter = new GenreAdapter(movie -> {
-            // Hiển thị thông báo hoặc chuyển sang màn hình chi tiết
-            Toast.makeText(getContext(), "Clicked: " + movie.getTitle(), Toast.LENGTH_SHORT).show();
-
-            // Mở màn hình chi tiết phim
-            Intent intent = new Intent(getContext(), MovieDetailActivity.class);
-            intent.putExtra("movie_id", movie.getId()); // Truyền ID phim sang màn hình khác
-            startActivity(intent);
-        });
+        genreAdapter = new GenreAdapter();
 
         // Cấu hình RecyclerView
         binding.rcvGenresContainer.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.rcvGenresContainer.setAdapter(genreAdapter);
 
-        homeViewModel.getMovies().observe(getViewLifecycleOwner(), moviesMap -> {
-            if (moviesMap != null && !moviesMap.isEmpty()) {
-                genreAdapter.setGenres(homeViewModel.getGenres().getValue(), moviesMap);
+        homeViewModel.getMedia().observe(getViewLifecycleOwner(), media -> {
+            if (media != null && !media.isEmpty()) {
+                genreAdapter.setGenresForMedia(homeViewModel.getGenres().getValue(), media);
             }
         });
     }

@@ -23,6 +23,8 @@ public class GenreRepository {
     }
 
     public void fetchGenres(MutableLiveData<List<Genre>> genresLiveData, MutableLiveData<Boolean> loadingLiveData) {
+        loadingLiveData.setValue(true); // Bắt đầu loading
+
         apiService.getGenres().enqueue(new Callback<List<Genre>>() {
             @Override
             public void onResponse(Call<List<Genre>> call, Response<List<Genre>> response) {
@@ -43,6 +45,8 @@ public class GenreRepository {
     }
 
     public void fetchGenresForSeries(MutableLiveData<List<Genre>> genresLiveData, MutableLiveData<Boolean> loadingLiveData) {
+        loadingLiveData.setValue(true); // Bắt đầu loading
+
         apiService.getGenresForSeries().enqueue(new Callback<List<Genre>>() {
             @Override
             public void onResponse(Call<List<Genre>> call, Response<List<Genre>> response) {
@@ -63,6 +67,8 @@ public class GenreRepository {
     }
 
     public void fetchGenresForMovies(MutableLiveData<List<Genre>> genresLiveData, MutableLiveData<Boolean> loadingLiveData) {
+        loadingLiveData.setValue(true); // Bắt đầu loading
+
         apiService.getGenresForMovies().enqueue(new Callback<List<Genre>>() {
             @Override
             public void onResponse(Call<List<Genre>> call, Response<List<Genre>> response) {

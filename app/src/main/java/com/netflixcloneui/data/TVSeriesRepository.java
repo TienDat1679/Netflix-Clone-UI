@@ -10,7 +10,7 @@ import com.netflixcloneui.api.ApiService;
 import com.netflixcloneui.api.RetrofitClient;
 import com.netflixcloneui.model.Genre;
 import com.netflixcloneui.model.Media;
-import com.netflixcloneui.model.Movie;
+import com.netflixcloneui.model.TVSeries;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,32 +21,32 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MovieRepository {
+public class TVSeriesRepository {
     private final ApiService apiService;
 
-    public MovieRepository(Context context) {
+    public TVSeriesRepository(Context context) {
         this.apiService = RetrofitClient.getApiService(context);
     }
 
-    public void fetchMoviesByGenres(List<Genre> genres, MutableLiveData<Map<Long, List<Media>>> movies, MutableLiveData<Boolean> loadingLiveData) {
+    public void fetchSeriesByGenres(List<Genre> genres, MutableLiveData<Map<Long, List<Media>>> series, MutableLiveData<Boolean> loadingLiveData) {
         loadingLiveData.setValue(true); // Bắt đầu loading
-        Map<Long, List<Media>> moviesMap = new HashMap<>();
+        Map<Long, List<Media>> seriesMap = new HashMap<>();
         final int totalGenres = genres.size();
         final int[] loadedGenres = {0};
 
         for (Genre genre : genres) {
-            apiService.getMoviesByGenre(genre.getId()).enqueue(new Callback<List<Media>>() {
+            apiService.getSeriesByGenre(genre.getId()).enqueue(new Callback<List<Media>>() {
                 @Override
                 public void onResponse(Call<List<Media>> call, Response<List<Media>> response) {
                     if (response.isSuccessful() && response.body() != null) {
-                        moviesMap.put(genre.getId(), response.body());
+                        seriesMap.put(genre.getId(), response.body());
                     } else {
-                        moviesMap.put(genre.getId(), new ArrayList<>());
+                        seriesMap.put(genre.getId(), new ArrayList<>());
                     }
 
                     loadedGenres[0]++;
                     if (loadedGenres[0] == totalGenres) {
-                        movies.postValue(new HashMap<>(moviesMap));
+                        series.postValue(new HashMap<>(seriesMap));
                         loadingLiveData.setValue(false);
                     }
                 }
@@ -54,10 +54,10 @@ public class MovieRepository {
                 @Override
                 public void onFailure(Call<List<Media>> call, Throwable t) {
                     Log.e("API_ERROR", "Lỗi khi lấy phim của thể loại " + genre.getName() + ": " + t.getMessage());
-                    moviesMap.put(genre.getId(), new ArrayList<>());
+                    seriesMap.put(genre.getId(), new ArrayList<>());
                     loadedGenres[0]++;
                     if (loadedGenres[0] == totalGenres) {
-                        movies.postValue(new HashMap<>(moviesMap));
+                        series.postValue(new HashMap<>(seriesMap));
                         loadingLiveData.setValue(false);
                     }
                 }
@@ -65,25 +65,25 @@ public class MovieRepository {
         }
     }
 
-    public void fetchTopMovies(MutableLiveData<List<Movie>> topMovies, MutableLiveData<Boolean> loadingLiveData) {
+    public void fetchTopTVSeries(MutableLiveData<List<TVSeries>> topSeries, MutableLiveData<Boolean> loadingLiveData) {
         loadingLiveData.setValue(true); // Bắt đầu loading
 
-        apiService.getTopMovies().enqueue(new Callback<List<Movie>>() {
+        apiService.getTopSeries().enqueue(new Callback<List<TVSeries>>() {
             @Override
-            public void onResponse(@NonNull Call<List<Movie>> call, @NonNull Response<List<Movie>> response) {
+            public void onResponse(@NonNull Call<List<TVSeries>> call, @NonNull Response<List<TVSeries>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    topMovies.setValue(response.body());
+                    topSeries.setValue(response.body());
                 } else {
                     Log.e("API_ERROR", "Danh sách phim trống hoặc lỗi API");
-                    topMovies.setValue(new ArrayList<>());
+                    topSeries.setValue(new ArrayList<>());
                 }
                 loadingLiveData.setValue(false);
             }
 
             @Override
-            public void onFailure(Call<List<Movie>> call, Throwable t) {
+            public void onFailure(Call<List<TVSeries>> call, Throwable t) {
                 Log.e("API_ERROR", "Lỗi khi lấy phim sắp ra mắt: " + t.getMessage());
-                topMovies.setValue(null);
+                topSeries.setValue(null);
                 loadingLiveData.setValue(false);
             }
         });

@@ -1,40 +1,46 @@
 package com.netflixcloneui.adapter;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.netflixcloneui.MovieDetailActivity;
 import com.netflixcloneui.R;
+import com.netflixcloneui.model.Media;
 import com.netflixcloneui.model.Movie;
 
 import java.util.List;
 
-public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
+public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MovieViewHolder> {
 
     private static final int TYPE_NORMAL = 0;
     private static final int TYPE_FAVORITE = 1;
-
-    private List<Movie> movies;
-    private OnMovieClickListener listener;
+    private List<Media> media;
     private boolean isFavoriteList; // Biến để xác định danh sách là Favorite hay không
 
-    public interface OnMovieClickListener {
-        void onMovieClick(Movie movie);
-    }
+//    private OnMovieClickListener listener;
+//    public interface OnMovieClickListener {
+//        void onMovieClick(Movie movie);
+//        void onSeriesClick(TVSeries series);
+//        void onMediaClick(Media media);
+//    }
 
-    public MovieAdapter(List<Movie> movies, boolean isFavoriteList, OnMovieClickListener listener) {
-        this.movies = movies;
+    public MediaAdapter(List<Media> media, boolean isFavoriteList/*, OnMovieClickListener listener*/) {
+        this.media = media;
         this.isFavoriteList = isFavoriteList;
-        this.listener = listener;
+        //this.listener = listener;
     }
 
-    public void setMovies(List<Movie> movies) {
-        this.movies = movies;
+    public void setMedia(List<Media> media) {
+        this.media = media;
         notifyDataSetChanged();
     }
 
@@ -57,22 +63,29 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     @Override
     public void onBindViewHolder(@NonNull MovieViewHolder holder, int position) {
-        Movie movie = movies.get(position);
+        Media media = this.media.get(position);
+
         Glide.with(holder.itemView.getContext())
-                .load("https://image.tmdb.org/t/p/w500" + movie.getPosterPath())
+                .load("https://image.tmdb.org/t/p/w500" + media.getPosterPath())
                 .placeholder(R.drawable.ic_info)
                 .into(holder.imgItem);
 
         holder.itemView.setOnClickListener(v -> {
-            if (listener != null) {
-                listener.onMovieClick(movie);
-            }
+            Context context = holder.itemView.getContext(); // Lấy Context từ View
+            openMediaDetail(context, media.getId());
+            Toast.makeText(holder.itemView.getContext(), "Bạn đã chọn: " + media.getTitle(), Toast.LENGTH_SHORT).show();
         });
+    }
+
+    private void openMediaDetail(Context context, Long id) {
+        Intent intent = new Intent(context, MovieDetailActivity.class);
+        intent.putExtra("movie_id", id); // Truyền ID phim
+        context.startActivity(intent); // Khởi chạy Activity
     }
 
     @Override
     public int getItemCount() {
-        return movies != null ? movies.size() : 0;
+        return media != null ? media.size() : 0;
     }
 
     public static class MovieViewHolder extends RecyclerView.ViewHolder {

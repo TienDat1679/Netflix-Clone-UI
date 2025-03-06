@@ -1,6 +1,5 @@
 package com.netflixcloneui.adapter;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,23 +11,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.netflixcloneui.R;
 import com.netflixcloneui.model.Genre;
-import com.netflixcloneui.model.Movie;
+import com.netflixcloneui.model.Media;
 
 import java.util.List;
 import java.util.Map;
 
 public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.GenreViewHolder> {
     private List<Genre> genres;
-    private Map<Long, List<Movie>> moviesMap;
-    private MovieAdapter.OnMovieClickListener movieClickListener;
+    private Map<Long, List<Media>> mediaMap;
 
-    public GenreAdapter(MovieAdapter.OnMovieClickListener listener) {
-        this.movieClickListener = listener;
-    }
-
-    public void setGenres(List<Genre> genres, Map<Long, List<Movie>> moviesMap) {
+    public void setGenresForMedia(List<Genre> genres, Map<Long, List<Media>> mediaMap) {
         this.genres = genres;
-        this.moviesMap = moviesMap;
+        this.mediaMap = mediaMap;
         notifyDataSetChanged();
     }
 
@@ -45,10 +39,11 @@ public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.GenreViewHol
         holder.txtTitle.setText(genre.getName());
 
         // Lấy danh sách phim tương ứng với thể loại
-        List<Movie> movies = moviesMap != null ? moviesMap.get(genre.getId()) : null;
-        MovieAdapter movieAdapter = new MovieAdapter(movies, false, movieClickListener);
+        List<Media> media = mediaMap != null ? mediaMap.get(genre.getId()) : null;
+        MediaAdapter mediaAdapter = new MediaAdapter(media, false);
+        mediaAdapter.setMedia(mediaMap.get(genre.getId()));
         holder.rcvItem.setLayoutManager(new LinearLayoutManager(holder.itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
-        holder.rcvItem.setAdapter(movieAdapter); // Hiển thị danh sách phim
+        holder.rcvItem.setAdapter(mediaAdapter); // Hiển thị danh sách phim
     }
 
     @Override

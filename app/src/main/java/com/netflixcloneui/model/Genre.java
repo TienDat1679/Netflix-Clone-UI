@@ -6,14 +6,14 @@ public class Genre {
     private Long id;
     private String name;
     private String description;
-    private List<Movie> movies;
+    private List<Movie> movieSeries;
     private List<TVSeries> series;
 
-    public Genre(Long id, String name, String description, List<Movie> movies, List<TVSeries> series) {
+    public Genre(Long id, String name, String description, List<Movie> movieSeries, List<TVSeries> series) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.movies = movies;
+        this.movieSeries = movieSeries;
         this.series = series;
     }
 
@@ -42,11 +42,11 @@ public class Genre {
     }
 
     public List<Movie> getMovies() {
-        return movies;
+        return movieSeries;
     }
 
-    public void setMovies(List<Movie> movies) {
-        this.movies = movies;
+    public void setMovies(List<Movie> movieSeries) {
+        this.movieSeries = movieSeries;
     }
 
     public List<TVSeries> getSeries() {
