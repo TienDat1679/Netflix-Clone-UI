@@ -5,12 +5,15 @@
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
     app:cardCornerRadius="8dp"
-    app:cardElevation="4dp">
+    app:cardElevation="4dp"
+    android:background="@android:color/black"
+    >
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp">
+        android:padding="8dp"
+        android:background="@android:color/black">
 
         <!-- Hình ảnh thumbnail -->
         <ImageView
@@ -18,6 +21,7 @@
             android:layout_width="120dp"
             android:layout_height="80dp"
             android:scaleType="centerCrop"
+
              />
 
         <!-- Icon phát video -->
@@ -27,7 +31,7 @@
             android:layout_height="30dp"
             android:layout_centerInParent="true"
 
-            app:tint="@android:color/white" />
+           />
 
         <!-- Tên tập phim -->
         <TextView
@@ -36,9 +40,8 @@
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/imgThumbnail"
             android:layout_marginStart="8dp"
-            android:text="Tập 3"
-            android:textColor="@android:color/black"
-            android:textSize="16sp"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
             android:textStyle="bold" />
 
         <!-- Thời lượng tập phim -->
@@ -50,7 +53,7 @@
             android:layout_below="@id/tvEpisodeTitle"
             android:layout_marginStart="8dp"
             android:text="50p"
-            android:textColor="@android:color/darker_gray"
+            android:textColor="@android:color/white"
             android:textSize="14sp" />
 
         <!-- Mô tả tập phim -->
@@ -62,8 +65,8 @@
             android:layout_below="@id/tvEpisodeDuration"
             android:layout_marginStart="8dp"
             android:layout_marginTop="4dp"
-            android:text="Mô tả nội dung tập phim..."
-            android:textColor="@android:color/darker_gray"
+
+            android:textColor="@android:color/white"
             android:textSize="12sp"
             android:maxLines="2"
             android:ellipsize="end" />
@@ -76,7 +79,7 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
 
-            app:tint="@android:color/black" />
+            app:tint="@android:color/white" />
 
     </RelativeLayout>
 

@@ -57,7 +57,7 @@ public class MovieDetailActivity extends AppCompatActivity {
             return insets;
         });
 
-        long movieId = (long) getIntent().getLongExtra("movie_id",-1);
+        long movieId = (long) getIntent().getLongExtra("media_id",-1);
         getMovieDetail(movieId);
         getListMovie(movieId);
     }

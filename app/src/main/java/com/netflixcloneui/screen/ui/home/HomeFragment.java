@@ -2,16 +2,15 @@ package com.netflixcloneui.screen.ui.home;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -20,20 +19,20 @@ import com.google.android.material.button.MaterialButton;
 import com.netflixcloneui.screen.MovieDetailActivity;
 import com.netflixcloneui.R;
 import com.netflixcloneui.adapter.GenreAdapter;
-import com.netflixcloneui.adapter.MovieAdapter;
+import com.netflixcloneui.adapter.MediaAdapter;
 import com.netflixcloneui.databinding.FragmentHomeBinding;
 import com.netflixcloneui.model.Movie;
-import com.netflixcloneui.screen.GenresItemListDialogFragment;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
     private GenreAdapter genreAdapter;
-    private MovieAdapter moviesByGenreAdapter;
-    private MovieAdapter.OnMovieClickListener movieClickListener;
+    private MediaAdapter moviesByGenreAdapter;
+    //private MovieAdapter.OnMovieClickListener movieClickListener;
     private HomeViewModel homeViewModel;
     private List<String> seriesPoster = Arrays.asList(
             "/zvEHDQsiTNMYdp1jppXZKmYmXLO.jpg",
@@ -61,9 +60,8 @@ public class HomeFragment extends Fragment {
         binding.cancelAction.setOnClickListener(v -> resetSelection());
         loadButtonState(); // Load lại trạng thái khi chọn
 
-        loadMovieByGenres();
-
         loadHomeMovie();
+        loadMovieByGenres();
 
         // Theo dõi trạng thái loading của data
         loading();
@@ -71,23 +69,14 @@ public class HomeFragment extends Fragment {
         return root;
     }
 
-    private void openDetail(Movie movie) {
-        if (movie != null && movie.getId() != null) {
-            Intent intent = new Intent(getContext(), MovieDetailActivity.class);
-            Log.d("movie_id", String.valueOf(movie.getId()));
-            intent.putExtra("movie_id", (long) movie.getId());
-            startActivity(intent);
-        } else {
-            Toast.makeText(getContext(), "Không tìm thấy thông tin phim!", Toast.LENGTH_SHORT).show();
-        }
+    private void openMovieDetail(Movie movie) {
+        Intent intent = new Intent(getContext(), MovieDetailActivity.class);
+        intent.putExtra("movie_id", movie.getId()); // Truyền ID phim
+        startActivity(intent);
     }
 
     private void loadMovieByGenres() {
-        moviesByGenreAdapter = new MovieAdapter(null, false, movie -> {
-            Toast.makeText(getContext(), "Bạn đã chọn: " + movie.getTitle(), Toast.LENGTH_SHORT).show();
-            openDetail(movie);
-        });
-
+        moviesByGenreAdapter = new MediaAdapter(null, false);
         binding.rcvMoviesByGenres.setLayoutManager(new GridLayoutManager(getContext(), 3));
         binding.rcvMoviesByGenres.setAdapter(moviesByGenreAdapter);
 
@@ -108,28 +97,22 @@ public class HomeFragment extends Fragment {
             if (movies != null) {
                 binding.rcvMoviesByGenres.setVisibility(View.VISIBLE);
                 binding.rcvGenresContainer.setVisibility(View.GONE);
-                moviesByGenreAdapter.setMovies(movies);
+                moviesByGenreAdapter.setMedia(movies);
             }
         });
     }
 
     private void loadHomeMovie() {
-
-        genreAdapter = new GenreAdapter(movie -> {
-            // Hiển thị thông báo hoặc chuyển sang màn hình chi tiết
-            Toast.makeText(getContext(), "Clicked: " + movie.getTitle(), Toast.LENGTH_SHORT).show();
-            Log.d("movie_id", String.valueOf(movie.getId()));
-            // Mở màn hình chi tiết phim
-            openDetail(movie);
-        });
+        genreAdapter = new GenreAdapter();
 
         // Cấu hình RecyclerView
         binding.rcvGenresContainer.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.rcvGenresContainer.setAdapter(genreAdapter);
+        //binding.rcvGenresContainer.setItemAnimator(new DefaultItemAnimator());
 
-        homeViewModel.getMovies().observe(getViewLifecycleOwner(), moviesMap -> {
-            if (moviesMap != null && !moviesMap.isEmpty()) {
-                genreAdapter.setGenres(homeViewModel.getGenres().getValue(), moviesMap);
+        homeViewModel.getMedia().observe(getViewLifecycleOwner(), media -> {
+            if (media != null && media.size() == homeViewModel.getGenres().getValue().size()) {
+                genreAdapter.setGenresForMedia(homeViewModel.getGenres().getValue(), media);
             }
         });
     }
@@ -143,6 +126,7 @@ public class HomeFragment extends Fragment {
             setPoster(0);
             binding.btnMovies.setVisibility(View.GONE);
             homeViewModel.setSeriesSelected(true);
+            homeViewModel.setMedia(new HashMap<>());
             homeViewModel.fetchGenresForSeries(); // Gọi API Series
         } else if (selectedButton == binding.btnMovies) {
             setPoster(1);

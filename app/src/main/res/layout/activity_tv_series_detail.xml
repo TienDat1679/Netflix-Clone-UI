@@ -197,7 +197,7 @@
                 android:id="@+id/btnShare"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:src="@drawable/dowload_svgrepo_com"
+                android:src="@drawable/dowload_1_svgrepo_com"
                 app:tint="#FFF"/>
             <TextView
                 android:layout_width="wrap_content"
@@ -213,6 +213,7 @@
         android:id="@+id/recyclerEpisodes"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:background="@android:color/transparent"
         app:layout_constraintTop_toBottomOf="@id/layoutActions"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

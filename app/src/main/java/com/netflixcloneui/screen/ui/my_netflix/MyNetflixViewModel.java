@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.netflixcloneui.api.ApiService;
 import com.netflixcloneui.api.RetrofitClient;
+import com.netflixcloneui.model.Media;
 import com.netflixcloneui.model.Movie;
 
 import java.util.List;
@@ -20,8 +21,8 @@ import retrofit2.Response;
 
 public class MyNetflixViewModel extends ViewModel {
 
-    private final MutableLiveData<List<Movie>> favoriteMovies = new MutableLiveData<>();
-    private final MutableLiveData<List<Movie>> userMovieList = new MutableLiveData<>();
+    private final MutableLiveData<List<Media>> favoriteMovies = new MutableLiveData<>();
+    private final MutableLiveData<List<Media>> userMovieList = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(true);
     private final ApiService apiService;
 
@@ -31,11 +32,11 @@ public class MyNetflixViewModel extends ViewModel {
         fetchUserMovieList();
     }
 
-    public LiveData<List<Movie>> getFavoriteMovies() {
+    public LiveData<List<Media>> getFavoriteMovies() {
         return favoriteMovies;
     }
 
-    public LiveData<List<Movie>> getUserMovieList() {
+    public LiveData<List<Media>> getUserMovieList() {
         return userMovieList;
     }
 
@@ -44,9 +45,9 @@ public class MyNetflixViewModel extends ViewModel {
     }
 
     private void fetchUserFavoriteMovies() {
-        apiService.getUserFavoriteMovies().enqueue(new Callback<List<Movie>>() {
+        apiService.getUserFavoriteMovies().enqueue(new Callback<List<Media>>() {
             @Override
-            public void onResponse(@NonNull Call<List<Movie>> call, @NonNull Response<List<Movie>> response) {
+            public void onResponse(@NonNull Call<List<Media>> call, @NonNull Response<List<Media>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     favoriteMovies.setValue(response.body());
                 } else {
@@ -57,7 +58,7 @@ public class MyNetflixViewModel extends ViewModel {
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<Movie>> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<List<Media>> call, @NonNull Throwable t) {
                 Log.e("API_ERROR", "Lỗi khi lấy danh sách phim yêu thích: " + t.getMessage());
                 favoriteMovies.setValue(null);
                 isLoading.setValue(false);
@@ -66,9 +67,9 @@ public class MyNetflixViewModel extends ViewModel {
     }
 
     private void fetchUserMovieList() {
-        apiService.getUserMovieList().enqueue(new Callback<List<Movie>>() {
+        apiService.getUserMovieList().enqueue(new Callback<List<Media>>() {
             @Override
-            public void onResponse(@NonNull Call<List<Movie>> call, @NonNull Response<List<Movie>> response) {
+            public void onResponse(@NonNull Call<List<Media>> call, @NonNull Response<List<Media>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     userMovieList.setValue(response.body());
                 } else {
@@ -79,7 +80,7 @@ public class MyNetflixViewModel extends ViewModel {
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<Movie>> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<List<Media>> call, @NonNull Throwable t) {
                 Log.e("API_ERROR", "Lỗi khi lấy danh sách của tôi: " + t.getMessage());
                 userMovieList.setValue(null);
                 isLoading.setValue(false);

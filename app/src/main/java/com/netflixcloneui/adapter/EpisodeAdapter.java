@@ -22,6 +22,7 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.EpisodeV
     private Context context;
     private List<Episode> episodeList;
 
+    String imageUrl = "https://image.tmdb.org/t/p/w500";
     public EpisodeAdapter(Context context, List<Episode> episodeList) {
         this.context = context;
         this.episodeList = episodeList;
@@ -42,8 +43,9 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.EpisodeV
         holder.tvEpisodeDescription.setText(episode.getOverview());
 
         // Load hình ảnh bằng Glide
+
         Glide.with(context)
-                .load(episode.getStillPath())
+                .load(imageUrl+ episode.getStillPath())
                 .placeholder(R.drawable.load_image)
                 .into(holder.imgThumbnail);
     }

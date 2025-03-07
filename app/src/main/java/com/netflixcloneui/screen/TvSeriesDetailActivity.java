@@ -2,7 +2,9 @@ package com.netflixcloneui.screen;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -35,6 +37,7 @@ public class TvSeriesDetailActivity extends AppCompatActivity {
 
     private RecyclerView recyclerViewEps;
 
+    boolean isExpanded = false;
     private EpisodeAdapter EpsAdapter;
 
     @SuppressLint("MissingInflatedId")
@@ -43,7 +46,7 @@ public class TvSeriesDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_tv_series_detail);
-        long id = (long) getIntent().getLongExtra("series_id",-1);
+        long id = (long) getIntent().getLongExtra("media_id",-1);
         getTvSeriesDetail(id);
         getEsp(id);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -61,10 +64,10 @@ public class TvSeriesDetailActivity extends AppCompatActivity {
             public void onResponse(@NonNull Call<List<Episode>>call, @NonNull Response<List<Episode>> response) {
                 List<Episode> listEps = response.body();
 
-                recyclerViewEps = findViewById(R.id.recyclerViewMovies);
+                recyclerViewEps = findViewById(R.id.recyclerEpisodes);
 
                 // Thiết lập RecyclerView
-                LinearLayoutManager layoutManager = new LinearLayoutManager(TvSeriesDetailActivity.this, LinearLayoutManager.HORIZONTAL, false);
+                LinearLayoutManager layoutManager = new LinearLayoutManager(TvSeriesDetailActivity.this, LinearLayoutManager.VERTICAL, false);
                 recyclerViewEps.setLayoutManager(layoutManager);
                 EpsAdapter = new EpisodeAdapter(TvSeriesDetailActivity.this,listEps);
                 recyclerViewEps.setAdapter(EpsAdapter);
@@ -72,8 +75,6 @@ public class TvSeriesDetailActivity extends AppCompatActivity {
                 // Dùng SnapHelper để cuộn từng phim một cách mượt mà
                 SnapHelper snapHelper = new LinearSnapHelper();
                 snapHelper.attachToRecyclerView(recyclerViewEps);
-
-
 
 
 
@@ -100,6 +101,24 @@ public class TvSeriesDetailActivity extends AppCompatActivity {
                     TextView tvOverview=(TextView) findViewById(R.id.tvOverview);
                     tvOverview.setText(series.getOverview());
 
+                    tvOverview.setOnClickListener(new View.OnClickListener() {
+
+                        @Override
+                        public void onClick(View v) {
+                            if (isExpanded) {
+                                tvOverview.setMaxLines(3);
+                                tvOverview.setEllipsize(TextUtils.TruncateAt.END);
+                            } else {
+                                tvOverview.setMaxLines(Integer.MAX_VALUE);
+                                tvOverview.setEllipsize(null);
+                            }
+                            isExpanded = !isExpanded;
+
+                            // Cập nhật lại layout để RecyclerView di chuyển xuống
+                            tvOverview.requestLayout();
+                            tvOverview.invalidate();
+                        }
+                    });
 
                 }
             }

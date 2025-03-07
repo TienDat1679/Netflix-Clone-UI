@@ -1,4 +1,4 @@
-package com.netflixcloneui.screen;
+package com.netflixcloneui.screen.ui.home;
 
 import android.os.Bundle;
 
@@ -15,14 +15,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.netflixcloneui.R;
 import com.netflixcloneui.databinding.FragmentGenresListDialogListDialogItemBinding;
 import com.netflixcloneui.databinding.FragmentGenresListDialogListDialogBinding;
 import com.netflixcloneui.model.Genre;
-import com.netflixcloneui.screen.ui.home.HomeViewModel;
-import com.netflixcloneui.screen.ui.home.HomeViewModelFactory;
 
 import java.util.List;
 
@@ -117,7 +113,7 @@ public class GenresItemListDialogFragment extends BottomSheetDialogFragment {
             // Xử lý khi click vào một thể loại
             holder.itemView.setOnClickListener(v -> {
                 homeViewModel.setSelectedGenre(genre.getName()); // Cập nhật thể loại vào ViewModel
-                homeViewModel.fetchMovieByGenre(genre.getId());
+                homeViewModel.fetchMediaByGenre(genre.getId());
                 dismiss();
             });
         }
