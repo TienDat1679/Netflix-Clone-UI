@@ -11,10 +11,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearSnapHelper;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SnapHelper;
 
 import com.netflixcloneui.R;
+import com.netflixcloneui.adapter.EpisodeAdapter;
+import com.netflixcloneui.adapter.MovieDetailAdapter;
 import com.netflixcloneui.api.ApiService;
 import com.netflixcloneui.api.RetrofitClient;
+import com.netflixcloneui.model.Episode;
+import com.netflixcloneui.model.Movie;
 import com.netflixcloneui.model.TVSeries;
 
 import java.util.List;
@@ -25,6 +33,9 @@ import retrofit2.Response;
 
 public class TvSeriesDetailActivity extends AppCompatActivity {
 
+    private RecyclerView recyclerViewEps;
+
+    private EpisodeAdapter EpsAdapter;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -44,21 +55,31 @@ public class TvSeriesDetailActivity extends AppCompatActivity {
 
     private void getEsp(long id) {
         ApiService apiService = RetrofitClient.getApiService(getApplicationContext());
-        Call<List<TVSeries>> call = apiService.getEspOfSeries(id); // Không cần chuyển đổi bằng `Long.valueOf()`
-        call.enqueue(new Callback<List<TVSeries>>() {
+        Call<List<Episode>> call = apiService.getEspOfSeries(id); // Không cần chuyển đổi bằng `Long.valueOf()`
+        call.enqueue(new Callback<List<Episode>>() {
             @Override
-            public void onResponse(@NonNull Call<List<TVSeries>>call, @NonNull Response<List<TVSeries>> response) {
-                if (response.isSuccessful() && response.body() != null) {
+            public void onResponse(@NonNull Call<List<Episode>>call, @NonNull Response<List<Episode>> response) {
+                List<Episode> listEps = response.body();
 
-                    List<TVSeries> series= response.body();
+                recyclerViewEps = findViewById(R.id.recyclerViewMovies);
+
+                // Thiết lập RecyclerView
+                LinearLayoutManager layoutManager = new LinearLayoutManager(TvSeriesDetailActivity.this, LinearLayoutManager.HORIZONTAL, false);
+                recyclerViewEps.setLayoutManager(layoutManager);
+                EpsAdapter = new EpisodeAdapter(TvSeriesDetailActivity.this,listEps);
+                recyclerViewEps.setAdapter(EpsAdapter);
+
+                // Dùng SnapHelper để cuộn từng phim một cách mượt mà
+                SnapHelper snapHelper = new LinearSnapHelper();
+                snapHelper.attachToRecyclerView(recyclerViewEps);
 
 
 
 
-                }
+
             }
             @Override
-            public void onFailure(@NonNull Call<List<TVSeries>> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<List<Episode>> call, @NonNull Throwable t) {
                 Log.e("Tvseries Eps", "API Call failed: " + t.getMessage());
             }
         });

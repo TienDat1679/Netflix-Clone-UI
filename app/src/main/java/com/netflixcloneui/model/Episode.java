@@ -11,6 +11,10 @@ public class Episode {
     private String overview;
     private String airDate;
 
+    private String stillPath;
+
+    private TVSeries tvSerie;
+
     public Long getId() {
         return id;
     }
@@ -98,7 +102,5 @@ public class Episode {
         this.tvSerie = tvSerie;
     }
 
-    private String stillPath;
 
-    private TVSeries tvSerie;
 }

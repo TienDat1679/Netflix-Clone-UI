@@ -1,6 +1,7 @@
 package com.netflixcloneui.api;
 
 import com.netflixcloneui.model.ChangePasswordRequest;
+import com.netflixcloneui.model.Episode;
 import com.netflixcloneui.model.Genre;
 import com.netflixcloneui.model.LoginRequest;
 import com.netflixcloneui.model.LoginResponse;
@@ -68,5 +69,5 @@ public interface ApiService {
     Call<TVSeries> getTvSeriesDetail(@Query("id") Long id);
 
     @GET("api/series/esp")
-    Call<List<TVSeries>> getEspOfSeries(@Query("seriesId") Long id);
+    Call<List<Episode>> getEspOfSeries(@Query("seriesId") Long id);
 }
