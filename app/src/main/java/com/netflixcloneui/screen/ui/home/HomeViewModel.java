@@ -99,6 +99,10 @@ public class HomeViewModel extends ViewModel {
         return homeMedia;
     }
 
+    public void setMedia(Map<Long, List<Media>> media) {
+        homeMedia.setValue(media);
+    }
+
     public LiveData<List<Media>> getMoviesByGenre() {
         return moviesLiveDataByGenre;
     }

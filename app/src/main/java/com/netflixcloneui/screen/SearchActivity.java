@@ -72,11 +72,12 @@ public class SearchActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > 2) {
+                if (s.length() >= 2) {
                     text.setVisibility(View.GONE);
                     searchMovies(s.toString());  // Gọi API tìm kiếm nếu nhập >= 3 ký tự
                 } else if (s.length() == 0) {
                     text.setVisibility(View.VISIBLE);
+                    noResult.setVisibility(View.GONE);
                     rcvRecommend.setVisibility(View.VISIBLE); // Hiển thị RecyclerView
                     loadRecommend();  // Nếu rỗng, hiển thị danh sách Recommended
                 }

@@ -72,10 +72,10 @@ public class MediaRepository {
             @Override
             public void onResponse(@NonNull Call<List<Media>> call, @NonNull Response<List<Media>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    hotSeriesMovies.postValue(response.body());
+                    hotSeriesMovies.setValue(response.body());
                 } else {
                     Log.e("API_ERROR", "Danh sách phim trống hoặc lỗi API");
-                    hotSeriesMovies.postValue(new ArrayList<>());
+                    hotSeriesMovies.setValue(new ArrayList<>());
                 }
                 loadingLiveData.setValue(false);
             }
@@ -83,7 +83,7 @@ public class MediaRepository {
             @Override
             public void onFailure(Call<List<Media>> call, Throwable t) {
                 Log.e("API_ERROR", "Lỗi khi lấy phim sắp ra mắt: " + t.getMessage());
-                hotSeriesMovies.postValue(null);
+                hotSeriesMovies.setValue(null);
                 loadingLiveData.setValue(false);
             }
         });
@@ -96,10 +96,10 @@ public class MediaRepository {
             @Override
             public void onResponse(@NonNull Call<List<Media>> call, @NonNull Response<List<Media>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    comingSoonMovies.postValue(response.body());
+                    comingSoonMovies.setValue(response.body());
                 } else {
                     Log.e("API_ERROR", "Danh sách phim trống hoặc lỗi API");
-                    comingSoonMovies.postValue(new ArrayList<>());
+                    comingSoonMovies.setValue(new ArrayList<>());
                 }
                 loadingLiveData.setValue(false);
             }
@@ -107,7 +107,7 @@ public class MediaRepository {
             @Override
             public void onFailure(Call<List<Media>> call, Throwable t) {
                 Log.e("API_ERROR", "Lỗi khi lấy phim sắp ra mắt: " + t.getMessage());
-                comingSoonMovies.postValue(null);
+                comingSoonMovies.setValue(null);
                 loadingLiveData.setValue(false);
             }
         });

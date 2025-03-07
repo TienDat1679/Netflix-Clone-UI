@@ -36,6 +36,7 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MovieViewHol
     public MediaAdapter(List<Media> media, boolean isFavoriteList/*, OnMovieClickListener listener*/) {
         this.media = media;
         this.isFavoriteList = isFavoriteList;
+        setHasStableIds(true);
         //this.listener = listener;
     }
 
@@ -86,6 +87,11 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MovieViewHol
     @Override
     public int getItemCount() {
         return media != null ? media.size() : 0;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return media.get(position).getId(); // Giả sử ID của Media là duy nhất
     }
 
     public static class MovieViewHolder extends RecyclerView.ViewHolder {

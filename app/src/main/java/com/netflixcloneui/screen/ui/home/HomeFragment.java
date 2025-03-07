@@ -24,6 +24,7 @@ import com.netflixcloneui.databinding.FragmentHomeBinding;
 import com.netflixcloneui.model.Movie;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 public class HomeFragment extends Fragment {
@@ -110,7 +111,7 @@ public class HomeFragment extends Fragment {
         //binding.rcvGenresContainer.setItemAnimator(new DefaultItemAnimator());
 
         homeViewModel.getMedia().observe(getViewLifecycleOwner(), media -> {
-            if (media != null) {
+            if (media != null && media.size() == homeViewModel.getGenres().getValue().size()) {
                 genreAdapter.setGenresForMedia(homeViewModel.getGenres().getValue(), media);
             }
         });
@@ -125,6 +126,7 @@ public class HomeFragment extends Fragment {
             setPoster(0);
             binding.btnMovies.setVisibility(View.GONE);
             homeViewModel.setSeriesSelected(true);
+            homeViewModel.setMedia(new HashMap<>());
             homeViewModel.fetchGenresForSeries(); // Gọi API Series
         } else if (selectedButton == binding.btnMovies) {
             setPoster(1);
