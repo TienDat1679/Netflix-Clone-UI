@@ -52,7 +52,7 @@ public class MyNetflixFragment extends Fragment {
 
     private void loadMyList() {
         // Adapter cho danh sách phim thông thường - dùng layout mặc định
-        myListAdapter = new MediaAdapter(null, false);
+        myListAdapter = new MediaAdapter(null, MediaAdapter.TYPE_NORMAL);
         binding.rcvMyList.setLayoutManager(new GridLayoutManager(getContext(), 3));
         binding.rcvMyList.setAdapter(myListAdapter);
 
@@ -65,7 +65,7 @@ public class MyNetflixFragment extends Fragment {
 
     private void loadFavoriteList() {
         // Adapter cho danh sách yêu thích (Favorite) - dùng layout khác
-        favoriteAdapter = new MediaAdapter(null, true);
+        favoriteAdapter = new MediaAdapter(null, MediaAdapter.TYPE_FAVORITE);
         binding.rcvMyFavorite.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         binding.rcvMyFavorite.setAdapter(favoriteAdapter);
 

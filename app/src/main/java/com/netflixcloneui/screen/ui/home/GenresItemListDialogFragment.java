@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.netflixcloneui.databinding.FragmentGenresListDialogListDialogItemBinding;
 import com.netflixcloneui.databinding.FragmentGenresListDialogListDialogBinding;
+import com.netflixcloneui.databinding.FragmentHomeBinding;
 import com.netflixcloneui.model.Genre;
 
 import java.util.List;
@@ -35,15 +36,18 @@ public class GenresItemListDialogFragment extends BottomSheetDialogFragment {
     private static final String ARG_ITEM_COUNT = "item_count";
     private FragmentGenresListDialogListDialogBinding binding;
     private HomeViewModel homeViewModel;
+    private HomeFragment homeFragment;
 
     // TODO: Customize parameters
-    public static GenresItemListDialogFragment newInstance(/*int itemCount*/) {
+    public static GenresItemListDialogFragment newInstance(HomeFragment homeFragment/*int itemCount*/) {
 //        final GenresItemListDialogFragment fragment = new GenresItemListDialogFragment();
 //        final Bundle args = new Bundle();
 //        args.putInt(ARG_ITEM_COUNT, itemCount);
 //        fragment.setArguments(args);
 //        return fragment;
-        return new GenresItemListDialogFragment();
+        GenresItemListDialogFragment fragment = new GenresItemListDialogFragment();
+        fragment.homeFragment = homeFragment;
+        return fragment;
     }
 
     @Nullable
@@ -114,6 +118,7 @@ public class GenresItemListDialogFragment extends BottomSheetDialogFragment {
             holder.itemView.setOnClickListener(v -> {
                 homeViewModel.setSelectedGenre(genre.getName()); // Cập nhật thể loại vào ViewModel
                 homeViewModel.fetchMediaByGenre(genre.getId());
+                homeFragment.hideTop10();
                 dismiss();
             });
         }

@@ -11,6 +11,7 @@ import com.netflixcloneui.api.RetrofitClient;
 import com.netflixcloneui.model.Genre;
 import com.netflixcloneui.model.Media;
 import com.netflixcloneui.model.Movie;
+import com.netflixcloneui.model.TVSeries;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -132,6 +133,30 @@ public class MediaRepository {
                 Log.e("API_ERROR", "Lỗi khi lấy phim của thể loại " + genreId + ": " + t.getMessage());
                 moviesLiveData.setValue(new ArrayList<>()); // Trả về danh sách rỗng nếu thất bại
                 loadingLiveData.setValue(false); // Dừng loading
+            }
+        });
+    }
+
+    public void fetchTopTVSeries(MutableLiveData<List<Media>> topSeries, MutableLiveData<Boolean> loadingLiveData) {
+        loadingLiveData.setValue(true); // Bắt đầu loading
+
+        apiService.getTop10Series().enqueue(new Callback<List<Media>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Media>> call, @NonNull Response<List<Media>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    topSeries.setValue(response.body());
+                } else {
+                    Log.e("API_ERROR", "Danh sách phim trống hoặc lỗi API");
+                    topSeries.setValue(new ArrayList<>());
+                }
+                loadingLiveData.setValue(false);
+            }
+
+            @Override
+            public void onFailure(Call<List<Media>> call, Throwable t) {
+                Log.e("API_ERROR", "Lỗi khi lấy phim sắp ra mắt: " + t.getMessage());
+                topSeries.setValue(null);
+                loadingLiveData.setValue(false);
             }
         });
     }

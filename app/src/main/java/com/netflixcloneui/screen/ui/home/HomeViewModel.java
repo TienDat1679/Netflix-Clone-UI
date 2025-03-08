@@ -1,6 +1,7 @@
 package com.netflixcloneui.screen.ui.home;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -23,7 +24,7 @@ public class HomeViewModel extends ViewModel {
     private final MutableLiveData<List<Genre>> genres = new MutableLiveData<>();
     private final MutableLiveData<Map<Long, List<Media>>> homeMedia = new MutableLiveData<>();
     private final MutableLiveData<Map<Long, List<Media>>> homeMovies = new MutableLiveData<>();
-    private final MutableLiveData<Map<Long, List<Media>>> homeSeries = new MutableLiveData<>();
+    private final MutableLiveData<List<Media>> top10Series = new MutableLiveData<>();
     private final MutableLiveData<List<Media>> moviesLiveDataByGenre = new MutableLiveData<>();
     private final MutableLiveData<Boolean> loadingLiveData = new MutableLiveData<>(false);
     private final MutableLiveData<String> selectedGenreLiveData = new MutableLiveData<>();
@@ -43,6 +44,7 @@ public class HomeViewModel extends ViewModel {
         seriesRepository = new TVSeriesRepository(context);
         mediaRepository = new MediaRepository(context);
         fetchGenres();
+        fetchTop10Series();
     }
 
     public void fetchGenres() {
@@ -83,6 +85,18 @@ public class HomeViewModel extends ViewModel {
         });
     }
 
+    public void fetchTop10Series() {
+        mediaRepository.fetchTopTVSeries(top10Series, loadingLiveData);
+        top10Series.observeForever(series -> {
+            if (series == null || series.isEmpty()) {
+                Log.e("HomeViewModel", "fetchTop10Series: Không có dữ liệu series!");
+            } else {
+                Log.d("HomeViewModel", "fetchTop10Series: Đã load " + series.size() + " series");
+            }
+        });
+    }
+
+
     public LiveData<String> getSelectedMoviePoster() {
         return selectedMoviePosterLiveData;
     }
@@ -101,6 +115,10 @@ public class HomeViewModel extends ViewModel {
 
     public void setMedia(Map<Long, List<Media>> media) {
         homeMedia.setValue(media);
+    }
+
+    public LiveData<List<Media>> get10Series() {
+        return top10Series;
     }
 
     public LiveData<List<Media>> getMoviesByGenre() {

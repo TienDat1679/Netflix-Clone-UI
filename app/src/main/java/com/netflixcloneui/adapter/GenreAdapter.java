@@ -56,7 +56,7 @@ public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.GenreViewHol
 //        holder.rcvItem.setLayoutManager(new LinearLayoutManager(holder.itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
 //        holder.rcvItem.setAdapter(mediaAdapter);
         if (holder.mediaAdapter == null) {
-            holder.mediaAdapter = new MediaAdapter(media, false);
+            holder.mediaAdapter = new MediaAdapter(media, MediaAdapter.TYPE_NORMAL);
             holder.rcvItem.setLayoutManager(new LinearLayoutManager(holder.itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
             holder.rcvItem.setAdapter(holder.mediaAdapter);
         } else {

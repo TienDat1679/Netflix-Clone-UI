@@ -2,6 +2,7 @@ package com.netflixcloneui.screen.ui.home;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +32,7 @@ public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
     private GenreAdapter genreAdapter;
-    private MediaAdapter moviesByGenreAdapter;
+    private MediaAdapter moviesByGenreAdapter, top10SeriesAdapter;
     //private MovieAdapter.OnMovieClickListener movieClickListener;
     private HomeViewModel homeViewModel;
     private List<String> seriesPoster = Arrays.asList(
@@ -62,6 +63,7 @@ public class HomeFragment extends Fragment {
 
         loadHomeMovie();
         loadMovieByGenres();
+        loadTop10Series();
 
         // Theo dõi trạng thái loading của data
         loading();
@@ -75,8 +77,20 @@ public class HomeFragment extends Fragment {
         startActivity(intent);
     }
 
+    private void loadTop10Series() {
+        top10SeriesAdapter = new MediaAdapter(null, MediaAdapter.TYPE_TOP_10);
+        binding.rcvTop10Series.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        binding.rcvTop10Series.setAdapter(top10SeriesAdapter);
+        homeViewModel.get10Series().observe(getViewLifecycleOwner(), series -> {
+            Log.d("HomeFragment", "Observed series: " + series);
+            if (series != null) {
+                top10SeriesAdapter.setMedia(series);
+            }
+        });
+    }
+
     private void loadMovieByGenres() {
-        moviesByGenreAdapter = new MediaAdapter(null, false);
+        moviesByGenreAdapter = new MediaAdapter(null, MediaAdapter.TYPE_NORMAL);
         binding.rcvMoviesByGenres.setLayoutManager(new GridLayoutManager(getContext(), 3));
         binding.rcvMoviesByGenres.setAdapter(moviesByGenreAdapter);
 
@@ -139,7 +153,7 @@ public class HomeFragment extends Fragment {
             binding.btnSeries.setVisibility(View.GONE);
             binding.btnMovies.setVisibility(View.GONE);
             homeViewModel.setGenresSelected(true);
-            GenresItemListDialogFragment.newInstance().show(getParentFragmentManager(), "GenresDialog");
+            GenresItemListDialogFragment.newInstance(this).show(getParentFragmentManager(), "GenresDialog");
         }
     }
 
@@ -219,8 +233,15 @@ public class HomeFragment extends Fragment {
                 binding.cancelAction.setVisibility(View.VISIBLE);
             } else {
                 binding.cancelAction.setVisibility(View.GONE);
+                binding.rcvTop10Series.setVisibility(View.VISIBLE);
             }
         });
+    }
+
+    public void hideTop10() {
+        if (binding != null) {
+            binding.rcvTop10Series.setVisibility(View.GONE);
+        }
     }
 
     @Override
