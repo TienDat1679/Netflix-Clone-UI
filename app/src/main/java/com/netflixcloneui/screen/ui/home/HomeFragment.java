@@ -111,7 +111,7 @@ public class HomeFragment extends Fragment {
         //binding.rcvGenresContainer.setItemAnimator(new DefaultItemAnimator());
 
         homeViewModel.getMedia().observe(getViewLifecycleOwner(), media -> {
-            if (media != null && media.size() == homeViewModel.getGenres().getValue().size()) {
+            if (media != null /*&& media.size() == homeViewModel.getGenres().getValue().size()*/) {
                 genreAdapter.setGenresForMedia(homeViewModel.getGenres().getValue(), media);
             }
         });
@@ -125,14 +125,16 @@ public class HomeFragment extends Fragment {
         if (selectedButton == binding.btnSeries) {
             setPoster(0);
             binding.btnMovies.setVisibility(View.GONE);
+            if (Boolean.FALSE.equals(homeViewModel.getIsSeriesSelected().getValue()))
+                homeViewModel.fetchGenresForSeries(); // Gọi API Series
             homeViewModel.setSeriesSelected(true);
-            homeViewModel.setMedia(new HashMap<>());
-            homeViewModel.fetchGenresForSeries(); // Gọi API Series
+            //homeViewModel.setMedia(new HashMap<>());
         } else if (selectedButton == binding.btnMovies) {
             setPoster(1);
             binding.btnSeries.setVisibility(View.GONE);
+            if (Boolean.FALSE.equals(homeViewModel.getIsMoviesSelected().getValue()))
+                homeViewModel.fetchGenresForMovies(); // Gọi API Movies
             homeViewModel.setMoviesSelected(true);
-            homeViewModel.fetchGenresForMovies(); // Gọi API Movies
         } else {
             binding.btnSeries.setVisibility(View.GONE);
             binding.btnMovies.setVisibility(View.GONE);

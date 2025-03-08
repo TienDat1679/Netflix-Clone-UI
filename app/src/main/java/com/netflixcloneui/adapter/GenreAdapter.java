@@ -25,14 +25,13 @@ public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.GenreViewHol
     private List<Genre> genres;
     private Map<Long, List<Media>> mediaMap;
 
-
-    public void setGenresForMedia(List<Genre> genres, Map<Long, List<Media>> mediaMap) {
-        this.mediaMap = mediaMap;
-        Log.d("GenreAdapter", "Media map size: " + (mediaMap != null ? mediaMap.size() : 0));
-        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new GenreDiffUtil(this.genres, genres));
-        this.genres = genres;
-        Log.d("GenreAdapter", "Genres size: " + (genres != null ? genres.size() : 0));
-
+    public void setGenresForMedia(List<Genre> newGenres, Map<Long, List<Media>> newMediaMap) {
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(
+                new GenreDiffUtil(this.genres, newGenres, this.mediaMap, newMediaMap)
+        );
+        // Cập nhật dữ liệu trước khi gọi `dispatchUpdatesTo`
+        this.genres = newGenres;
+        this.mediaMap = newMediaMap;
         diffResult.dispatchUpdatesTo(this);
         //notifyDataSetChanged();
     }
@@ -52,7 +51,10 @@ public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.GenreViewHol
         // Lấy danh sách phim tương ứng với thể loại
         List<Media> media = mediaMap.get(genre.getId());
         //Log.d("GenreAdapter", "Media size for genre " + genre.getName() + ": " + (media != null ? media.size() : 0));
-
+//        MediaAdapter mediaAdapter = new MediaAdapter(media, false);
+//        mediaAdapter.setMedia(mediaMap.get(genre.getId()));
+//        holder.rcvItem.setLayoutManager(new LinearLayoutManager(holder.itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
+//        holder.rcvItem.setAdapter(mediaAdapter);
         if (holder.mediaAdapter == null) {
             holder.mediaAdapter = new MediaAdapter(media, false);
             holder.rcvItem.setLayoutManager(new LinearLayoutManager(holder.itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
