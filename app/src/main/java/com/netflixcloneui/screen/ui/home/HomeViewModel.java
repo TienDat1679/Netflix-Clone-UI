@@ -23,7 +23,7 @@ public class HomeViewModel extends ViewModel {
 
     private final MutableLiveData<List<Genre>> genres = new MutableLiveData<>();
     private final MutableLiveData<Map<Long, List<Media>>> homeMedia = new MutableLiveData<>();
-    private final MutableLiveData<Map<Long, List<Media>>> homeMovies = new MutableLiveData<>();
+    private final MutableLiveData<List<Media>> top10Movies = new MutableLiveData<>();
     private final MutableLiveData<List<Media>> top10Series = new MutableLiveData<>();
     private final MutableLiveData<List<Media>> moviesLiveDataByGenre = new MutableLiveData<>();
     private final MutableLiveData<Boolean> loadingLiveData = new MutableLiveData<>(false);
@@ -45,6 +45,7 @@ public class HomeViewModel extends ViewModel {
         mediaRepository = new MediaRepository(context);
         fetchGenres();
         fetchTop10Series();
+        fetchTop10Movies();
     }
 
     public void fetchGenres() {
@@ -96,6 +97,9 @@ public class HomeViewModel extends ViewModel {
         });
     }
 
+    private void fetchTop10Movies() {
+        mediaRepository.fetchTopMovies(top10Movies, loadingLiveData);
+    }
 
     public LiveData<String> getSelectedMoviePoster() {
         return selectedMoviePosterLiveData;
@@ -119,6 +123,10 @@ public class HomeViewModel extends ViewModel {
 
     public LiveData<List<Media>> get10Series() {
         return top10Series;
+    }
+
+    public LiveData<List<Media>> get10Movies() {
+        return top10Movies;
     }
 
     public LiveData<List<Media>> getMoviesByGenre() {

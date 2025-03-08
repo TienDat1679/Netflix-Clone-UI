@@ -161,6 +161,30 @@ public class MediaRepository {
         });
     }
 
+    public void fetchTopMovies(MutableLiveData<List<Media>> topMovies, MutableLiveData<Boolean> loadingLiveData) {
+        loadingLiveData.setValue(true); // Bắt đầu loading
+
+        apiService.getTop10Movies().enqueue(new Callback<List<Media>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Media>> call, @NonNull Response<List<Media>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    topMovies.setValue(response.body());
+                } else {
+                    Log.e("API_ERROR", "Danh sách phim trống hoặc lỗi API");
+                    topMovies.setValue(new ArrayList<>());
+                }
+                loadingLiveData.setValue(false);
+            }
+
+            @Override
+            public void onFailure(Call<List<Media>> call, Throwable t) {
+                Log.e("API_ERROR", "Lỗi khi lấy phim sắp ra mắt: " + t.getMessage());
+                topMovies.setValue(null);
+                loadingLiveData.setValue(false);
+            }
+        });
+    }
+
     public void getTrendingMedia(Callback<List<Media>> callback) {
         apiService.getHotSeriesMovies().enqueue(callback);
     }

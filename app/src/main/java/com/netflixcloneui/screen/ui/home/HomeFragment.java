@@ -32,7 +32,7 @@ public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
     private GenreAdapter genreAdapter;
-    private MediaAdapter moviesByGenreAdapter, top10SeriesAdapter;
+    private MediaAdapter moviesByGenreAdapter, top10SeriesAdapter, top10MoviesAdapter;
     //private MovieAdapter.OnMovieClickListener movieClickListener;
     private HomeViewModel homeViewModel;
     private List<String> seriesPoster = Arrays.asList(
@@ -64,6 +64,7 @@ public class HomeFragment extends Fragment {
         loadHomeMovie();
         loadMovieByGenres();
         loadTop10Series();
+        loadTop10Movies();
 
         // Theo dõi trạng thái loading của data
         loading();
@@ -85,6 +86,17 @@ public class HomeFragment extends Fragment {
             Log.d("HomeFragment", "Observed series: " + series);
             if (series != null) {
                 top10SeriesAdapter.setMedia(series);
+            }
+        });
+    }
+
+    private void loadTop10Movies() {
+        top10MoviesAdapter = new MediaAdapter(null, MediaAdapter.TYPE_TOP_10);
+        binding.rcvTop10Movies.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        binding.rcvTop10Movies.setAdapter(top10MoviesAdapter);
+        homeViewModel.get10Movies().observe(getViewLifecycleOwner(), movie -> {
+            if (movie != null) {
+                top10MoviesAdapter.setMedia(movie);
             }
         });
     }
@@ -139,6 +151,7 @@ public class HomeFragment extends Fragment {
         if (selectedButton == binding.btnSeries) {
             setPoster(0);
             binding.btnMovies.setVisibility(View.GONE);
+            binding.top10movies.setVisibility(View.GONE);
             if (Boolean.FALSE.equals(homeViewModel.getIsSeriesSelected().getValue()))
                 homeViewModel.fetchGenresForSeries(); // Gọi API Series
             homeViewModel.setSeriesSelected(true);
@@ -146,6 +159,7 @@ public class HomeFragment extends Fragment {
         } else if (selectedButton == binding.btnMovies) {
             setPoster(1);
             binding.btnSeries.setVisibility(View.GONE);
+            binding.top10series.setVisibility(View.GONE);
             if (Boolean.FALSE.equals(homeViewModel.getIsMoviesSelected().getValue()))
                 homeViewModel.fetchGenresForMovies(); // Gọi API Movies
             homeViewModel.setMoviesSelected(true);
@@ -233,14 +247,16 @@ public class HomeFragment extends Fragment {
                 binding.cancelAction.setVisibility(View.VISIBLE);
             } else {
                 binding.cancelAction.setVisibility(View.GONE);
-                binding.rcvTop10Series.setVisibility(View.VISIBLE);
+                binding.top10series.setVisibility(View.VISIBLE);
+                binding.top10movies.setVisibility(View.VISIBLE);
             }
         });
     }
 
     public void hideTop10() {
         if (binding != null) {
-            binding.rcvTop10Series.setVisibility(View.GONE);
+            binding.top10series.setVisibility(View.GONE);
+            binding.top10movies.setVisibility(View.GONE);
         }
     }
 

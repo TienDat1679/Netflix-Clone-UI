@@ -80,6 +80,8 @@ public interface ApiService {
     Call<List<Movie>> getTopMovies();
     @GET("api/media/series/top10")
     Call<List<Media>> getTop10Series();
+    @GET("api/media/movie/top10")
+    Call<List<Media>> getTop10Movies();
 
     // My Netflix Fragment
     @GET("api/media/trending") // api test. Chưa có api thật
