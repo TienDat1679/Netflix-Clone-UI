@@ -157,6 +157,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:textColor="@color/white"
                     android:text="Danh sách của tôi"/>
             </LinearLayout>
             <!-- Nút Thích -->
@@ -178,6 +179,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:textColor="@color/white"
                     android:text="Xếp hạng"/>
             </LinearLayout>
 
@@ -200,6 +202,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:textColor="@color/white"
                     android:text="Chia sẻ"/>
             </LinearLayout>
 
@@ -219,6 +222,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:textColor="@color/white"
                     android:text="Tải xuống"/>
             </LinearLayout>
 
@@ -256,6 +260,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
                     android:ellipsize="end"
+
                     android:text="Trailer"
                     android:justificationMode="inter_word"
                     android:maxLines="5"

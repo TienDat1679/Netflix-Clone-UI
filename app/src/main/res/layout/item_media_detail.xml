@@ -11,18 +11,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="8dp">
-
+        android:background="@color/black">
         <ImageView
             android:id="@+id/imageMovie"
             android:layout_width="wrap_content"
             android:layout_height="150dp"
-            android:scaleType="centerCrop"/>
-
+            android:scaleType="centerCrop"
+            android:background="@color/black"/>
         <TextView
             android:id="@+id/textTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/white"
             android:maxLines="1"
             android:textSize="16sp"
             android:textStyle="bold"

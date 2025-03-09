@@ -3,13 +3,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
     android:id="@+id/main"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000"
-    >
+    android:background="#000">
 
-    <!-- Video hoặc Hình ảnh Poster -->
+    <!-- Hình ảnh Poster -->
     <ImageView
         android:id="@+id/imgPoster"
         android:layout_width="0dp"
@@ -17,8 +16,7 @@
         android:scaleType="centerCrop"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- Nút đóng -->
     <ImageView
@@ -29,195 +27,177 @@
         android:src="@drawable/icons8_close"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_margin="10dp"/>
+        android:layout_margin="10dp" />
 
-    <!-- Tiêu đề phim -->
-    <TextView
-        android:id="@+id/tvName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Khó dỗ dành"
-        android:textSize="22sp"
-        android:textColor="#FFF"
-        android:textStyle="bold"
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         app:layout_constraintTop_toBottomOf="@id/imgPoster"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_margin="16dp"/>
-
-    <!-- Thông tin phim -->
-    <TextView
-        android:id="@+id/tvInfo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="2025  |  T13  |  24 tập  |  HD"
-        android:textSize="14sp"
-        android:textColor="#AAA"
-        app:layout_constraintTop_toBottomOf="@id/tvName"
-        app:layout_constraintStart_toStartOf="@id/tvName"
-        android:layout_marginTop="4dp"/>
-
-    <!-- Xếp hạng -->
-    <TextView
-        android:id="@+id/tvRanking"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="#1 trong Series hôm nay"
-        android:textSize="14sp"
-        android:textColor="#FFF"
-        android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/tvInfo"
-        app:layout_constraintStart_toStartOf="@id/tvInfo"
-        android:layout_marginTop="4dp"/>
-
-    <!-- Nút Phát -->
-    <Button
-        android:id="@+id/btnPlay"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:text="▶  Phát"
-        android:textSize="16sp"
-        android:textColor="#000"
-        android:backgroundTint="#FFF"
-        app:layout_constraintTop_toBottomOf="@id/tvRanking"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_margin="16dp"/>
-
-    <!-- Nút Tải Xuống -->
-    <Button
-        android:id="@+id/btnDownload"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:text="⬇  Tải xuống"
-        android:textSize="16sp"
-        android:textColor="#FFF"
-        android:backgroundTint="#444"
-        app:layout_constraintTop_toBottomOf="@id/btnPlay"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginHorizontal="16dp"/>
-
-    <!-- Mô tả phim -->
-    <TextView
-        android:id="@+id/tvOverview"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Sau khi Ôn Dĩ Phàm tình cờ gặp lại người mình thầm thương trộm nhớ hồi nhỏ, những cảm xúc phức tạp trỗi dậy khi cả hai bỗng phải sống chung."
-        android:textSize="14sp"
-        android:textColor="#FFF"
-        android:maxLines="3"
-        app:layout_constraintTop_toBottomOf="@id/btnDownload"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_margin="16dp"/>
-
-    <!-- Danh sách chức năng -->
-    <LinearLayout
-        android:id="@+id/layoutActions"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/tvOverview"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:gravity="center"
-        android:layout_marginTop="10dp">
-
-        <!-- LinearLayout trống để giữ khoảng cách -->
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1.2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:gravity="center">
-            <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/ic_add"
-                app:tint="#FFF"
-                tools:ignore="DuplicateIds" />
+            android:padding="16dp">
+
+            <!-- Tiêu đề phim -->
             <TextView
+                android:id="@+id/tvName"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="Danh sách của tôi"/>
-        </LinearLayout>
-        <!-- Nút Thích -->
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical"
-            >
+                android:layout_height="wrap_content"
+                android:textSize="22sp"
+                android:textColor="#FFF"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
 
-            <ImageView
-                android:id="@+id/btnLike"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/like_svgrepo_com"
-                app:tint="#FFF"/>
-
+            <!-- Thông tin phim -->
             <TextView
+                android:id="@+id/tvInfo"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="Xếp hạng"/>
-        </LinearLayout>
+                android:layout_height="wrap_content"
+                android:text="2025  |  T13  |  24 tập  |  HD"
+                android:textColor="#AAA"
+                android:textSize="14sp"
+                android:layout_marginBottom="16dp" />
 
-        <!-- Nút Chia sẻ -->
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical"
-            >
+            <!-- Nút Phát -->
+            <Button
+                android:id="@+id/btnPlay"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:backgroundTint="#FFF"
+                android:text="▶  Phát"
+                android:textColor="#000"
+                android:textSize="16sp"
+                android:layout_marginBottom="8dp" />
 
-            <ImageView
+            <!-- Nút Tải Xuống -->
+            <Button
+                android:id="@+id/btnDownload"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="⬇  Tải xuống"
+                android:textSize="16sp"
+                android:textColor="#FFF"
+                android:backgroundTint="#444"
+                android:layout_marginBottom="16dp" />
 
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/share_svgrepo_com"
-                app:tint="#FFF"/>
-
+            <!-- Mô tả phim -->
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="Chia sẻ"/>
+                android:id="@+id/tvOverview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textColor="#FFF"
+                android:maxLines="3"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Danh sách chức năng -->
+            <LinearLayout
+                android:id="@+id/layoutActions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginBottom="20dp">
+
+                <!-- Nút Danh sách của tôi -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@drawable/ic_add"
+                        app:tint="#FFF" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Danh sách của tôi"
+                        android:textColor="@color/white" />
+                </LinearLayout>
+
+                <!-- Nút Thích -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+                    <ImageView
+                        android:id="@+id/btnLike"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@drawable/like_svgrepo_com"
+                        app:tint="#FFF" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Xếp hạng"
+                        android:textColor="@color/white" />
+                </LinearLayout>
+
+                <!-- Nút Chia sẻ -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@drawable/share_svgrepo_com"
+                        app:tint="#FFF" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Chia sẻ"
+                        android:textColor="@color/white" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:id="@+id/esp"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:text="Các tập                       "
+                    android:layout_marginBottom="8dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/sameMedia"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:text="Nội dung tương tự"
+                    android:layout_marginBottom="8dp" />
+            </LinearLayout>
+            <!-- Danh sách tập phim -->
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerEpisodes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:nestedScrollingEnabled="false"
+                />
+
         </LinearLayout>
-
-        <!-- LinearLayout trống để giữ khoảng cách -->
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
-            <ImageView
-                android:id="@+id/btnShare"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/dowload_1_svgrepo_com"
-                app:tint="#FFF"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="Tải xuống"/>
-        </LinearLayout>
-
-
-    </LinearLayout>
-
-    <!-- Danh sách tập phim -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerEpisodes"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="@android:color/transparent"
-        app:layout_constraintTop_toBottomOf="@id/layoutActions"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_margin="16dp"/>
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

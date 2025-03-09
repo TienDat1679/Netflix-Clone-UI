@@ -46,16 +46,36 @@ public class TvSeriesDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_tv_series_detail);
-        long id = (long) getIntent().getLongExtra("media_id",-1);
-        getTvSeriesDetail(id);
-        getEsp(id);
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-    }
+        long id = (long) getIntent().getLongExtra("media_id",-1);
+        getTvSeriesDetail(id);
+        getEsp(id);
+        ChangeRecycle(id);
 
+    }
+    private  void ChangeRecycle(long id){
+        TextView sameMedia = findViewById(R.id.sameMedia);
+        TextView esp = findViewById(R.id.esp);
+
+        sameMedia.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        esp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getEsp(id);;
+            }
+        });
+    }
     private void getEsp(long id) {
         ApiService apiService = RetrofitClient.getApiService(getApplicationContext());
         Call<List<Episode>> call = apiService.getEspOfSeries(id); // Không cần chuyển đổi bằng `Long.valueOf()`
@@ -75,9 +95,6 @@ public class TvSeriesDetailActivity extends AppCompatActivity {
                 // Dùng SnapHelper để cuộn từng phim một cách mượt mà
                 SnapHelper snapHelper = new LinearSnapHelper();
                 snapHelper.attachToRecyclerView(recyclerViewEps);
-
-
-
             }
             @Override
             public void onFailure(@NonNull Call<List<Episode>> call, @NonNull Throwable t) {
@@ -85,7 +102,6 @@ public class TvSeriesDetailActivity extends AppCompatActivity {
             }
         });
     }
-
     private void getTvSeriesDetail(Long id) {
         ApiService apiService = RetrofitClient.getApiService(getApplicationContext());
         Call<TVSeries> call = apiService.getTvSeriesDetail(id); // Không cần chuyển đổi bằng `Long.valueOf()`
