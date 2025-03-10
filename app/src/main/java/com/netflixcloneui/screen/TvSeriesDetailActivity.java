@@ -75,7 +75,7 @@ public class TvSeriesDetailActivity extends AppCompatActivity {
 
     private void getTrailer(long id) {
         ApiService apiService = RetrofitClient.getApiService(getApplicationContext());
-        Call<List<Trailer> >call = apiService.getTrailer(id); // Không cần chuyển đổi bằng `Long.valueOf()`
+        Call<List<Trailer> >call = apiService.getSeriesTrailer(id); // Không cần chuyển đổi bằng `Long.valueOf()`
         call.enqueue(new Callback<List<Trailer>>() {
             @Override
             public void onResponse(@NonNull Call<List<Trailer> >call, @NonNull Response<List<Trailer>> response) {
@@ -96,7 +96,7 @@ public class TvSeriesDetailActivity extends AppCompatActivity {
             }
             @Override
             public void onFailure(@NonNull Call<List<Trailer>> call, @NonNull Throwable t) {
-                Log.e("MovieDetail", "API Call failed: " + t.getMessage());
+                Log.e("Trailer", "API Call failed: " + t.getMessage());
             }
         });
     }

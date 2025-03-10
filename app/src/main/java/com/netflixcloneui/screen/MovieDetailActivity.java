@@ -27,6 +27,10 @@ import androidx.recyclerview.widget.SnapHelper;
 
 import com.netflixcloneui.api.ApiService;
 import com.netflixcloneui.api.RetrofitClient;
+import com.netflixcloneui.model.Trailer;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
 
 import java.util.List;
 
@@ -47,7 +51,8 @@ public class MovieDetailActivity extends AppCompatActivity {
     private RecyclerView recyclerViewMovie;
     private MovieDetailAdapter movieAdapter;
     private List<Movie> movieList;
-
+    List<Trailer> listTrailer;
+    YouTubePlayerView youTubePlayerView;
     List <Media> listMedia;
 
     @SuppressLint("MissingInflatedId")
@@ -61,11 +66,13 @@ public class MovieDetailActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        moviePoster=  findViewById(R.id.moviePoster);
+        youTubePlayerView = findViewById(R.id.youtubePlayer);
         long movieId = (long) getIntent().getLongExtra("media_id",-1);
+        getTrailer(movieId);
         getMovieDetail(movieId);
         getMediaSame(movieId);
     }
-
     private void getMediaSame(long id)
     {
         ApiService apiService = RetrofitClient.getApiService(getApplicationContext());
@@ -79,9 +86,6 @@ public class MovieDetailActivity extends AppCompatActivity {
                     GridLayoutManager gridLayoutManager = new GridLayoutManager(MovieDetailActivity.this, 3); // 3 cột
                     recyclerViewMovie.setLayoutManager(gridLayoutManager);
                     recyclerViewMovie.setAdapter(new MediaAdapter(listMedia,false ));
-
-
-
                 }
             }
             @Override
@@ -90,7 +94,34 @@ public class MovieDetailActivity extends AppCompatActivity {
             }
         });
     }
-
+    private void getTrailer(long id) {
+        ApiService apiService = RetrofitClient.getApiService(getApplicationContext());
+        Call<List<Trailer> >call = apiService.getmovieTrailer(id); // Không cần chuyển đổi bằng `Long.valueOf()`
+        call.enqueue(new Callback<List<Trailer>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Trailer> >call, @NonNull Response<List<Trailer>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    listTrailer = response.body();
+                    if (!listTrailer.isEmpty() && listTrailer != null) {
+                        moviePoster.setVisibility(View.GONE);
+                        youTubePlayerView.setVisibility(View.VISIBLE);
+                        getLifecycle().addObserver(youTubePlayerView);
+                        youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
+                            @Override
+                            public void onReady(YouTubePlayer youTubePlayer) {
+                                String videoKey = listTrailer.get(0).getKey(); // ID của video YouTube
+                                youTubePlayer.loadVideo(videoKey, 0);
+                            }
+                        });
+                    }
+                }
+            }
+            @Override
+            public void onFailure(@NonNull Call<List<Trailer>> call, @NonNull Throwable t) {
+                Log.e("Trailer", "API Call failed: " + t.getMessage());
+            }
+        });
+    }
     private  void getMovieDetail(long movieId) {
         ApiService apiService = RetrofitClient.getApiService(getApplicationContext());
         Call<Movie> call = apiService.getMovieDetail(movieId); // Không cần chuyển đổi bằng `Long.valueOf()`
@@ -108,23 +139,20 @@ public class MovieDetailActivity extends AppCompatActivity {
                     movieOverview = findViewById(R.id.movieOverview);
                     movieOverview.setText(movie.getOverview());
 
-                    moviePoster=  findViewById(R.id.moviePoster);
-
                     String posterUrl = imageUrl + movie.getBackdropPath();
 
                     TextView info = (TextView) findViewById(R.id.info);
 
                     info.setText(movie.getReleaseDate() + "  |  " + movie.getRuntime() + " phut");
 
-
-
-
-                    Log.d("movie poster", posterUrl);
-                    Glide.with(MovieDetailActivity.this)
-                            .load(posterUrl)
-                            .error(R.drawable.error_image)
-                            .into(moviePoster);
-
+                    if(listTrailer.isEmpty()) {
+                        youTubePlayerView.setVisibility(View.GONE);
+                        moviePoster.setVisibility(View.VISIBLE);
+                        Glide.with(MovieDetailActivity.this)
+                                .load(posterUrl)
+                                .error(R.drawable.error_image)
+                                .into(moviePoster);
+                    }
                     movieOverview.setOnClickListener(new View.OnClickListener() {
 
                         @Override
