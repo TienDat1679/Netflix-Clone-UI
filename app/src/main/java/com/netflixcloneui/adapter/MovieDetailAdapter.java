@@ -2,6 +2,7 @@ package com.netflixcloneui.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +28,7 @@ public class MovieDetailAdapter extends RecyclerView.Adapter<MovieDetailAdapter.
     @NonNull
     @Override
     public MovieViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_movie_detail, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_media_detail, parent, false);
         return new MovieViewHolder(view);
     }
 
@@ -36,6 +37,13 @@ public class MovieDetailAdapter extends RecyclerView.Adapter<MovieDetailAdapter.
         String imageUrl = "https://image.tmdb.org/t/p/w500";
         Movie movie = movieList.get(position);
 
+        DisplayMetrics displayMetrics = holder.itemView.getContext().getResources().getDisplayMetrics();
+        int screenWidth = displayMetrics.widthPixels;
+
+        // Đặt chiều rộng của item là 1/3 màn hình
+        ViewGroup.LayoutParams params = holder.itemView.getLayoutParams();
+        params.width = screenWidth / 3;
+        holder.itemView.setLayoutParams(params);
         // Load hình ảnh bằng Glide
         Glide.with(holder.itemView.getContext())
                 .load(imageUrl + movie.getPosterPath())
@@ -50,7 +58,7 @@ public class MovieDetailAdapter extends RecyclerView.Adapter<MovieDetailAdapter.
         holder.itemView.setOnClickListener(v -> {
             Context context = v.getContext();
             Intent intent = new Intent(context, MovieDetailActivity.class);
-            intent.putExtra("movie_id", movie.getId()); // Truyền ID phim vào Intent
+            intent.putExtra("media_id", movie.getId()); // Truyền ID phim vào Intent
             context.startActivity(intent);
         });
     }

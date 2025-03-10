@@ -1,5 +1,7 @@
 package com.netflixcloneui.screen;
 import com.netflixcloneui.R;
+import com.netflixcloneui.adapter.MediaAdapter;
+import com.netflixcloneui.model.Media;
 import com.netflixcloneui.model.Movie;
 import com.netflixcloneui.adapter.MovieDetailAdapter;
 
@@ -17,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
@@ -41,9 +44,11 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     private TextView movieRelease;
     private TextView movieRuntime;
-    private RecyclerView recyclerViewMovies;
+    private RecyclerView recyclerViewMovie;
     private MovieDetailAdapter movieAdapter;
     private List<Movie> movieList;
+
+    List <Media> listMedia;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -56,38 +61,31 @@ public class MovieDetailActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
         long movieId = (long) getIntent().getLongExtra("media_id",-1);
         getMovieDetail(movieId);
-        getListMovie(movieId);
+        getMediaSame(movieId);
     }
 
-    private void getListMovie(long movieId){
+    private void getMediaSame(long id)
+    {
         ApiService apiService = RetrofitClient.getApiService(getApplicationContext());
-        Call<List<Movie> >call = apiService.getListMovieSame(movieId); // Không cần chuyển đổi bằng `Long.valueOf()`
-        call.enqueue(new Callback<List<Movie>>() {
+        Call<List<Media> >call = apiService.getSameMedia(id); // Không cần chuyển đổi bằng `Long.valueOf()`
+        call.enqueue(new Callback<List<Media>>() {
             @Override
-            public void onResponse(@NonNull Call<List<Movie> >call, @NonNull Response<List<Movie>> response) {
+            public void onResponse(@NonNull Call<List<Media> >call, @NonNull Response<List<Media>> response) {
                 if (response.isSuccessful() && response.body() != null) {
+                    listMedia= response.body();
+                    recyclerViewMovie = findViewById(R.id.recyclerViewMovies);
+                    GridLayoutManager gridLayoutManager = new GridLayoutManager(MovieDetailActivity.this, 3); // 3 cột
+                    recyclerViewMovie.setLayoutManager(gridLayoutManager);
+                    recyclerViewMovie.setAdapter(new MediaAdapter(listMedia,false ));
 
-                    List<Movie > listMovie = response.body();
 
-                    recyclerViewMovies = findViewById(R.id.recyclerViewMovies);
-
-                    // Thiết lập RecyclerView
-                    LinearLayoutManager layoutManager = new LinearLayoutManager(MovieDetailActivity.this, LinearLayoutManager.HORIZONTAL, false);
-                    recyclerViewMovies.setLayoutManager(layoutManager);
-                    movieAdapter = new MovieDetailAdapter(listMovie);
-                    recyclerViewMovies.setAdapter(movieAdapter);
-
-                    // Dùng SnapHelper để cuộn từng phim một cách mượt mà
-                    SnapHelper snapHelper = new LinearSnapHelper();
-                    snapHelper.attachToRecyclerView(recyclerViewMovies);
 
                 }
             }
             @Override
-            public void onFailure(@NonNull Call<List<Movie>> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<List<Media>> call, @NonNull Throwable t) {
                 Log.e("MovieDetail", "API Call failed: " + t.getMessage());
             }
         });
@@ -114,11 +112,12 @@ public class MovieDetailActivity extends AppCompatActivity {
 
                     String posterUrl = imageUrl + movie.getBackdropPath();
 
-                    movieRelease =findViewById(R.id.movieReleaseDate);
-                    movieRelease.setText(movie.getReleaseDate());
+                    TextView info = (TextView) findViewById(R.id.info);
 
-                    movieRuntime = findViewById(R.id.movieRuntime);
-                    movieRuntime.setText(movie.getRuntime() + " phút");
+                    info.setText(movie.getReleaseDate() + "  |  " + movie.getRuntime() + " phut");
+
+
+
 
                     Log.d("movie poster", posterUrl);
                     Glide.with(MovieDetailActivity.this)

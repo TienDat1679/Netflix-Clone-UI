@@ -18,6 +18,7 @@ import com.bumptech.glide.Glide;
 import com.netflixcloneui.screen.MovieDetailActivity;
 import com.netflixcloneui.R;
 import com.netflixcloneui.model.Media;
+import com.netflixcloneui.screen.TvSeriesDetailActivity;
 
 import java.util.List;
 
@@ -53,15 +54,24 @@ public class RecommendAdapter extends RecyclerView.Adapter<RecommendAdapter.View
         });
         holder.container.setOnClickListener(v -> {
             Context context = holder.itemView.getContext(); // Lấy Context từ View
-            openMediaDetail(context, media.getId());
+            openMediaDetail(context, media.getId(),media.getType());
             Toast.makeText(holder.itemView.getContext(), "Bạn đã chọn: " + media.getTitle(), Toast.LENGTH_SHORT).show();
         });
     }
 
-    private void openMediaDetail(Context context, Long id) {
-        Intent intent = new Intent(context, MovieDetailActivity.class);
-        intent.putExtra("movie_id", id); // Truyền ID phim
-        context.startActivity(intent); // Khởi chạy Activity
+    private void openMediaDetail(Context context, Long id,String type) {
+        if("movie".equals(type))
+        {
+
+            Intent intent = new Intent(context, MovieDetailActivity.class);
+            intent.putExtra("media_id", id); // Truyền ID phim
+            context.startActivity(intent); // Khởi chạy Activity
+        }
+        else {
+            Intent intent = new Intent(context, TvSeriesDetailActivity.class);
+            intent.putExtra("media_id", id); // Truyền ID phim
+            context.startActivity(intent); // Khởi chạy Activity
+        }
     }
 
     @Override
