@@ -29,6 +29,10 @@ import com.netflixcloneui.model.Episode;
 import com.netflixcloneui.model.Media;
 import com.netflixcloneui.model.Movie;
 import com.netflixcloneui.model.TVSeries;
+import com.netflixcloneui.model.Trailer;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
 
 import java.util.List;
 
@@ -44,6 +48,7 @@ public class TvSeriesDetailActivity extends AppCompatActivity {
     private EpisodeAdapter EpsAdapter;
     List<Episode> listEps;
     List <Media> listMedia;
+    List<Trailer> listTrailer;
     private MovieDetailAdapter movieAdapter;
 
     private SnapHelper snapHelper;
@@ -63,9 +68,39 @@ public class TvSeriesDetailActivity extends AppCompatActivity {
         long id = (long) getIntent().getLongExtra("media_id",-1);
         getTvSeriesDetail(id);
         getEsp(id);
+        getTrailer(id);
         getMediaSame(id);
         ChangeRecycle();
     }
+
+    private void getTrailer(long id) {
+        ApiService apiService = RetrofitClient.getApiService(getApplicationContext());
+        Call<List<Trailer> >call = apiService.getTrailer(id); // Không cần chuyển đổi bằng `Long.valueOf()`
+        call.enqueue(new Callback<List<Trailer>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Trailer> >call, @NonNull Response<List<Trailer>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    listTrailer= response.body();
+
+                    YouTubePlayerView youTubePlayerView = findViewById(R.id.youtubePlayer);
+                    getLifecycle().addObserver(youTubePlayerView);
+
+                    youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
+                        @Override
+                        public void onReady(YouTubePlayer youTubePlayer) {
+                            String videoKey = listTrailer.get(0).getKey(); // ID của video YouTube
+                            youTubePlayer.loadVideo(videoKey, 0);
+                        }
+                    });
+                }
+            }
+            @Override
+            public void onFailure(@NonNull Call<List<Trailer>> call, @NonNull Throwable t) {
+                Log.e("MovieDetail", "API Call failed: " + t.getMessage());
+            }
+        });
+    }
+
     private void ChangeRecycle() {
         TextView sameMedia = findViewById(R.id.sameMedia);
         TextView esp = findViewById(R.id.esp);

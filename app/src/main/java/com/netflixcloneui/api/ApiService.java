@@ -10,6 +10,7 @@ import com.netflixcloneui.model.Movie;
 import com.netflixcloneui.model.MovieDetail;
 import com.netflixcloneui.model.RegisterRequest;
 import com.netflixcloneui.model.TVSeries;
+import com.netflixcloneui.model.Trailer;
 
 import java.util.List;
 
@@ -92,5 +93,8 @@ public interface ApiService {
     // My Netflix Fragment
     @GET("api/media/same")
     Call<List<Media>> getSameMedia(@Query("id") Long id);
+
+    @GET("api/series/trailer")
+    Call<List<Trailer>> getTrailer(@Query("id") Long id);
 
 }
