@@ -90,5 +90,7 @@ public interface ApiService {
     Call<List<Media>> searchMedia(@Query("keyword") String keyword);
 
     // My Netflix Fragment
+    @GET("api/media/same")
+    Call<List<Media>> getSameMedia(@Query("id") Long id);
 
 }
