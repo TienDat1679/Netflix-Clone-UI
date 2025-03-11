@@ -99,6 +99,9 @@ public interface ApiService {
     Call<List<Media>> getSameMedia(@Query("id") Long id);
 
     @GET("api/series/trailer")
-    Call<List<Trailer>> getTrailer(@Query("id") Long id);
+    Call<List<Trailer>> getSeriesTrailer(@Query("id") Long id);
+
+    @GET("api/movies/trailer")
+    Call<List<Trailer>> getmovieTrailer(@Query("id") Long id);
 
 }
