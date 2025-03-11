@@ -78,7 +78,7 @@ public class MovieDetailActivity extends AppCompatActivity {
                     recyclerViewMovie = findViewById(R.id.recyclerViewMovies);
                     GridLayoutManager gridLayoutManager = new GridLayoutManager(MovieDetailActivity.this, 3); // 3 cột
                     recyclerViewMovie.setLayoutManager(gridLayoutManager);
-                    recyclerViewMovie.setAdapter(new MediaAdapter(listMedia,false ));
+                    recyclerViewMovie.setAdapter(new MediaAdapter(listMedia, MediaAdapter.TYPE_NORMAL));
 
 
 

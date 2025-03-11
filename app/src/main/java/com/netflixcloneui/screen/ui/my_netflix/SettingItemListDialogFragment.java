@@ -129,7 +129,7 @@ public class SettingItemListDialogFragment extends BottomSheetDialogFragment {
             // Chuyển sang màn hình đăng nhập
             Intent intent = new Intent(requireContext(), LoginActivity.class);
             startActivity(intent);
-
+            requireActivity().finish();
             // Đóng BottomSheet
             dismiss();
         }

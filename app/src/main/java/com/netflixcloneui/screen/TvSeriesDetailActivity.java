@@ -111,7 +111,7 @@ public class TvSeriesDetailActivity extends AppCompatActivity {
 
                 GridLayoutManager gridLayoutManager = new GridLayoutManager(TvSeriesDetailActivity.this, 3); // 3 cột
                 recyclerViewEps.setLayoutManager(gridLayoutManager);
-                recyclerViewEps.setAdapter(new MediaAdapter(listMedia,false ));
+                recyclerViewEps.setAdapter(new MediaAdapter(listMedia, MediaAdapter.TYPE_NORMAL));
 
             }
         });
