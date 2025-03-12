@@ -1,10 +1,12 @@
 package com.netflixcloneui.screen;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -40,15 +42,17 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class TvSeriesDetailActivity extends AppCompatActivity {
+public class TvSeriesDetailActivity extends AppCompatActivity implements EpisodeAdapter.OnEpisodeClickListener{
 
     private RecyclerView recyclerViewEps;
-
+    private Button btnPlay;
     boolean isExpanded = false;
     private EpisodeAdapter EpsAdapter;
     List<Episode> listEps;
     List <Media> listMedia;
     List<Trailer> listTrailer;
+    private YouTubePlayer youTubePlayerInstance;
+    private YouTubePlayerView youTubePlayerView;
     private MovieDetailAdapter movieAdapter;
 
     private SnapHelper snapHelper;
@@ -65,12 +69,20 @@ public class TvSeriesDetailActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        btnPlay = findViewById(R.id.btnPlay);
         long id = (long) getIntent().getLongExtra("media_id",-1);
         getTvSeriesDetail(id);
+        btnPlay.setOnClickListener(view ->playFullScreenVideo() );
         getEsp(id);
         getTrailer(id);
         getMediaSame(id);
         ChangeRecycle();
+    }
+
+    private void playFullScreenVideo() {
+        Intent intent = new Intent(this, FullScreenVideoActivity.class);
+        intent.putExtra("VIDEO_ID", "xbsT5l4hdfA"); // Truyền videoId vào Intent
+        startActivity(intent);
     }
 
     private void getTrailer(long id) {
@@ -82,12 +94,13 @@ public class TvSeriesDetailActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     listTrailer= response.body();
 
-                    YouTubePlayerView youTubePlayerView = findViewById(R.id.youtubePlayer);
+                    youTubePlayerView = findViewById(R.id.youtubePlayer);
                     getLifecycle().addObserver(youTubePlayerView);
 
                     youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
                         @Override
-                        public void onReady(YouTubePlayer youTubePlayer) {
+                        public void onReady(@NonNull YouTubePlayer youTubePlayer) {
+                            youTubePlayerInstance = youTubePlayer;
                             String videoKey = listTrailer.get(0).getKey(); // ID của video YouTube
                             youTubePlayer.loadVideo(videoKey, 0);
                         }
@@ -119,7 +132,7 @@ public class TvSeriesDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 recyclerViewEps.setLayoutManager(new LinearLayoutManager(TvSeriesDetailActivity.this, LinearLayoutManager.VERTICAL, false));
-                recyclerViewEps.setAdapter(new EpisodeAdapter(TvSeriesDetailActivity.this, listEps));
+                recyclerViewEps.setAdapter(new EpisodeAdapter(TvSeriesDetailActivity.this, listEps,TvSeriesDetailActivity.this::onEpisodeClick));
             }
         });
     }
@@ -153,7 +166,7 @@ public class TvSeriesDetailActivity extends AppCompatActivity {
                 // Thiết lập RecyclerView
                 LinearLayoutManager layoutManager = new LinearLayoutManager(TvSeriesDetailActivity.this, LinearLayoutManager.VERTICAL, false);
                 recyclerViewEps.setLayoutManager(layoutManager);
-                EpsAdapter = new EpisodeAdapter(TvSeriesDetailActivity.this,listEps);
+                EpsAdapter = new EpisodeAdapter(TvSeriesDetailActivity.this,listEps,TvSeriesDetailActivity.this::onEpisodeClick);
                 recyclerViewEps.setAdapter(EpsAdapter);
 
                 // Dùng SnapHelper để cuộn từng phim một cách mượt mà
@@ -211,5 +224,10 @@ public class TvSeriesDetailActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public void onEpisodeClick(String videoKey) {
+        youTubePlayerInstance.loadVideo(videoKey, 0);
     }
 }
