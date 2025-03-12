@@ -6,6 +6,7 @@ android {
     namespace = "com.netflixcloneui"
     compileSdk = 35
 
+
     defaultConfig {
         applicationId = "com.netflixcloneui"
         minSdk = 24
@@ -66,4 +67,6 @@ dependencies {
     implementation("com.squareup.picasso:picasso:2.4.0")
 
     implementation ("com.pierfrancescosoffritti.androidyoutubeplayer:core:12.1.0")
+
+
 }

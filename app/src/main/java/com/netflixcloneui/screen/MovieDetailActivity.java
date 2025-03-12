@@ -1,15 +1,21 @@
 package com.netflixcloneui.screen;
 import com.netflixcloneui.R;
+import com.netflixcloneui.adapter.EpisodeAdapter;
 import com.netflixcloneui.adapter.MediaAdapter;
+import com.netflixcloneui.adapter.TrailerAdapter;
 import com.netflixcloneui.model.Media;
 import com.netflixcloneui.model.Movie;
 import com.netflixcloneui.adapter.MovieDetailAdapter;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
@@ -45,12 +51,15 @@ public class MovieDetailActivity extends AppCompatActivity {
     boolean isExpanded = false;
     private ImageView moviePoster ;
     String imageUrl = "https://image.tmdb.org/t/p/w500";
-
+    TrailerAdapter trailerAdapter;
     private TextView movieRelease;
     private TextView movieRuntime;
     private RecyclerView recyclerViewMovie;
     private MovieDetailAdapter movieAdapter;
     private List<Movie> movieList;
+    private Button btnPlay;
+
+
     List<Trailer> listTrailer;
     YouTubePlayerView youTubePlayerView;
     List <Media> listMedia;
@@ -68,11 +77,46 @@ public class MovieDetailActivity extends AppCompatActivity {
         });
         moviePoster=  findViewById(R.id.moviePoster);
         youTubePlayerView = findViewById(R.id.youtubePlayer);
+        recyclerViewMovie = findViewById(R.id.recyclerViewMovies);
+        btnPlay = findViewById(R.id.btnPlay);
         long movieId = (long) getIntent().getLongExtra("media_id",-1);
         getTrailer(movieId);
         getMovieDetail(movieId);
         getMediaSame(movieId);
+        btnPlay.setOnClickListener(view ->playFullScreenVideo() );
+        changRecycle();
     }
+    private void playFullScreenVideo() {
+        Intent intent = new Intent(this, FullScreenVideoActivity.class);
+        intent.putExtra("VIDEO_ID", "fap07Hh7pSI"); // Truyền videoId vào Intent
+        startActivity(intent);
+    }
+
+
+    private void changRecycle() {
+        TextView moviSame = findViewById(R.id.movieSame);
+        TextView trailer = findViewById(R.id.movieTrailer);
+        moviSame.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                GridLayoutManager gridLayoutManager = new GridLayoutManager(MovieDetailActivity.this, 3); // 3 cột
+                recyclerViewMovie.setLayoutManager(gridLayoutManager);
+                recyclerViewMovie.setAdapter(new MediaAdapter(listMedia,false ));
+
+            }
+        });
+        trailer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                recyclerViewMovie.setLayoutManager(new LinearLayoutManager(MovieDetailActivity.this));
+
+                // Đăng ký vòng đời của Activity cho Adapter
+                trailerAdapter = new TrailerAdapter(listTrailer, MovieDetailActivity.this);
+                recyclerViewMovie.setAdapter(trailerAdapter);
+            }
+        });
+    }
+
     private void getMediaSame(long id)
     {
         ApiService apiService = RetrofitClient.getApiService(getApplicationContext());
@@ -82,7 +126,7 @@ public class MovieDetailActivity extends AppCompatActivity {
             public void onResponse(@NonNull Call<List<Media> >call, @NonNull Response<List<Media>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     listMedia= response.body();
-                    recyclerViewMovie = findViewById(R.id.recyclerViewMovies);
+
                     GridLayoutManager gridLayoutManager = new GridLayoutManager(MovieDetailActivity.this, 3); // 3 cột
                     recyclerViewMovie.setLayoutManager(gridLayoutManager);
                     recyclerViewMovie.setAdapter(new MediaAdapter(listMedia,false ));
@@ -145,7 +189,7 @@ public class MovieDetailActivity extends AppCompatActivity {
 
                     info.setText(movie.getReleaseDate() + "  |  " + movie.getRuntime() + " phut");
 
-                    if(listTrailer.isEmpty()) {
+                    if(listTrailer.isEmpty() ) {
                         youTubePlayerView.setVisibility(View.GONE);
                         moviePoster.setVisibility(View.VISIBLE);
                         Glide.with(MovieDetailActivity.this)
