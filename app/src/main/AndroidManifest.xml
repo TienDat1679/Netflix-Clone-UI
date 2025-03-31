@@ -6,8 +6,6 @@
         android:name="android.hardware.camera"
         android:required="false" />
 
-
-
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
@@ -25,15 +23,35 @@
         tools:targetApi="31">
 
         <activity
+            android:name=".screen.ui.my_netflix.PaymentPackageActivity"
+            android:exported="false" />
+        <activity
+            android:name=".screen.ui.my_netflix.PaymentSummaryActivity"
+            android:exported="false"
+            />
+        <!-- <activity -->
+        <!-- android:name=".qr_test" -->
+        <!-- android:exported="false" /> -->
+<!--        <activity
             android:name=".screen.SearchActivity"
             android:exported="false" />
         <activity
-            android:name=".screen.BottomNavActivity"
+            android:name=".screen.ui.my_netflix.PaymentSummaryActivity"
             android:exported="true"
             android:label="@string/title_activity_bottom_nav">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>-->
+
+    <activity
+            android:name=".screen.BottomNavActivity"
+            android:exported="true"
+            android:label="@string/title_activity_bottom_nav">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -55,23 +73,20 @@
         <activity
             android:name=".screen.auth.LoginActivity"
             android:exported="false" />
-
         <activity
             android:name=".screen.SplashActivity"
             android:exported="false" />
         <activity
             android:name=".screen.MovieDetailActivity"
-            android:exported="false"
-            />
-        <activity android:name=".screen.TvSeriesDetailActivity"
-            android:exported="false">
-        </activity>
+            android:exported="false" />
+        <activity
+            android:name=".screen.TvSeriesDetailActivity"
+            android:exported="false" />
         <activity
             android:name=".screen.FullScreenVideoActivity"
             android:screenOrientation="landscape"
             android:theme="@style/Theme.AppCompat.NoActionBar"
             tools:ignore="DiscouragedApi" />
-
     </application>
 
 </manifest>
