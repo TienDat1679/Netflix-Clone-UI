@@ -1,5 +1,6 @@
 package com.netflixcloneui.screen.ui.my_netflix;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -7,6 +8,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.core.view.MenuProvider;
@@ -20,10 +22,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.netflixcloneui.R;
 import com.netflixcloneui.adapter.MediaAdapter;
 import com.netflixcloneui.databinding.FragmentMyNetflixBinding;
+import com.netflixcloneui.screen.FullScreenVideoActivity;
 
 public class MyNetflixFragment extends Fragment {
 
     private FragmentMyNetflixBinding binding;
+
+    private LinearLayout linearLayout;
     private MyNetflixViewModel myNetflixViewModel;
     private MediaAdapter favoriteAdapter;
     private MediaAdapter myListAdapter;
@@ -43,11 +48,22 @@ public class MyNetflixFragment extends Fragment {
 
         loadFavoriteList();
 
+        premium();
+
         loadMyList();
 
         addItemToActionBar();
 
         return root;
+    }
+
+    private void premium() {
+        binding.premium.setOnClickListener(v -> openPaymentPackage());
+    }
+
+    private void openPaymentPackage() {
+        Intent intent = new Intent(getContext(), PaymentPackageActivity.class);
+        startActivity(intent);
     }
 
     private void loadMyList() {

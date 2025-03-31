@@ -8,11 +8,14 @@ import com.netflixcloneui.model.LoginResponse;
 import com.netflixcloneui.model.Media;
 import com.netflixcloneui.model.Movie;
 import com.netflixcloneui.model.MovieDetail;
+import com.netflixcloneui.model.QrResponse;
 import com.netflixcloneui.model.RegisterRequest;
 import com.netflixcloneui.model.TVSeries;
 import com.netflixcloneui.model.Trailer;
+import com.netflixcloneui.model.VNPayResponse;
 
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -20,6 +23,7 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+import retrofit2.http.QueryMap;
 
 public interface ApiService {
     @POST("api/login")
@@ -103,5 +107,11 @@ public interface ApiService {
 
     @GET("api/movies/trailer")
     Call<List<Trailer>> getmovieTrailer(@Query("id") Long id);
+
+    @GET("api/vnpay/generateQR")
+    Call<QrResponse> generateVnpayQR(@Query("amount") String  amount);
+
+    @GET("api/vnpay/callback")
+    Call<VNPayResponse> checkPayment(@QueryMap Map<String, String> params);
 
 }

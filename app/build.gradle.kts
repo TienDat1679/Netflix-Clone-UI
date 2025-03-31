@@ -67,6 +67,7 @@ dependencies {
     implementation("com.squareup.picasso:picasso:2.4.0")
 
     implementation ("com.pierfrancescosoffritti.androidyoutubeplayer:core:12.1.0")
-
+    implementation ("com.journeyapps:zxing-android-embedded:4.3.0")
+    implementation ("com.android.volley:volley:1.2.1")
 
 }
