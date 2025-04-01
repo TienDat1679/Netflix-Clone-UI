@@ -8,5 +8,5 @@
     android:paddingTop="@dimen/list_item_spacing_half"
     android:paddingBottom="@dimen/list_item_spacing_half"
     android:background="@color/black_transparent"
-    tools:context=".screen.ui.home.GenresItemListDialogFragment"
+    tools:context=".ui.home.GenresItemListDialogFragment"
     tools:listitem="@layout/fragment_genres_list_dialog_list_dialog_item" />

@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -15,10 +14,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.netflixcloneui.screen.MovieDetailActivity;
+import com.netflixcloneui.ui.MovieDetailActivity;
 import com.netflixcloneui.R;
 import com.netflixcloneui.model.Media;
-import com.netflixcloneui.screen.TvSeriesDetailActivity;
+import com.netflixcloneui.ui.TvSeriesDetailActivity;
 
 import java.util.List;
 
