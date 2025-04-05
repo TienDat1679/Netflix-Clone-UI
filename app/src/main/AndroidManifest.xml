@@ -11,6 +11,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
 
     <application
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -29,13 +30,9 @@
             android:name=".ui.PaymentSummaryActivity"
             android:exported="false"
             />
-        <!-- <activity -->
-        <!-- android:name=".qr_test" -->
-        <!-- android:exported="false" /> -->
-<!--        <activity
-            android:name=".screen.SearchActivity"
+        <!-- <activity
+            android:name=".qr_test"
             android:exported="false" />
-        <activity
             android:name=".screen.ui.my_netflix.PaymentSummaryActivity"
             android:exported="true"
             android:label="@string/title_activity_bottom_nav">
@@ -46,7 +43,7 @@
             </intent-filter>
         </activity>-->
 
-    <activity
+        <activity
             android:name=".ui.BottomNavActivity"
             android:exported="true"
             android:label="@string/title_activity_bottom_nav">
@@ -72,6 +69,9 @@
             android:exported="false" />
         <activity
             android:name=".ui.user.LoginActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.SearchActivity"
             android:exported="false" />
         <activity
             android:name=".ui.SplashActivity"

@@ -1,13 +1,17 @@
 package com.netflixcloneui.data.remote;
 
+import com.netflixcloneui.model.request.IntrospectRequest;
+import com.netflixcloneui.model.request.LogoutRequest;
+import com.netflixcloneui.model.request.RefreshRequest;
 import com.netflixcloneui.model.response.ApiResponse;
 import com.netflixcloneui.model.request.ChangePasswordRequest;
 import com.netflixcloneui.model.Episode;
 import com.netflixcloneui.model.Genre;
 import com.netflixcloneui.model.request.LoginRequest;
-import com.netflixcloneui.model.response.LoginResponse;
+import com.netflixcloneui.model.response.AuthResponse;
 import com.netflixcloneui.model.Media;
 import com.netflixcloneui.model.Movie;
+import com.netflixcloneui.model.response.IntrospectResponse;
 import com.netflixcloneui.model.response.QrResponse;
 import com.netflixcloneui.model.request.RegisterRequest;
 import com.netflixcloneui.model.TVSeries;
@@ -27,7 +31,13 @@ import retrofit2.http.QueryMap;
 
 public interface ApiService {
     @POST("api/auth/token")
-    Call<ApiResponse<LoginResponse>> login(@Body LoginRequest loginRequest);
+    Call<ApiResponse<AuthResponse>> login(@Body LoginRequest request);
+    @POST("api/auth/logout")
+    Call<Void> logout(@Body LogoutRequest request);
+    @POST("api/auth/refresh")
+    Call<ApiResponse<AuthResponse>> refreshToken(@Body RefreshRequest request);
+    @POST("api/auth/introspect")
+    Call<ApiResponse<IntrospectResponse>> introspect(@Body IntrospectRequest request);
     @POST("api/register")
     Call<Void> registerAccount(@Body RegisterRequest request);
     @POST("api/register/verify/{otp}/{email}")
@@ -39,10 +49,7 @@ public interface ApiService {
     @POST("api/forgotPassword/verifyOtp/{otp}/{email}")
     Call<Void> verifyForgotPasswordOtp(@Path("otp") String otp, @Path("email") String email);
     @POST("api/forgotPassword/changePassword/{email}")
-    Call<Void> changePassword(
-            @Path("email") String email,
-            @Body ChangePasswordRequest request
-    );
+    Call<Void> changePassword(@Path("email") String email, @Body ChangePasswordRequest request);
     @POST("api/forgotPassword/verifyMail/{email}")
     Call<Void> resendOtpFp(@Path("email") String email);
 

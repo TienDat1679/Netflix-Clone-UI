@@ -22,7 +22,7 @@ import com.netflixcloneui.data.remote.ApiService;
 import com.netflixcloneui.data.remote.RetrofitClient;
 import com.netflixcloneui.model.response.ApiResponse;
 import com.netflixcloneui.model.request.LoginRequest;
-import com.netflixcloneui.model.response.LoginResponse;
+import com.netflixcloneui.model.response.AuthResponse;
 import com.netflixcloneui.ui.BottomNavActivity;
 import com.netflixcloneui.utils.ApiErrorHandler;
 
@@ -82,10 +82,10 @@ public class LoginActivity extends AppCompatActivity {
 
     private void loginAccount(String email, String password) {
         ApiService apiService = RetrofitClient.getApiService(getApplicationContext());
-        Call<ApiResponse<LoginResponse>> call = apiService.login(new LoginRequest(email, password));
-        call.enqueue(new Callback<ApiResponse<LoginResponse>>() {
+        Call<ApiResponse<AuthResponse>> call = apiService.login(new LoginRequest(email, password));
+        call.enqueue(new Callback<ApiResponse<AuthResponse>>() {
             @Override
-            public void onResponse(Call<ApiResponse<LoginResponse>> call, Response<ApiResponse<LoginResponse>> response) {
+            public void onResponse(Call<ApiResponse<AuthResponse>> call, Response<ApiResponse<AuthResponse>> response) {
                 progressBar.setVisibility(View.GONE);
                 ApiResponse<?> apiResponse;
                 if (response.isSuccessful() && response.body() != null) {
@@ -95,6 +95,7 @@ public class LoginActivity extends AppCompatActivity {
                     SharedPreferences sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString("jwt_token", jwtToken);
+                    editor.putString("refresh_token", null);
                     editor.apply();
                     // Chuyển đến HomeActivity
                     Intent intent = new Intent(getApplicationContext(), BottomNavActivity.class);
@@ -113,7 +114,7 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<ApiResponse<LoginResponse>> call, Throwable t) {
+            public void onFailure(Call<ApiResponse<AuthResponse>> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
                 Toast.makeText(getApplicationContext(), "Error: " + t.getMessage(), Toast.LENGTH_LONG).show();
             }

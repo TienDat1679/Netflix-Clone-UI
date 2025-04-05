@@ -1,6 +1,6 @@
 package com.netflixcloneui.model.response;
 
-public class LoginResponse {
+public class AuthResponse {
     private String message;
     private String token;
 
