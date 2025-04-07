@@ -34,15 +34,25 @@
                />
         </FrameLayout>
 
-        <!-- Tiêu đề phim -->
+    <!-- Nút đóng -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/btnClose"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        app:cardCornerRadius="15dp"
+        app:strokeWidth="0dp"
+        android:backgroundTint="@color/gray_1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="10dp">
 
-        <!-- Nút Phát -->
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:src="@drawable/ic_close_white"/>
+    </com.google.android.material.card.MaterialCardView>
 
-        <!-- Nút Tải xuống -->
-
-        <!-- Mô tả phim -->
-
-        <!-- Nút Tải xuống -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -55,82 +65,100 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="10dp">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:ignore="UseCompoundDrawables">
+
+            <ImageView
+                android:src="@drawable/netflix_logo"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginEnd="4dp" />
+
+            <TextView
+                android:text="L O Ạ T  P H I M"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:textColor="@color/loat_phim"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/movieTitle"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="4dp"
             android:ellipsize="end"
             android:maxLines="1"
             android:singleLine="true"
+            android:text="Tiêu đề phim"
             android:textColor="#fff"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/frameLayout" />
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
             android:textColor="#fff"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="16dp" />
-        <Button
+            android:text="2025  |  1h43p"
+            android:textSize="16sp" />
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnPlay"
             android:layout_width="match_parent"
-            android:layout_height="49dp"
-            android:layout_margin="10dp"
-            android:layout_marginTop="444dp"
-            android:text="▶ Phát"
-            android:textColor="#fff"
+            android:layout_height="55dp"
+            android:backgroundTint="@color/white"
+            app:cornerRadius="8dp"
+            android:text="Phát"
+            android:textColor="@color/black"
             android:textSize="18sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.526"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/info" />
+            android:textStyle="bold"
+            app:icon="@drawable/ic_play"
+            app:iconTint="@color/black"
+            app:iconSize="40dp"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnDownload"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_margin="10dp"
-            android:text="⬇ Tải xuống"
-            android:textColor="#fff"
+            android:layout_height="55dp"
+            app:cornerRadius="8dp"
+            android:backgroundTint="@color/gray_1"
+            android:text="Tải xuống"
+            android:textColor="@color/white"
+            android:textStyle="bold"
             android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.526"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btnPlay"
-            app:layout_constraintVertical_bias="0.0" />
+            app:icon="@drawable/ic_download"
+            app:iconPadding="15dp"
+            app:iconGravity="textStart"
+            app:iconSize="30dp" />
 
         <TextView
             android:id="@+id/movieOverview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
             android:ellipsize="end"
             android:justificationMode="inter_word"
             android:maxLines="3"
             android:textColor="#fff"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btnDownload" />
+            android:textSize="12dp" />
 
         <LinearLayout
             android:id="@+id/layoutActions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintTop_toBottomOf="@id/movieOverview"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             android:gravity="center"
             android:layout_marginTop="10dp">
 
@@ -143,14 +171,16 @@
                 android:orientation="vertical"
                 android:gravity="center">
                 <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:id="@+id/iv_add"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:src="@drawable/ic_add"
                     app:tint="#FFF"
                     tools:ignore="DuplicateIds" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:textSize="10sp"
                     android:textColor="@color/white"
                     android:text="Danh sách của tôi"/>
             </LinearLayout>
@@ -160,19 +190,21 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:orientation="vertical"
-                >
+                android:orientation="vertical">
 
                 <ImageView
                     android:id="@+id/btnLike"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:src="@drawable/like_svgrepo_com"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/ic_like"
                     app:tint="#FFF"/>
 
                 <TextView
+                    android:id="@+id/tv_like"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:textSize="10dp"
                     android:textColor="@color/white"
                     android:text="Xếp hạng"/>
             </LinearLayout>
@@ -183,67 +215,48 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:orientation="vertical"
-                >
+                android:orientation="vertical">
 
                 <ImageView
 
                     android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:src="@drawable/share_svgrepo_com"
-                    app:tint="#FFF"/>
+                    android:layout_height="30dp"
+                    android:src="@drawable/ic_share"
+                    app:tint="#FFF" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:textColor="@color/white"
+                    android:textSize="10dp"
                     android:text="Chia sẻ"/>
             </LinearLayout>
 
-            <!-- LinearLayout trống để giữ khoảng cách -->
-<!--            <LinearLayout-->
-<!--                android:layout_width="0dp"-->
-<!--                android:layout_height="match_parent"-->
-<!--                android:layout_weight="1"-->
-<!--                android:gravity="center"-->
-<!--                android:orientation="vertical">-->
-<!--                <ImageView-->
-<!--                    android:id="@+id/btnShare"-->
-<!--                    android:layout_width="40dp"-->
-<!--                    android:layout_height="40dp"-->
-<!--                    android:src="@drawable/dowload_1_svgrepo_com"-->
-<!--                    app:tint="#FFF"/>-->
-<!--                <TextView-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="match_parent"-->
-<!--                    android:textColor="@color/white"-->
-<!--                    android:text="Tải xuống"/>-->
-<!--            </LinearLayout>-->
-
-
+            <View
+                android:layout_width="100dp"
+                android:layout_height="match_parent"/>
         </LinearLayout>
+
         <LinearLayout
             android:id="@+id/SameAndTrailer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/layoutActions"
-            >
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
+
             <LinearLayout
                 android:id="@+id/container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                >
+                android:orientation="horizontal">
+
                 <TextView
                     android:id="@+id/movieSame"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
                     android:ellipsize="end"
-                    android:text="Các phim tương tự"
+                    android:text="Nội dung tương tự"
+                    android:textStyle="bold"
                     android:justificationMode="inter_word"
                     android:maxLines="5"
                     android:textColor="#fff"
@@ -252,12 +265,11 @@
                     android:id="@+id/movieTrailer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
+                    android:layout_marginStart="20dp"
                     android:ellipsize="end"
-
                     android:text="Trailer"
+                    android:textStyle="bold"
                     android:justificationMode="inter_word"
-                    android:maxLines="5"
                     android:textColor="#fff"
                     android:textSize="16sp" />
             </LinearLayout>

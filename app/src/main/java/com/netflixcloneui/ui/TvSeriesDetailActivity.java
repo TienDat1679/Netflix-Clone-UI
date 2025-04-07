@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -15,22 +16,29 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 
+import com.google.android.material.card.MaterialCardView;
 import com.netflixcloneui.R;
 import com.netflixcloneui.adapter.EpisodeAdapter;
 import com.netflixcloneui.adapter.MediaAdapter;
 import com.netflixcloneui.adapter.MovieDetailAdapter;
 import com.netflixcloneui.data.remote.ApiService;
 import com.netflixcloneui.data.remote.RetrofitClient;
+import com.netflixcloneui.data.repository.MediaRepository;
 import com.netflixcloneui.model.Episode;
 import com.netflixcloneui.model.Media;
 import com.netflixcloneui.model.TVSeries;
 import com.netflixcloneui.model.Trailer;
+import com.netflixcloneui.model.request.AddToWatchListRequest;
+import com.netflixcloneui.model.request.LikeRequest;
+import com.netflixcloneui.viewmodel.UserViewModel;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
@@ -45,6 +53,8 @@ public class TvSeriesDetailActivity extends AppCompatActivity implements Episode
 
     private RecyclerView recyclerViewEps;
     private Button btnPlay;
+    private MaterialCardView btnClose;
+    private ImageView ivAdd, ivLike;
     boolean isExpanded = false;
     private EpisodeAdapter EpsAdapter;
     List<Episode> listEps;
@@ -53,22 +63,28 @@ public class TvSeriesDetailActivity extends AppCompatActivity implements Episode
     private YouTubePlayer youTubePlayerInstance;
     private YouTubePlayerView youTubePlayerView;
     private MovieDetailAdapter movieAdapter;
-
+    private MediaRepository mediaRepository;
+    private UserViewModel userViewModel;
     private SnapHelper snapHelper;
 
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_tv_series_detail);
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+        userViewModel = new ViewModelProvider(this, new ViewModelProvider.Factory() {
+            @NonNull
+            @Override
+            public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+                return (T) new UserViewModel(getApplicationContext());
+            }
+        }).get(UserViewModel.class);
+        mediaRepository = new MediaRepository(getApplicationContext());
+        ivAdd = findViewById(R.id.btnAdd);
+        ivLike = findViewById(R.id.btnLike);
         btnPlay = findViewById(R.id.btnPlay);
+        btnClose = findViewById(R.id.btnClose);
         long id = (long) getIntent().getLongExtra("media_id",-1);
         getTvSeriesDetail(id);
         btnPlay.setOnClickListener(view ->playFullScreenVideo() );
@@ -76,12 +92,69 @@ public class TvSeriesDetailActivity extends AppCompatActivity implements Episode
         getTrailer(id);
         getMediaSame(id);
         ChangeRecycle();
+        cLose();
+        userViewModel.getUserId().observe(this, userId -> {
+            if (userId != null) {
+                userViewModel.checkMediaInLikeList(userId, id);
+                userViewModel.getIsLike().observe(this, isLike -> {
+                    if (isLike != null) {
+                        ivLike.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                if (!isLike) {
+                                    mediaRepository.likeMedia(userId, new LikeRequest(id, "tv_series"));
+                                    userViewModel.setIsLike(true);
+                                    ivLike.setImageResource(R.drawable.ic_liked);
+                                } else {
+                                    mediaRepository.unlikeMedia(userId, id);
+                                    userViewModel.setIsLike(false);
+                                    ivLike.setImageResource(R.drawable.ic_like);
+                                }
+                            }
+                        });
+                    }
+                });
+                userViewModel.checkMediaInWatchList(userId, id);
+                userViewModel.getIsInWatchList().observe(this, isInWatchList -> {
+                    if (isInWatchList != null) {
+                        ivAdd.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                if (!isInWatchList) {
+                                    mediaRepository.addToWatchList(userId, new AddToWatchListRequest(id, "tv_series"));
+                                    userViewModel.setIsInWatchList(true);
+                                    ivAdd.setImageResource(R.drawable.ic_added);
+                                } else {
+                                    mediaRepository.removeMediaFromWatchList(userId, id);
+                                    userViewModel.setIsInWatchList(false);
+                                    ivAdd.setImageResource(R.drawable.ic_add);
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        });
+        userViewModel.getIsInWatchList().observe(this, isLike -> {
+            if (isLike != null) {
+                ivAdd.setImageResource(isLike ? R.drawable.ic_added : R.drawable.ic_add);
+            }
+        });
+        userViewModel.getIsLike().observe(this, isLike -> {
+            if (isLike != null) {
+                ivLike.setImageResource(isLike ? R.drawable.ic_liked : R.drawable.ic_like);
+            }
+        });
     }
 
     private void playFullScreenVideo() {
         Intent intent = new Intent(this, FullScreenVideoActivity.class);
         intent.putExtra("VIDEO_ID", "xbsT5l4hdfA"); // Truyền videoId vào Intent
         startActivity(intent);
+    }
+
+    private void cLose() {
+        btnClose.setOnClickListener(v -> finish());
     }
 
     private void getTrailer(long id) {
@@ -194,7 +267,7 @@ public class TvSeriesDetailActivity extends AppCompatActivity implements Episode
                     tvOverview.setText(series.getOverview());
 
                     TextView tvInfo= (TextView) findViewById(R.id.tvInfo);
-                    tvInfo.setText(series.getEpisodes().size() + "tập");
+                    tvInfo.setText(series.getFirstAirDate() + "  |  " + series.getEpisodes().size() + " tập");
 
                     tvOverview.setOnClickListener(new View.OnClickListener() {
 

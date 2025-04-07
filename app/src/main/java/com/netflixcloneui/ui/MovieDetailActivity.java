@@ -1,10 +1,11 @@
 package com.netflixcloneui.ui;
+import com.google.android.material.card.MaterialCardView;
 import com.netflixcloneui.R;
 import com.netflixcloneui.adapter.MediaAdapter;
 import com.netflixcloneui.adapter.TrailerAdapter;
+import com.netflixcloneui.data.repository.MediaRepository;
 import com.netflixcloneui.model.Media;
 import com.netflixcloneui.model.Movie;
-import com.netflixcloneui.adapter.MovieDetailAdapter;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -22,6 +23,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -29,6 +32,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.netflixcloneui.data.remote.ApiService;
 import com.netflixcloneui.data.remote.RetrofitClient;
 import com.netflixcloneui.model.Trailer;
+import com.netflixcloneui.model.request.AddToWatchListRequest;
+import com.netflixcloneui.model.request.LikeRequest;
+import com.netflixcloneui.viewmodel.UserViewModel;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
@@ -40,53 +46,116 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MovieDetailActivity extends AppCompatActivity {
-
-    private TextView movieTitle;
-    private TextView movieOverview;
-    boolean isExpanded = false;
-    private ImageView moviePoster ;
-    String imageUrl = "https://image.tmdb.org/t/p/w500";
-    TrailerAdapter trailerAdapter;
-    private TextView movieRelease;
-    private TextView movieRuntime;
+    private TextView movieTitle, movieOverview, tvLike;
+    private boolean isExpanded = false;
+    private ImageView moviePoster, ivLike, ivAdd;
+    private MaterialCardView btnClose;
+    private MediaRepository mediaRepository;
+    private String imageUrl = "https://image.tmdb.org/t/p/w500";
+    private TrailerAdapter trailerAdapter;
     private RecyclerView recyclerViewMovie;
-    private MovieDetailAdapter movieAdapter;
-    private List<Movie> movieList;
     private Button btnPlay;
-
-
-    List<Trailer> listTrailer;
+    private UserViewModel userViewModel;
+    private List<Trailer> listTrailer;
     YouTubePlayerView youTubePlayerView;
-    List <Media> listMedia;
+    private List<Media> listMedia;
 
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_movie_detail);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
-        moviePoster=  findViewById(R.id.moviePoster);
+
+        userViewModel = new ViewModelProvider(this, new ViewModelProvider.Factory() {
+            @NonNull
+            @Override
+            public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+                return (T) new UserViewModel(getApplicationContext());
+            }
+        }).get(UserViewModel.class);
+        mediaRepository = new MediaRepository(getApplicationContext());
+        moviePoster = findViewById(R.id.moviePoster);
         youTubePlayerView = findViewById(R.id.youtubePlayer);
         recyclerViewMovie = findViewById(R.id.recyclerViewMovies);
         btnPlay = findViewById(R.id.btnPlay);
+        ivLike = findViewById(R.id.btnLike);
+        tvLike = findViewById(R.id.tv_like);
+        ivAdd = findViewById(R.id.iv_add);
+        btnClose = findViewById(R.id.btnClose);
         long movieId = (long) getIntent().getLongExtra("media_id",-1);
+        Log.d("MovieDetailActivity", "Movie ID: " + movieId);
         getTrailer(movieId);
         getMovieDetail(movieId);
         getMediaSame(movieId);
-        btnPlay.setOnClickListener(view ->playFullScreenVideo() );
+        close();
         changRecycle();
+        btnPlay.setOnClickListener(view ->playFullScreenVideo() );
+        userViewModel.getUserId().observe(this, userId -> {
+            if (userId != null) {
+                userViewModel.checkMediaInLikeList(userId, movieId);
+                userViewModel.getIsLike().observe(this, isLike -> {
+                    if (isLike != null) {
+                        ivLike.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                if (!isLike) {
+                                    mediaRepository.likeMedia(userId, new LikeRequest(movieId, "movie"));
+                                    userViewModel.setIsLike(true);
+                                    ivLike.setImageResource(R.drawable.ic_liked);
+                                    tvLike.setText("Đã thích !");
+                                } else {
+                                    mediaRepository.unlikeMedia(userId, movieId);
+                                    userViewModel.setIsLike(false);
+                                    ivLike.setImageResource(R.drawable.ic_like);
+                                    tvLike.setText("Xếp hạng");
+                                }
+                            }
+                        });
+                    }
+                });
+                userViewModel.checkMediaInWatchList(userId, movieId);
+                userViewModel.getIsInWatchList().observe(this, isInWatchList -> {
+                    if (isInWatchList != null) {
+                        ivAdd.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                if (!isInWatchList) {
+                                    mediaRepository.addToWatchList(userId, new AddToWatchListRequest(movieId, "movie"));
+                                    userViewModel.setIsInWatchList(true);
+                                    ivAdd.setImageResource(R.drawable.ic_added);
+                                } else {
+                                    mediaRepository.removeMediaFromWatchList(userId, movieId);
+                                    userViewModel.setIsInWatchList(false);
+                                    ivAdd.setImageResource(R.drawable.ic_add);
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        });
+        userViewModel.getIsLike().observe(this, isLike -> {
+            if (isLike != null) {
+                ivLike.setImageResource(isLike ? R.drawable.ic_liked : R.drawable.ic_like);
+                tvLike.setText(isLike ? "Đã thích !" : "Xếp hạng");
+            }
+        });
+        userViewModel.getIsInWatchList().observe(this, isLike -> {
+            if (isLike != null) {
+                ivAdd.setImageResource(isLike ? R.drawable.ic_added : R.drawable.ic_add);
+            }
+        });
     }
+
     private void playFullScreenVideo() {
         Intent intent = new Intent(this, FullScreenVideoActivity.class);
         intent.putExtra("VIDEO_ID", "fap07Hh7pSI"); // Truyền videoId vào Intent
         startActivity(intent);
     }
 
+    private void close() {
+        btnClose.setOnClickListener(v -> finish());
+    }
 
     private void changRecycle() {
         TextView moviSame = findViewById(R.id.movieSame);
@@ -164,6 +233,7 @@ public class MovieDetailActivity extends AppCompatActivity {
             }
         });
     }
+
     private  void getMovieDetail(long movieId) {
         ApiService apiService = RetrofitClient.getApiService(getApplicationContext());
         Call<Movie> call = apiService.getMovieDetail(movieId); // Không cần chuyển đổi bằng `Long.valueOf()`
@@ -185,7 +255,7 @@ public class MovieDetailActivity extends AppCompatActivity {
 
                     TextView info = (TextView) findViewById(R.id.info);
 
-                    info.setText(movie.getReleaseDate() + "  |  " + movie.getRuntime() + " phut");
+                    info.setText(movie.getReleaseDate() + "  |  " + movie.getRuntime() + " phút");
 
                     if(listTrailer.isEmpty() ) {
                         youTubePlayerView.setVisibility(View.GONE);

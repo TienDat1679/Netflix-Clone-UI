@@ -23,15 +23,16 @@ import com.netflixcloneui.R;
 import com.netflixcloneui.adapter.MediaAdapter;
 import com.netflixcloneui.databinding.FragmentMyNetflixBinding;
 import com.netflixcloneui.ui.PaymentPackageActivity;
+import com.netflixcloneui.viewmodel.UserViewModel;
 
 public class MyNetflixFragment extends Fragment {
-
     private FragmentMyNetflixBinding binding;
-
     private LinearLayout linearLayout;
     private MyNetflixViewModel myNetflixViewModel;
+    private UserViewModel userViewModel;
     private MediaAdapter favoriteAdapter;
     private MediaAdapter myListAdapter;
+    private String userId;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -42,19 +43,41 @@ public class MyNetflixFragment extends Fragment {
                 return (T) new MyNetflixViewModel(requireContext());
             }
         }).get(MyNetflixViewModel.class);
+        userViewModel = new ViewModelProvider(this, new ViewModelProvider.Factory() {
+            @NonNull
+            @Override
+            public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+                return (T) new UserViewModel(requireContext());
+            }
+        }).get(UserViewModel.class);
 
         binding = FragmentMyNetflixBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        userViewModel.getUserId().observe(getViewLifecycleOwner(), userId -> {
+            if (userId != null) {
+                this.userId = userId;
+                myNetflixViewModel.fetchUserLikeList(userId);
+                myNetflixViewModel.fetchUserWatchList(userId);
+            }
+        });
+
         loadFavoriteList();
-
         premium();
-
         loadMyList();
-
         addItemToActionBar();
 
         return root;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Tải lại dữ liệu khi fragment được hiển thị lại
+        if (userId != null) {
+            myNetflixViewModel.fetchUserLikeList(userId);
+            myNetflixViewModel.fetchUserWatchList(userId);
+        }
     }
 
     private void premium() {

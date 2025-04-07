@@ -1,6 +1,8 @@
 package com.netflixcloneui.data.remote;
 
+import com.netflixcloneui.model.request.AddToWatchListRequest;
 import com.netflixcloneui.model.request.IntrospectRequest;
+import com.netflixcloneui.model.request.LikeRequest;
 import com.netflixcloneui.model.request.LogoutRequest;
 import com.netflixcloneui.model.request.RefreshRequest;
 import com.netflixcloneui.model.response.ApiResponse;
@@ -16,6 +18,7 @@ import com.netflixcloneui.model.response.QrResponse;
 import com.netflixcloneui.model.request.RegisterRequest;
 import com.netflixcloneui.model.TVSeries;
 import com.netflixcloneui.model.Trailer;
+import com.netflixcloneui.model.response.UserResponse;
 import com.netflixcloneui.model.response.VNPayResponse;
 
 import java.util.List;
@@ -23,6 +26,7 @@ import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
@@ -30,6 +34,7 @@ import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
 
 public interface ApiService {
+    // user's api
     @POST("api/auth/token")
     Call<ApiResponse<AuthResponse>> login(@Body LoginRequest request);
     @POST("api/auth/logout")
@@ -52,6 +57,26 @@ public interface ApiService {
     Call<Void> changePassword(@Path("email") String email, @Body ChangePasswordRequest request);
     @POST("api/forgotPassword/verifyMail/{email}")
     Call<Void> resendOtpFp(@Path("email") String email);
+    @GET("users/my-info")
+    Call<ApiResponse<UserResponse>> getMyInfo();
+
+    // like, watch-list
+    @POST("users/{userId}/likes")
+    Call<Void> likeMedia(@Path("userId") String userId, @Body LikeRequest request);
+    @GET("users/{userId}/likes")
+    Call<ApiResponse<List<Media>>> getLikeLists(@Path("userId") String userId);
+    @POST("users/{userId}/watch-lists")
+    Call<Void> addToWatchList(@Path("userId") String userId, @Body AddToWatchListRequest request);
+    @GET("users/{userId}/watch-lists")
+    Call<ApiResponse<List<Media>>> getWatchLists(@Path("userId") String userId);
+    @DELETE("users/{userId}/watch-lists/{mediaId}")
+    Call<Void> removeMediaFromWatchList(@Path("userId") String userId, @Path("mediaId") Long mediaId);
+    @DELETE("users/{userId}/likes/{mediaId}")
+    Call<Void> removeMediaFromLikeList(@Path("userId") String userId, @Path("mediaId") Long mediaId);
+    @GET("users/{userId}/watch-lists/{mediaId}")
+    Call<ApiResponse<Boolean>> checkMediaInWatchList(@Path("userId") String userId, @Path("mediaId") Long mediaId);
+    @GET("users/{userId}/likes/{mediaId}")
+    Call<ApiResponse<Boolean>> checkMediaInLikeList(@Path("userId") String userId, @Path("mediaId") Long mediaId);
 
     @GET("api/movies/search")
     Call<Movie> getMovieDetail(@Query("movieId") Long id);

@@ -10,6 +10,8 @@ import androidx.lifecycle.ViewModel;
 
 import com.netflixcloneui.data.remote.ApiService;
 import com.netflixcloneui.data.remote.RetrofitClient;
+import com.netflixcloneui.data.repository.MediaRepository;
+import com.netflixcloneui.data.repository.RepositoryCallback;
 import com.netflixcloneui.model.Media;
 
 import java.util.List;
@@ -19,70 +21,51 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MyNetflixViewModel extends ViewModel {
-
-    private final MutableLiveData<List<Media>> favoriteMovies = new MutableLiveData<>();
-    private final MutableLiveData<List<Media>> userMovieList = new MutableLiveData<>();
+    private final MutableLiveData<List<Media>> likeLists = new MutableLiveData<>();
+    private final MutableLiveData<List<Media>> watchLists = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(true);
-    private final ApiService apiService;
+    private final MediaRepository mediaRepository;
 
     public MyNetflixViewModel(Context context) {
-        apiService = RetrofitClient.getApiService(context);
-        fetchUserFavoriteMovies();
-        fetchUserMovieList();
+        mediaRepository = new MediaRepository(context);
     }
 
     public LiveData<List<Media>> getFavoriteMovies() {
-        return favoriteMovies;
+        return likeLists;
     }
 
     public LiveData<List<Media>> getUserMovieList() {
-        return userMovieList;
+        return watchLists;
     }
 
     public LiveData<Boolean> isLoading() {
         return isLoading;
     }
 
-    private void fetchUserFavoriteMovies() {
-        apiService.getUserFavoriteMovies().enqueue(new Callback<List<Media>>() {
+    public void fetchUserLikeList(String userId) {
+        mediaRepository.getLikeLists(userId, new RepositoryCallback<List<Media>>() {
             @Override
-            public void onResponse(@NonNull Call<List<Media>> call, @NonNull Response<List<Media>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    favoriteMovies.setValue(response.body());
-                } else {
-                    Log.e("API_ERROR", "Danh sách phim yêu thích trống hoặc lỗi API");
-                    favoriteMovies.setValue(null);
-                }
-                isLoading.setValue(false);
+            public void onSuccess(List<Media> data) {
+                likeLists.postValue(data);
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<Media>> call, @NonNull Throwable t) {
-                Log.e("API_ERROR", "Lỗi khi lấy danh sách phim yêu thích: " + t.getMessage());
-                favoriteMovies.setValue(null);
-                isLoading.setValue(false);
+            public void onError(String errorMessage) {
+                Log.e("MyNetflixViewModel", "Error fetching user like list: " + errorMessage);
             }
         });
     }
 
-    private void fetchUserMovieList() {
-        apiService.getUserMovieList().enqueue(new Callback<List<Media>>() {
+    public void fetchUserWatchList(String userId) {
+        mediaRepository.getWatchLists(userId, new RepositoryCallback<List<Media>>() {
             @Override
-            public void onResponse(@NonNull Call<List<Media>> call, @NonNull Response<List<Media>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    userMovieList.setValue(response.body());
-                } else {
-                    Log.e("API_ERROR", "Danh sách của tôi trống hoặc lỗi API");
-                    userMovieList.setValue(null);
-                }
-                isLoading.setValue(false);
+            public void onSuccess(List<Media> data) {
+                watchLists.postValue(data);
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<Media>> call, @NonNull Throwable t) {
-                Log.e("API_ERROR", "Lỗi khi lấy danh sách của tôi: " + t.getMessage());
-                userMovieList.setValue(null);
-                isLoading.setValue(false);
+            public void onError(String errorMessage) {
+                Log.e("MyNetflixViewModel", "Error fetching user watch list: " + errorMessage);
             }
         });
     }

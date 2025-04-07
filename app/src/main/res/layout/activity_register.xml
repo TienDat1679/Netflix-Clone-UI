@@ -37,23 +37,23 @@
                 android:textStyle="bold"
                 android:textSize="30sp"
                 android:layout_marginBottom="40dp"
-                android:layout_gravity="start" />
+                android:layout_gravity="center_horizontal" />
 
             <EditText
                 android:id="@+id/et_name"
-                android:layout_width="match_parent"
+                android:layout_width="320dp"
                 android:layout_height="wrap_content"
-                android:hint="Full Name"
+                android:layout_marginBottom="16dp"
                 android:background="@drawable/edit_text_background"
+                android:hint="Username"
+                android:inputType="text"
                 android:padding="12dp"
                 android:textColor="#FFFFFF"
-                android:textColorHint="#CCCCCC"
-                android:inputType="text"
-                android:layout_marginBottom="16dp" />
+                android:textColorHint="#CCCCCC" />
 
             <EditText
                 android:id="@+id/et_email"
-                android:layout_width="match_parent"
+                android:layout_width="320dp"
                 android:layout_height="wrap_content"
                 android:hint="Email"
                 android:background="@drawable/edit_text_background"
@@ -65,7 +65,7 @@
 
             <EditText
                 android:id="@+id/et_password"
-                android:layout_width="match_parent"
+                android:layout_width="320dp"
                 android:layout_height="wrap_content"
                 android:hint="Password"
                 android:background="@drawable/edit_text_background"
@@ -77,11 +77,11 @@
 
             <Button
                 android:id="@+id/btn_register"
-                android:layout_width="match_parent"
+                android:layout_width="302dp"
                 android:layout_height="wrap_content"
-                android:text="Register"
-                android:backgroundTint="#E50914"
                 android:layout_marginTop="20dp"
+                android:backgroundTint="#E50914"
+                android:text="Register"
                 android:textColor="#FFFFFF" />
 
         </LinearLayout>
@@ -103,7 +103,7 @@
             android:contentDescription="Netflix Poster"
             android:src="@drawable/poster_bg"
             android:scaleType="centerCrop"
-            android:alpha="0.1"
+            android:alpha="0.2"
             android:translationY="200dp" />
 
     </FrameLayout>

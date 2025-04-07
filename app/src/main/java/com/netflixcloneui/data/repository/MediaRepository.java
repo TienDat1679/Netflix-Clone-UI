@@ -10,6 +10,10 @@ import com.netflixcloneui.data.remote.ApiService;
 import com.netflixcloneui.data.remote.RetrofitClient;
 import com.netflixcloneui.model.Genre;
 import com.netflixcloneui.model.Media;
+import com.netflixcloneui.model.request.AddToWatchListRequest;
+import com.netflixcloneui.model.request.LikeRequest;
+import com.netflixcloneui.model.response.ApiResponse;
+import com.netflixcloneui.utils.ApiErrorHandler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -189,5 +193,118 @@ public class MediaRepository {
 
     public void searchMedia(String keyword, Callback<List<Media>> callback) {
         apiService.searchMedia(keyword).enqueue(callback);
+    }
+
+    public void likeMedia(String userId, LikeRequest request) {
+        apiService.likeMedia(userId, request).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Log.d("likeMedia", "Like successful");
+                } else {
+                    ApiResponse<?> apiResponse = ApiErrorHandler.parseError(response);
+                    Log.e("likeMedia", "Like failed: " + apiResponse.getMessage());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e("likeMedia", "Like request failed", t);
+            }
+        });
+    }
+
+    public void unlikeMedia(String userId, Long mediaId) {
+        apiService.removeMediaFromLikeList(userId, mediaId).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Log.d("likeMedia", "Unlike successful");
+                } else {
+                    ApiResponse<?> apiResponse = ApiErrorHandler.parseError(response);
+                    Log.e("likeMedia", "Unlike failed: " + apiResponse.getMessage());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e("likeMedia", "Like request failed", t);
+            }
+        });
+    }
+
+    public void removeMediaFromWatchList(String userId, Long mediaId) {
+        apiService.removeMediaFromWatchList(userId, mediaId).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Log.d("removeMediaFromWatchList", "Remove from watch list successful");
+                } else {
+                    ApiResponse<?> apiResponse = ApiErrorHandler.parseError(response);
+                    Log.e("removeMediaFromWatchList", "Remove from watch list failed: " + apiResponse.getMessage());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e("removeMediaFromWatchList", "Remove from watch list request failed", t);
+            }
+        });
+    }
+
+    public void getLikeLists(String userId, RepositoryCallback<List<Media>> callback) {
+        apiService.getLikeLists(userId).enqueue(new Callback<ApiResponse<List<Media>>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<List<Media>>> call, Response<ApiResponse<List<Media>>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    callback.onSuccess(response.body().getResult());
+                } else {
+                    ApiResponse<?> apiResponse = ApiErrorHandler.parseError(response);
+                    callback.onError(apiResponse.getMessage());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<List<Media>>> call, Throwable t) {
+                callback.onError(t.getMessage());
+            }
+        });
+    }
+
+    public void addToWatchList(String userId, AddToWatchListRequest request) {
+        apiService.addToWatchList(userId, request).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Log.d("addToWatchList", "Add to watch list successful");
+                } else {
+                    ApiResponse<?> apiResponse = ApiErrorHandler.parseError(response);
+                    Log.e("addToWatchList", "Add to watch list failed: " + apiResponse.getMessage());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e("addToWatchList", "Add to watch list request failed", t);
+            }
+        });
+    }
+
+    public void getWatchLists(String userId, RepositoryCallback<List<Media>> callback) {
+        apiService.getWatchLists(userId).enqueue(new Callback<ApiResponse<List<Media>>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<List<Media>>> call, Response<ApiResponse<List<Media>>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    callback.onSuccess(response.body().getResult());
+                } else {
+                    ApiResponse<?> apiResponse = ApiErrorHandler.parseError(response);
+                    callback.onError(apiResponse.getMessage());
+                }
+            }
+            @Override
+            public void onFailure(Call<ApiResponse<List<Media>>> call, Throwable t) {
+                callback.onError(t.getMessage());;
+            }
+        });
     }
 }
