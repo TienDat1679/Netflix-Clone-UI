@@ -85,10 +85,8 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MovieViewHol
     }
 
     private void openMediaDetail(Context context, Long id,String type) {
-
         if("movie".equals(type))
         {
-
             Intent intent = new Intent(context, MovieDetailActivity.class);
             intent.putExtra("media_id", id); // Truyền ID phim
             context.startActivity(intent); // Khởi chạy Activity

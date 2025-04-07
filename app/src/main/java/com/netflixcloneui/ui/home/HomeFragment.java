@@ -10,18 +10,25 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.button.MaterialButton;
+import com.netflixcloneui.data.repository.MediaRepository;
+import com.netflixcloneui.model.Media;
+import com.netflixcloneui.model.request.AddToWatchListRequest;
+import com.netflixcloneui.model.request.LikeRequest;
 import com.netflixcloneui.ui.MovieDetailActivity;
 import com.netflixcloneui.R;
 import com.netflixcloneui.adapter.GenreAdapter;
 import com.netflixcloneui.adapter.MediaAdapter;
 import com.netflixcloneui.databinding.FragmentHomeBinding;
 import com.netflixcloneui.model.Movie;
+import com.netflixcloneui.ui.TvSeriesDetailActivity;
+import com.netflixcloneui.viewmodel.UserViewModel;
 
 import java.util.Arrays;
 import java.util.List;
@@ -33,6 +40,10 @@ public class HomeFragment extends Fragment {
     private MediaAdapter moviesByGenreAdapter, top10SeriesAdapter, top10MoviesAdapter;
     //private MovieAdapter.OnMovieClickListener movieClickListener;
     private HomeViewModel homeViewModel;
+    private UserViewModel userViewModel;
+    private MediaRepository mediaRepository;
+    private Media media;
+
     private List<String> seriesPoster = Arrays.asList(
             "/zvEHDQsiTNMYdp1jppXZKmYmXLO.jpg",
             "/vAkV5ZpmuAhcwAfmqFFMuQsSSFk.jpg",
@@ -48,6 +59,14 @@ public class HomeFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         homeViewModel = new ViewModelProvider(requireActivity(), new HomeViewModelFactory(requireContext()))
                 .get(HomeViewModel.class);
+        userViewModel = new ViewModelProvider(this, new ViewModelProvider.Factory() {
+            @NonNull
+            @Override
+            public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+                return (T) new UserViewModel(requireContext());
+            }
+        }).get(UserViewModel.class);
+        mediaRepository = new MediaRepository(requireContext());
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
@@ -63,6 +82,7 @@ public class HomeFragment extends Fragment {
         loadMovieByGenres();
         loadTop10Series();
         loadTop10Movies();
+        loadPanelMedia();
 
         // Theo dõi trạng thái loading của data
         loading();
@@ -70,10 +90,59 @@ public class HomeFragment extends Fragment {
         return root;
     }
 
-    private void openMovieDetail(Movie movie) {
-        Intent intent = new Intent(getContext(), MovieDetailActivity.class);
-        intent.putExtra("movie_id", movie.getId()); // Truyền ID phim
-        startActivity(intent);
+    private void loadPanelMedia() {
+        homeViewModel.getPanelMedia().observe(getViewLifecycleOwner(), panelMedia -> {
+            if (panelMedia != null) {
+                Glide.with(requireContext())
+                        .load("https://image.tmdb.org/t/p/w500" + panelMedia.getPosterPath())
+                        .placeholder(R.drawable.ic_info)
+                        .into(binding.posterImage);
+
+                binding.panel.setOnClickListener(v -> {
+                    if("movie".equals(panelMedia.getType())) {
+                        Intent intent = new Intent(requireContext(), MovieDetailActivity.class);
+                        intent.putExtra("media_id", panelMedia.getId());
+                        requireContext().startActivity(intent);
+                    }
+                    else {
+                        Intent intent = new Intent(requireContext(), TvSeriesDetailActivity.class);
+                        intent.putExtra("media_id", panelMedia.getId());
+                        requireContext().startActivity(intent);
+                    }
+                });
+
+                userViewModel.getUserId().observe(getViewLifecycleOwner(), userId -> {
+                    if (userId != null) {
+                        userViewModel.checkMediaInWatchList(userId, panelMedia.getId());
+                        userViewModel.getIsInWatchList().observe(getViewLifecycleOwner(), isInWatchList -> {
+                            if (isInWatchList != null) {
+                                binding.buttonAdd.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        if (!isInWatchList) {
+                                            mediaRepository.addToWatchList(userId, new AddToWatchListRequest(panelMedia.getId(), "movie"));
+                                            mediaRepository.addToWatchList(userId, new AddToWatchListRequest(panelMedia.getId(), "tv_series"));
+                                            userViewModel.setIsInWatchList(true);
+                                            binding.buttonAdd.setIcon(ContextCompat.getDrawable(requireContext(), R.drawable.ic_added));
+                                        } else {
+                                            mediaRepository.removeMediaFromWatchList(userId, panelMedia.getId());
+                                            userViewModel.setIsInWatchList(false);
+                                            binding.buttonAdd.setIcon(ContextCompat.getDrawable(requireContext(), R.drawable.ic_add));
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+        });
+        userViewModel.getIsInWatchList().observe(getViewLifecycleOwner(), isLike -> {
+            if (isLike != null) {
+                int iconRes = isLike ? R.drawable.ic_added : R.drawable.ic_add;
+                binding.buttonAdd.setIcon(ContextCompat.getDrawable(requireContext(), iconRes));
+            }
+        });
     }
 
     private void loadTop10Series() {
@@ -128,8 +197,6 @@ public class HomeFragment extends Fragment {
 
     private void loadHomeMovie() {
         genreAdapter = new GenreAdapter();
-
-        // Cấu hình RecyclerView
         binding.rcvGenresContainer.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.rcvGenresContainer.setAdapter(genreAdapter);
         //binding.rcvGenresContainer.setItemAnimator(new DefaultItemAnimator());
@@ -147,20 +214,22 @@ public class HomeFragment extends Fragment {
         homeViewModel.setCancelActionState(true);
 
         if (selectedButton == binding.btnSeries) {
-            setPoster(0);
+            //setPoster(0);
             binding.btnMovies.setVisibility(View.GONE);
             binding.top10movies.setVisibility(View.GONE);
             if (Boolean.FALSE.equals(homeViewModel.getIsSeriesSelected().getValue()))
                 homeViewModel.fetchGenresForSeries(); // Gọi API Series
             homeViewModel.setSeriesSelected(true);
+            homeViewModel.setPanelMedia(homeViewModel.get10Series().getValue().get(0));
             //homeViewModel.setMedia(new HashMap<>());
         } else if (selectedButton == binding.btnMovies) {
-            setPoster(1);
+            //setPoster(1);
             binding.btnSeries.setVisibility(View.GONE);
             binding.top10series.setVisibility(View.GONE);
             if (Boolean.FALSE.equals(homeViewModel.getIsMoviesSelected().getValue()))
                 homeViewModel.fetchGenresForMovies(); // Gọi API Movies
             homeViewModel.setMoviesSelected(true);
+            homeViewModel.setPanelMedia(homeViewModel.get10Movies().getValue().get(0));
         } else {
             binding.btnSeries.setVisibility(View.GONE);
             binding.btnMovies.setVisibility(View.GONE);
@@ -200,6 +269,7 @@ public class HomeFragment extends Fragment {
 
         // Gọi lại API mặc định
         homeViewModel.fetchGenres();
+        homeViewModel.setPanelMedia(homeViewModel.get10Series().getValue().get(0));
     }
 
     private void loading() {

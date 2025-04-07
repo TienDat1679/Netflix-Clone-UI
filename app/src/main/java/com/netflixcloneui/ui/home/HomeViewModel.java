@@ -18,15 +18,15 @@ import java.util.List;
 import java.util.Map;
 
 public class HomeViewModel extends ViewModel {
-
     private final MutableLiveData<List<Genre>> genres = new MutableLiveData<>();
+    private final MutableLiveData<Media> panelMedia = new MutableLiveData<>();
     private final MutableLiveData<Map<Long, List<Media>>> homeMedia = new MutableLiveData<>();
     private final MutableLiveData<List<Media>> top10Movies = new MutableLiveData<>();
     private final MutableLiveData<List<Media>> top10Series = new MutableLiveData<>();
     private final MutableLiveData<List<Media>> moviesLiveDataByGenre = new MutableLiveData<>();
-    private final MutableLiveData<Boolean> loadingLiveData = new MutableLiveData<>(false);
     private final MutableLiveData<String> selectedGenreLiveData = new MutableLiveData<>();
     private final MutableLiveData<String> selectedMoviePosterLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> loadingLiveData = new MutableLiveData<>(false);
     private final MutableLiveData<Boolean> isSeriesSelected = new MutableLiveData<>(false);
     private final MutableLiveData<Boolean> isMoviesSelected = new MutableLiveData<>(false);
     private final MutableLiveData<Boolean> isGenresSelected = new MutableLiveData<>(false);
@@ -80,6 +80,7 @@ public class HomeViewModel extends ViewModel {
             if (movies != null && !movies.isEmpty()) {
                 int randomIndex = (int) (Math.random() * movies.size()); // Chọn ngẫu nhiên một phim
                 selectedMoviePosterLiveData.setValue(movies.get(randomIndex).getPosterPath());
+                panelMedia.setValue(movies.get(randomIndex));
             }
         });
     }
@@ -91,6 +92,7 @@ public class HomeViewModel extends ViewModel {
                 Log.e("HomeViewModel", "fetchTop10Series: Không có dữ liệu series!");
             } else {
                 Log.d("HomeViewModel", "fetchTop10Series: Đã load " + series.size() + " series");
+                panelMedia.setValue(top10Series.getValue().get(0));
             }
         });
     }
@@ -166,6 +168,14 @@ public class HomeViewModel extends ViewModel {
         isGenresSelected.setValue(selected);
         isMoviesSelected.setValue(false);
         isSeriesSelected.setValue(false);
+    }
+
+    public void setPanelMedia(Media media) {
+        panelMedia.setValue(media);
+    }
+
+    public LiveData<Media> getPanelMedia() {
+        return panelMedia;
     }
 
     public void setCancelActionState(boolean state) {

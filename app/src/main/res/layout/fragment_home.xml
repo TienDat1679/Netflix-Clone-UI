@@ -100,6 +100,7 @@
                 android:orientation="vertical">
 
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/panel"
                     android:layout_width="361dp"
                     android:layout_height="463dp"
                     android:layout_gravity="center_horizontal"
@@ -161,9 +162,9 @@
                             android:layout_alignParentBottom="true"
                             android:layout_margin="16dp"
                             android:backgroundTint="@color/gray_transparent"
-                            android:drawableLeft="@drawable/ic_add"
+                            app:icon="@drawable/ic_add"
                             android:text="Danh sách của tôi"
-                            android:textSize="13dp"
+                            android:textSize="13sp"
                             app:cornerRadius="8dp" />
                     </RelativeLayout>
                 </androidx.cardview.widget.CardView>

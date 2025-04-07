@@ -52,6 +52,7 @@ import retrofit2.Response;
 public class TvSeriesDetailActivity extends AppCompatActivity implements EpisodeAdapter.OnEpisodeClickListener{
 
     private RecyclerView recyclerViewEps;
+    private TextView tvLike;
     private Button btnPlay;
     private MaterialCardView btnClose;
     private ImageView ivAdd, ivLike;
@@ -85,6 +86,7 @@ public class TvSeriesDetailActivity extends AppCompatActivity implements Episode
         ivLike = findViewById(R.id.btnLike);
         btnPlay = findViewById(R.id.btnPlay);
         btnClose = findViewById(R.id.btnClose);
+        tvLike = findViewById(R.id.tv_like);
         long id = (long) getIntent().getLongExtra("media_id",-1);
         getTvSeriesDetail(id);
         btnPlay.setOnClickListener(view ->playFullScreenVideo() );
@@ -105,10 +107,12 @@ public class TvSeriesDetailActivity extends AppCompatActivity implements Episode
                                     mediaRepository.likeMedia(userId, new LikeRequest(id, "tv_series"));
                                     userViewModel.setIsLike(true);
                                     ivLike.setImageResource(R.drawable.ic_liked);
+                                    tvLike.setText("Đã thích !");
                                 } else {
                                     mediaRepository.unlikeMedia(userId, id);
                                     userViewModel.setIsLike(false);
                                     ivLike.setImageResource(R.drawable.ic_like);
+                                    tvLike.setText("Xếp hạng");
                                 }
                             }
                         });
@@ -143,6 +147,7 @@ public class TvSeriesDetailActivity extends AppCompatActivity implements Episode
         userViewModel.getIsLike().observe(this, isLike -> {
             if (isLike != null) {
                 ivLike.setImageResource(isLike ? R.drawable.ic_liked : R.drawable.ic_like);
+                tvLike.setText(isLike ? "Đã thích !" : "Xếp hạng");
             }
         });
     }
