@@ -83,7 +83,6 @@ public class MovieDetailActivity extends AppCompatActivity {
         ivAdd = findViewById(R.id.iv_add);
         btnClose = findViewById(R.id.btnClose);
         long movieId = (long) getIntent().getLongExtra("media_id",-1);
-        Log.d("MovieDetailActivity", "Movie ID: " + movieId);
         getTrailer(movieId);
         getMovieDetail(movieId);
         getMediaSame(movieId);
