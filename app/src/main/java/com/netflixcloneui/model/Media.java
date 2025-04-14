@@ -1,5 +1,7 @@
 package com.netflixcloneui.model;
 
+import java.util.Objects;
+
 public class Media {
     private Long id;
     private String title;
@@ -64,4 +66,18 @@ public class Media {
     public void setType(String type) {
         this.type = type;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Media media = (Media) o;
+        return id != null && id.equals(media.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
 }

@@ -113,7 +113,7 @@ public class MovieDetailActivity extends AppCompatActivity {
                         });
                     }
                 });
-                userViewModel.checkMediaInWatchList(userId, movieId);
+                userViewModel.checkMediaInWatchList(userId, movieId, null);
                 userViewModel.getIsInWatchList().observe(this, isInWatchList -> {
                     if (isInWatchList != null) {
                         ivAdd.setOnClickListener(new View.OnClickListener() {
@@ -154,7 +154,11 @@ public class MovieDetailActivity extends AppCompatActivity {
     }
 
     private void close() {
-        btnClose.setOnClickListener(v -> finish());
+        btnClose.setOnClickListener(v -> {
+            Intent resultIntent = new Intent();
+            setResult(RESULT_OK, resultIntent); // báo cho fragment biết có thay đổi
+            finish();
+        });
     }
 
     private void changRecycle() {

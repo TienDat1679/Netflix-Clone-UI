@@ -7,64 +7,56 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.netflixcloneui.data.repository.MediaRepository;
-import com.netflixcloneui.data.repository.MovieRepository;
-import com.netflixcloneui.data.repository.TVSeriesRepository;
 import com.netflixcloneui.model.Media;
-import com.netflixcloneui.model.Movie;
-import com.netflixcloneui.model.TVSeries;
 
 import java.util.List;
 
 public class ComingSoonViewModel extends ViewModel {
 
-    private final MutableLiveData<List<Media>> comingSoonMovies = new MutableLiveData<>();
-    private final MutableLiveData<List<Media>> hotSeriesMovies = new MutableLiveData<>();
-    private final MutableLiveData<List<TVSeries>> topSeries = new MutableLiveData<>();
-    private final MutableLiveData<List<Movie>> topMovies = new MutableLiveData<>();
+    private final MutableLiveData<List<Media>> comingSoonMedia = new MutableLiveData<>();
+    private final MutableLiveData<List<Media>> hotMedia = new MutableLiveData<>();
+    private final MutableLiveData<List<Media>> topSeries = new MutableLiveData<>();
+    private final MutableLiveData<List<Media>> topMovies = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
-    private final MovieRepository movieRepository;
-    private final TVSeriesRepository seriesRepository;
     private final MediaRepository mediaRepository;
 
     public ComingSoonViewModel(Context context) {
-        movieRepository = new MovieRepository(context);
-        seriesRepository = new TVSeriesRepository(context);
         mediaRepository = new MediaRepository(context);
-        fetchComingSoonMovies();
-        fetchHotSeriesMovies();
+        fetchComingSoonMedia();
+        fetchHotMedia();
         fetchTop10Series();
         fetchTop10Movies();
     }
 
-    private void fetchComingSoonMovies() {
-        mediaRepository.fetchComingSoon(comingSoonMovies, isLoading);
+    private void fetchComingSoonMedia() {
+        mediaRepository.fetchComingSoon(comingSoonMedia, isLoading);
     }
 
     private void fetchTop10Series() {
-        seriesRepository.fetchTopTVSeries(topSeries, isLoading);
+        mediaRepository.fetchTopTVSeries(topSeries, isLoading);
     }
 
     private void fetchTop10Movies() {
-        movieRepository.fetchTopMovies(topMovies, isLoading);
+        mediaRepository.fetchTopMovies(topMovies, isLoading);
     }
 
-    private void fetchHotSeriesMovies() {
-        mediaRepository.fetchHotSeriesMovies(hotSeriesMovies, isLoading);
+    private void fetchHotMedia() {
+        mediaRepository.fetchHotSeriesMovies(hotMedia, isLoading);
     }
 
-    public LiveData<List<Media>> getComingSoonMovies() {
-        return comingSoonMovies;
+    public LiveData<List<Media>> getComingSoonMedia() {
+        return comingSoonMedia;
     }
 
-    public LiveData<List<Media>> getHotSeriesMovies() {
-        return hotSeriesMovies;
+    public LiveData<List<Media>> getHotMedia() {
+        return hotMedia;
     }
 
-    public LiveData<List<TVSeries>> getTopSeries() {
+    public LiveData<List<Media>> getTopSeries() {
         return topSeries;
     }
 
-    public LiveData<List<Movie>> getTopMovies() {
+    public LiveData<List<Media>> getTopMovies() {
         return topMovies;
     }
 
