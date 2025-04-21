@@ -27,6 +27,8 @@ import com.netflixcloneui.ui.PaymentPackageActivity;
 import com.netflixcloneui.ui.WatchListActivity;
 import com.netflixcloneui.viewmodel.UserViewModel;
 
+import java.io.Serializable;
+
 public class MyNetflixFragment extends Fragment {
     private FragmentMyNetflixBinding binding;
     private MyNetflixViewModel myNetflixViewModel;
@@ -67,12 +69,9 @@ public class MyNetflixFragment extends Fragment {
         premium();
         loadMyList();
         addItemToActionBar();
+        handleButtonWatchList();
         binding.btnNotification.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), NotificationActivity.class);
-            startActivity(intent);
-        });
-        binding.btnWatchlist.setOnClickListener(v -> {
-            Intent intent = new Intent(getContext(), WatchListActivity.class);
             startActivity(intent);
         });
 
@@ -87,6 +86,18 @@ public class MyNetflixFragment extends Fragment {
             myNetflixViewModel.fetchUserLikeList(userId);
             myNetflixViewModel.fetchUserWatchList(userId);
         }
+    }
+
+    private void handleButtonWatchList() {
+        myNetflixViewModel.getUserMovieList().observe(getViewLifecycleOwner(), watchList -> {
+            if (watchList != null) {
+                binding.btnWatchlist.setOnClickListener(v -> {
+                    Intent intent = new Intent(getContext(), WatchListActivity.class);
+                    intent.putExtra("media_list", (Serializable)watchList);
+                    startActivity(intent);
+                });
+            }
+        });
     }
 
     private void premium() {
@@ -153,10 +164,4 @@ public class MyNetflixFragment extends Fragment {
         super.onDestroyView();
         binding = null;
     }
-
-//    private void openMovieDetail(Movie movie) {
-//        Intent intent = new Intent(getContext(), MovieDetailActivity.class);
-//        intent.putExtra("movie_id", movie.getId()); // Truyền ID phim
-//        startActivity(intent);
-//    }
 }
