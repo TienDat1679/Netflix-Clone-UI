@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
-    tools:context=".screen.ui.coming_soon.ComingSoonFragment">
+    tools:context=".ui.comingsoon.ComingSoonFragment">
 
     <LinearLayout
         android:id="@+id/content_layout"
@@ -61,7 +61,7 @@
                     app:strokeColor="@color/dark_gray"
                     android:backgroundTint="@color/transparent"
                     android:text="Top 10 series"
-                    android:drawableLeft="@drawable/ic_top_10"
+                    android:drawableLeft="@drawable/ic_top_10_series"
                     android:layout_marginEnd="8dp" />
 
                 <com.google.android.material.button.MaterialButton
@@ -72,7 +72,7 @@
                     app:strokeColor="@color/dark_gray"
                     android:backgroundTint="@color/transparent"
                     android:text="Top 10 phim"
-                    android:drawableLeft="@drawable/ic_top_10"
+                    android:drawableLeft="@drawable/ic_top_10_movies"
                     android:layout_marginEnd="8dp" />
             </LinearLayout>
         </HorizontalScrollView>

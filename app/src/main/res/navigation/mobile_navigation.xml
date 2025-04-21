@@ -7,19 +7,19 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.netflixcloneui.screen.ui.home.HomeFragment"
+        android:name="com.netflixcloneui.ui.home.HomeFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/navigation_dashboard"
-        android:name="com.netflixcloneui.screen.ui.coming_soon.ComingSoonFragment"
+        android:name="com.netflixcloneui.ui.comingsoon.ComingSoonFragment"
         android:label="@string/title_coming_soon"
         tools:layout="@layout/fragment_coming_soon" />
 
     <fragment
         android:id="@+id/navigation_notifications"
-        android:name="com.netflixcloneui.screen.ui.my_netflix.MyNetflixFragment"
+        android:name="com.netflixcloneui.ui.mynetflix.MyNetflixFragment"
         android:label="@string/title_my_netflix"
         tools:layout="@layout/fragment_my_netflix" />
 </navigation>

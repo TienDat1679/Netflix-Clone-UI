@@ -1,12 +1,11 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="24dp"
-    android:height="24dp"
-    android:viewportWidth="16"
-    android:viewportHeight="16">
-    <!-- Path từ SVG -->
-    <path
-        android:fillColor="#000000"
-        android:strokeColor="#ffffff"
-        android:strokeWidth="0.4"
-        android:pathData="M3 5C3 2.23858 5.23858 0 8 0H8.07519C10.7951 0 13 2.20491 13 4.92481C13 6.36248 12.3718 7.72838 11.2802 8.66401L6.22155 13H13V16H3V11.8101L9.32784 6.38624C9.75447 6.02056 10 5.48671 10 4.92481C10 3.86177 9.13823 3 8.07519 3H8C6.89543 3 6 3.89543 6 5H3Z" />
+    android:width="800dp"
+    android:height="800dp"
+    android:viewportWidth="16.32"
+    android:viewportHeight="16.32">
+  <path
+      android:pathData="M3.16,5.16C3.16,2.399 5.399,0.16 8.16,0.16L8.235,0.16C10.955,0.16 13.16,2.365 13.16,5.085C13.16,6.522 12.532,7.888 11.44,8.824L6.382,13.16L13.16,13.16L13.16,16.16L3.16,16.16L3.16,11.97L9.488,6.546C9.914,6.181 10.16,5.647 10.16,5.085C10.16,4.022 9.298,3.16 8.235,3.16L8.16,3.16C7.055,3.16 6.16,4.055 6.16,5.16L3.16,5.16Z"
+      android:strokeWidth="0.24"
+      android:fillColor="#000000"
+      android:strokeColor="#ffffff"/>
 </vector>

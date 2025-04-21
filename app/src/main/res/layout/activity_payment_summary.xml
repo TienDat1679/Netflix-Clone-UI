@@ -6,7 +6,7 @@
     android:id="@+id/main"
     android:layout_height="match_parent"
     android:background="#121212"
-    tools:context=".screen.ui.my_netflix.PaymentSummaryActivity">
+    tools:context=".ui.PaymentSummaryActivity">
 
     <!-- Tiêu đề -->
     <TextView

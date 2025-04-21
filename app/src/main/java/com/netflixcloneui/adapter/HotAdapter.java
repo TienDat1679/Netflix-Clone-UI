@@ -1,5 +1,6 @@
 package com.netflixcloneui.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -12,43 +13,42 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.google.android.material.card.MaterialCardView;
-import com.netflixcloneui.screen.MovieDetailActivity;
+import com.google.android.material.button.MaterialButton;
+import com.netflixcloneui.data.repository.MediaRepository;
+import com.netflixcloneui.model.request.AddToWatchListRequest;
+import com.netflixcloneui.ui.MovieDetailActivity;
 import com.netflixcloneui.R;
 import com.netflixcloneui.model.Media;
 import com.netflixcloneui.model.Movie;
 import com.netflixcloneui.model.TVSeries;
+import com.netflixcloneui.ui.TvSeriesDetailActivity;
+import com.netflixcloneui.viewmodel.UserViewModel;
 
 import java.util.List;
 
 public class HotAdapter extends RecyclerView.Adapter<HotAdapter.HotViewHolder> {
-    private List<Movie> movies;
-    private List<TVSeries> series;
-    private List<Media> hot;
+    private List<Media> media;
     private final int viewType;
+    private final UserViewModel userViewModel;
+    private final OnMediaClickListener listener;
     public static final int TYPE_HOT = 0;
-    public static final int TYPE_TOP_MOVIES = 1;
-    public static final int TYPE_TOP_SERIES = 2;
+    public static final int TYPE_TOP_10 = 1;
 
-    public HotAdapter(int viewType) {
+    public HotAdapter(int viewType, UserViewModel userViewModel, OnMediaClickListener listener) {
         this.viewType = viewType;
+        this.userViewModel = userViewModel;
+        this.listener = listener;
     }
 
-    public void setHotMedia(List<Media> hotMedia) {
-        this.hot = hotMedia;
-        notifyDataSetChanged();
-    }
-
-    public void setMovies(List<Movie> movieSeries) {
-        this.movies = movieSeries;
-        notifyDataSetChanged();
-    }
-
-    public void setSeries(List<TVSeries> series) {
-        this.series = series;
+    public void setMedia(List<Media> hotMedia) {
+        this.media = hotMedia;
         notifyDataSetChanged();
     }
 
@@ -70,100 +70,49 @@ public class HotAdapter extends RecyclerView.Adapter<HotAdapter.HotViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull HotAdapter.HotViewHolder holder, int position) {
-        if (viewType == TYPE_HOT) {
-            Media movie = this.hot.get(position);
-            // Load hình ảnh poster
-            Glide.with(holder.itemView.getContext())
-                    .load("https://image.tmdb.org/t/p/original" + movie.getBackdropPath())
-                    .placeholder(R.drawable.ic_info)
-                    .into(holder.imgItem);
+        Media movie = this.media.get(position);
 
-            holder.textTitle.setText(movie.getTitle());
-            holder.textOverview.setText(movie.getOverview());
-            holder.linearLayout.setOnClickListener(v -> {
-                openMediaDetail(v.getContext(), movie.getId());
-                Toast.makeText(v.getContext(), "Bạn đã nhấn vào: " + movie.getTitle(), Toast.LENGTH_SHORT).show();
-            });
-        } else if (viewType == TYPE_TOP_MOVIES) {
-            Movie movie = this.movies.get(position);
-            int number = position + 1;
-            holder.imgNumberFirst.setImageResource(getNumberResource(number / 10));
-            holder.imgNumberSecond.setImageResource(getNumberResource(number % 10));
-            // Load hình ảnh poster
-            Glide.with(holder.itemView.getContext())
-                    .load("https://image.tmdb.org/t/p/original" + movie.getBackdropPath())
-                    .placeholder(R.drawable.ic_info)
-                    .into(holder.imgItem);
+        Glide.with(holder.itemView.getContext())
+                .load("https://image.tmdb.org/t/p/original" + movie.getBackdropPath())
+                .placeholder(R.drawable.ic_info)
+                .into(holder.imgItem);
 
-            holder.textTitle.setText(movie.getTitle());
-            holder.textOverview.setText(movie.getOverview());
-            holder.linearLayout.setOnClickListener(v -> {
-                openMediaDetail(v.getContext(), movie.getId());
-                Toast.makeText(v.getContext(), "Bạn đã nhấn vào: " + movie.getTitle(), Toast.LENGTH_SHORT).show();
-            });
-        } else {
-            TVSeries movie = this.series.get(position);
-            int number = position + 1;
-            holder.imgNumberFirst.setImageResource(getNumberResource(number / 10));
-            holder.imgNumberSecond.setImageResource(getNumberResource(number % 10));
-            // Load hình ảnh poster
-            Glide.with(holder.itemView.getContext())
-                    .load("https://image.tmdb.org/t/p/original" + movie.getBackdropPath())
-                    .placeholder(R.drawable.ic_info)
-                    .into(holder.imgItem);
+        holder.textTitle.setText(movie.getTitle());
+        holder.textOverview.setText(movie.getOverview());
 
-            holder.textTitle.setText(movie.getName());
-            holder.textOverview.setText(movie.getOverview());
-            holder.linearLayout.setOnClickListener(v -> {
-                openMediaDetail(v.getContext(), movie.getId());
-                Toast.makeText(v.getContext(), "Bạn đã nhấn vào: " + movie.getName(), Toast.LENGTH_SHORT).show();
-            });
+        holder.linearLayout.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onMediaDetailClick(movie);
+            }
+        });
+
+        holder.buttonPlay.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onPlayClick(movie);
+            }
+        });
+
+        holder.buttonAdd.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onAddClick(movie, holder);
+            }
+        });
+
+        if (userViewModel.getWatchList().getValue() != null &&
+                userViewModel.getWatchList().getValue().contains(movie)) {
+            holder.buttonAdd.setIcon(ContextCompat.getDrawable(holder.itemView.getContext(), R.drawable.ic_added));
         }
 
-//        Movie movie = this.movies.get(position);
-//
-//        // Load hình ảnh poster
-//        Glide.with(holder.itemView.getContext())
-//                .load("https://image.tmdb.org/t/p/original" + movie.getBackdropPath())
-//                .placeholder(R.drawable.ic_info)
-//                .into(holder.imgItem);
-//
-//        holder.textTitle.setText(movie.getTitle());
-//        holder.textOverview.setText(movie.getOverview());
-//
-//        // Nếu là TOP_MOVIES, hiển thị số thứ tự từ 1 đến 10
-//        if (viewType == TYPE_TOP_MOVIES || viewType == TYPE_TOP_SERIES) {
-//            holder.imgNumberFirst.setVisibility(View.VISIBLE);
-//            holder.imgNumberSecond.setVisibility(View.VISIBLE);
-//
-//            int number = position + 1;
-//            holder.imgNumberFirst.setImageResource(getNumberResource(number / 10));
-//            holder.imgNumberSecond.setImageResource(getNumberResource(number % 10));
-//        } else {
-//            if (holder.imgNumberFirst != null) holder.imgNumberFirst.setVisibility(View.GONE);
-//            if (holder.imgNumberSecond != null) holder.imgNumberSecond.setVisibility(View.GONE);
-//        }
-
-        // Xử lý sự kiện khi bấm vào nút
-        holder.buttonPlay.setOnClickListener(v -> {
-            Toast.makeText(v.getContext(), "Bạn đã nhấn vào Play", Toast.LENGTH_SHORT).show();
-        });
-        holder.buttonAdd.setOnClickListener(v -> {
-            Toast.makeText(v.getContext(), "Bạn đã nhấn vào Them vao danh sach", Toast.LENGTH_SHORT).show();
-        });
-    }
-
-    private void openMediaDetail(Context context, Long id) {
-        Intent intent = new Intent(context, MovieDetailActivity.class);
-        intent.putExtra("movie_id", id); // Truyền ID phim
-        context.startActivity(intent); // Khởi chạy Activity
+        if (viewType == TYPE_TOP_10) {
+            int number = position + 1;
+            holder.imgNumberFirst.setImageResource(getNumberResource(number / 10));
+            holder.imgNumberSecond.setImageResource(getNumberResource(number % 10));
+        }
     }
 
     @Override
     public int getItemCount() {
-        if (viewType == TYPE_HOT) return hot != null ? hot.size() : 0;
-        else if (viewType == TYPE_TOP_MOVIES) return movies != null ? movies.size() : 0;
-        else return series != null ? series.size() : 0;
+        return media != null ? media.size() : 0;
     }
 
     private int getNumberResource(int number) {
@@ -185,7 +134,8 @@ public class HotAdapter extends RecyclerView.Adapter<HotAdapter.HotViewHolder> {
     public static class HotViewHolder extends RecyclerView.ViewHolder {
         ImageView imgItem, imgNumberFirst, imgNumberSecond;
         TextView textTitle, textOverview;
-        Button buttonPlay, buttonAdd;
+        MaterialButton buttonPlay;
+        public MaterialButton buttonAdd;
         LinearLayout linearLayout;
 
         public HotViewHolder(@NonNull View itemView, int viewType) {
@@ -197,10 +147,16 @@ public class HotAdapter extends RecyclerView.Adapter<HotAdapter.HotViewHolder> {
             buttonPlay = itemView.findViewById(R.id.button_play);
             linearLayout = itemView.findViewById(R.id.linear_layout);
 
-            if (viewType == TYPE_TOP_MOVIES || viewType == TYPE_TOP_SERIES) {
+            if (viewType == TYPE_TOP_10) {
                 imgNumberFirst = itemView.findViewById(R.id.img_number_first);
                 imgNumberSecond = itemView.findViewById(R.id.img_number_second);
             }
         }
+    }
+
+    public interface OnMediaClickListener {
+        void onPlayClick(Media media);
+        void onAddClick(Media media, HotAdapter.HotViewHolder holder);
+        void onMediaDetailClick(Media media);
     }
 }

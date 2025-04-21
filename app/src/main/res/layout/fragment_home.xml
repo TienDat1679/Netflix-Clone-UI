@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
-    tools:context=".screen.ui.home.HomeFragment">
+    tools:context=".ui.home.HomeFragment">
 
     <LinearLayout
         android:id="@+id/content_layout"
@@ -100,6 +100,7 @@
                 android:orientation="vertical">
 
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/panel"
                     android:layout_width="361dp"
                     android:layout_height="463dp"
                     android:layout_gravity="center_horizontal"
@@ -161,14 +162,54 @@
                             android:layout_alignParentBottom="true"
                             android:layout_margin="16dp"
                             android:backgroundTint="@color/gray_transparent"
-                            android:drawableLeft="@drawable/ic_add"
+                            app:icon="@drawable/ic_add"
                             android:text="Danh sách của tôi"
-                            android:textSize="13dp"
+                            android:textSize="13sp"
                             app:cornerRadius="8dp" />
                     </RelativeLayout>
-
-
                 </androidx.cardview.widget.CardView>
+
+                <LinearLayout
+                    android:id="@+id/top10series"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="20sp"
+                        android:textColor="@color/white"
+                        android:textStyle="bold"
+                        android:text="Top 10 series tại Việt Nam hôm nay"
+                        android:layout_margin="10dp"/>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rcv_top_10_series"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/top10movies"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="20sp"
+                        android:textColor="@color/white"
+                        android:textStyle="bold"
+                        android:text="Top 10 phim tại Việt Nam hôm nay"
+                        android:layout_margin="10dp"/>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rcv_top_10_movies"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rcv_genres_container"
