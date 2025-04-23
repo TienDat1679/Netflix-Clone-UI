@@ -7,18 +7,25 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.netflixcloneui.data.repository.MediaRepository;
 import com.netflixcloneui.data.repository.RepositoryCallback;
 import com.netflixcloneui.data.repository.UserRepository;
+import com.netflixcloneui.model.Media;
 import com.netflixcloneui.model.response.UserResponse;
+
+import java.util.List;
 
 public class UserViewModel extends ViewModel {
     private final UserRepository userRepository;
     private final MutableLiveData<String> userId = new MutableLiveData<>();
+    private final MutableLiveData<List<Media>> watchList = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isLike = new MutableLiveData<>();
-    private final MutableLiveData<Boolean> isInWatchList = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> isInWatchList = new MutableLiveData<>(false);
+    private final MediaRepository mediaRepository;
 
     public UserViewModel(Context context) {
         userRepository = new UserRepository(context);
+        mediaRepository = new MediaRepository(context);
     }
 
     public LiveData<String> getUserId() {
@@ -47,6 +54,10 @@ public class UserViewModel extends ViewModel {
         this.isInWatchList.postValue(isInWatchList);
     }
 
+    public LiveData<List<Media>> getWatchList() {
+        return watchList;
+    }
+
     public void checkMediaInLikeList(String userId, Long mediaId) {
         userRepository.checkMediaInLikeList(userId, mediaId, new RepositoryCallback<Boolean>() {
             @Override
@@ -61,16 +72,22 @@ public class UserViewModel extends ViewModel {
         });
     }
 
-    public void checkMediaInWatchList(String userId, Long mediaId) {
+    public void checkMediaInWatchList(String userId, Long mediaId, RepositoryCallback<Boolean> callback) {
         userRepository.checkMediaInWatchList(userId, mediaId, new RepositoryCallback<Boolean>() {
             @Override
             public void onSuccess(Boolean result) {
                 isInWatchList.postValue(result);
+                if (callback != null) {
+                    callback.onSuccess(result);
+                }
             }
 
             @Override
             public void onError(String message) {
                 Log.e("UserViewModel", message);
+                if (callback != null) {
+                    callback.onError(message);
+                }
             }
         });
     }
@@ -85,6 +102,21 @@ public class UserViewModel extends ViewModel {
             @Override
             public void onError(String message) {
                 Log.e("UserViewModel", message);
+            }
+        });
+    }
+
+    public void fetchUserWatchList(String userId) {
+        mediaRepository.getWatchLists(userId, new RepositoryCallback<List<Media>>() {
+            @Override
+            public void onSuccess(List<Media> data) {
+                watchList.postValue(data);
+                Log.d("UserViewModel", "User watch list fetched successfully");
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                Log.e("UserViewModel", "Error fetching user watch list: " + errorMessage);
             }
         });
     }

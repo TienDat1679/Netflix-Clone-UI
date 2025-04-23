@@ -1,5 +1,6 @@
 package com.netflixcloneui.ui.home;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -7,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -90,6 +93,24 @@ public class HomeFragment extends Fragment {
         return root;
     }
 
+    private final ActivityResultLauncher<Intent> launcher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    userViewModel.getUserId().observe(getViewLifecycleOwner(), userId -> {
+                        if (userId != null) {
+                            homeViewModel.getPanelMedia().observe(getViewLifecycleOwner(), panelMedia -> {
+                                userViewModel.checkMediaInWatchList(userId, panelMedia.getId(), null);
+                                userViewModel.getIsInWatchList().observe(getViewLifecycleOwner(), isInWatchList -> {
+                                    if (isInWatchList != null) {
+                                        binding.buttonAdd.setIcon(ContextCompat.getDrawable(requireContext(), isInWatchList ? R.drawable.ic_added : R.drawable.ic_add));
+                                    }
+                                });
+                            });
+                        }
+                    });
+                }
+            });
+
     private void loadPanelMedia() {
         homeViewModel.getPanelMedia().observe(getViewLifecycleOwner(), panelMedia -> {
             if (panelMedia != null) {
@@ -99,23 +120,24 @@ public class HomeFragment extends Fragment {
                         .into(binding.posterImage);
 
                 binding.panel.setOnClickListener(v -> {
-                    if("movie".equals(panelMedia.getType())) {
+                    if ("movie".equals(panelMedia.getType())) {
                         Intent intent = new Intent(requireContext(), MovieDetailActivity.class);
                         intent.putExtra("media_id", panelMedia.getId());
-                        requireContext().startActivity(intent);
-                    }
-                    else {
+                        launcher.launch(intent);
+                    } else {
                         Intent intent = new Intent(requireContext(), TvSeriesDetailActivity.class);
                         intent.putExtra("media_id", panelMedia.getId());
-                        requireContext().startActivity(intent);
+                        launcher.launch(intent);
                     }
                 });
 
                 userViewModel.getUserId().observe(getViewLifecycleOwner(), userId -> {
                     if (userId != null) {
-                        userViewModel.checkMediaInWatchList(userId, panelMedia.getId());
+                        userViewModel.checkMediaInWatchList(userId, panelMedia.getId(), null);
                         userViewModel.getIsInWatchList().observe(getViewLifecycleOwner(), isInWatchList -> {
                             if (isInWatchList != null) {
+                                int iconRes = isInWatchList ? R.drawable.ic_added : R.drawable.ic_add;
+                                binding.buttonAdd.setIcon(ContextCompat.getDrawable(requireContext(), iconRes));
                                 binding.buttonAdd.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
@@ -135,12 +157,6 @@ public class HomeFragment extends Fragment {
                         });
                     }
                 });
-            }
-        });
-        userViewModel.getIsInWatchList().observe(getViewLifecycleOwner(), isLike -> {
-            if (isLike != null) {
-                int iconRes = isLike ? R.drawable.ic_added : R.drawable.ic_add;
-                binding.buttonAdd.setIcon(ContextCompat.getDrawable(requireContext(), iconRes));
             }
         });
     }

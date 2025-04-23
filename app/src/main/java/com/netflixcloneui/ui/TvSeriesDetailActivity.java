@@ -118,7 +118,7 @@ public class TvSeriesDetailActivity extends AppCompatActivity implements Episode
                         });
                     }
                 });
-                userViewModel.checkMediaInWatchList(userId, id);
+                userViewModel.checkMediaInWatchList(userId, id, null);
                 userViewModel.getIsInWatchList().observe(this, isInWatchList -> {
                     if (isInWatchList != null) {
                         ivAdd.setOnClickListener(new View.OnClickListener() {
@@ -159,7 +159,11 @@ public class TvSeriesDetailActivity extends AppCompatActivity implements Episode
     }
 
     private void cLose() {
-        btnClose.setOnClickListener(v -> finish());
+        btnClose.setOnClickListener(v -> {
+            Intent resultIntent = new Intent();
+            setResult(RESULT_OK, resultIntent); // báo cho fragment biết có thay đổi
+            finish();
+        });
     }
 
     private void getTrailer(long id) {

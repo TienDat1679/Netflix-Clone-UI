@@ -1,26 +1,44 @@
 package com.netflixcloneui.ui.comingsoon;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.netflixcloneui.R;
 import com.netflixcloneui.adapter.ComingSoonAdapter;
 import com.netflixcloneui.adapter.HotAdapter;
+import com.netflixcloneui.data.repository.MediaRepository;
+import com.netflixcloneui.data.repository.RepositoryCallback;
 import com.netflixcloneui.databinding.FragmentComingSoonBinding;
+import com.netflixcloneui.model.Media;
+import com.netflixcloneui.model.request.AddToWatchListRequest;
+import com.netflixcloneui.ui.MovieDetailActivity;
+import com.netflixcloneui.ui.TvSeriesDetailActivity;
+import com.netflixcloneui.viewmodel.UserViewModel;
 
 public class ComingSoonFragment extends Fragment {
-
     private FragmentComingSoonBinding binding;
     private ComingSoonViewModel comingSoonViewModel;
     private ComingSoonAdapter comingSoonAdapter;
     private HotAdapter hotAdapter, topMoviesAdapter, topSeriesAdapter;
+    private UserViewModel userViewModel;
+    private MediaRepository mediaRepository;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -31,6 +49,28 @@ public class ComingSoonFragment extends Fragment {
                 return (T) new ComingSoonViewModel(requireContext());
             }
         }).get(ComingSoonViewModel.class);
+        userViewModel = new ViewModelProvider(this, new ViewModelProvider.Factory() {
+            @NonNull
+            @Override
+            public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+                return (T) new UserViewModel(requireContext());
+            }
+        }).get(UserViewModel.class);
+
+        mediaRepository = new MediaRepository(requireContext());
+        userViewModel.getUserId().observe(getViewLifecycleOwner(), userId -> {
+            if (userId != null) {
+                userViewModel.fetchUserWatchList(userId);
+
+                userViewModel.getWatchList().observe(getViewLifecycleOwner(), watchList -> {
+                   if (watchList != null) {
+                       loadHotMedia(userId);
+                       loadTopSeries(userId);
+                       loadTopMovies(userId);
+                   }
+                });
+            }
+        });
 
         binding = FragmentComingSoonBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
@@ -41,64 +81,55 @@ public class ComingSoonFragment extends Fragment {
         binding.btnTopMovies.setOnClickListener(v -> scrollToRecyclerView(binding.rcvTopMovies));
 
         loadComingSoon();
-        loadHot();
-        loadTopSeries();
-        loadTopMovies();
-
-        // Hiển thị ProgressBar khi tải dữ liệu
         loading();
 
         return root;
     }
 
-    private void loadHot() {
-        // Cấu hình RecyclerView
-        hotAdapter = new HotAdapter(HotAdapter.TYPE_HOT);
-        binding.rcvHot.setLayoutManager(new LinearLayoutManager(getContext()));
-        binding.rcvHot.setAdapter(hotAdapter);
-        // Quan sát dữ liệu phim
-        comingSoonViewModel.getHotSeriesMovies().observe(getViewLifecycleOwner(), movies -> {
-            if (movies != null) {
-                hotAdapter.setHotMedia(movies);
-            }
-        });
-    }
-
-    private void loadTopSeries() {
-        // Cấu hình RecyclerView
-        topSeriesAdapter = new HotAdapter(HotAdapter.TYPE_TOP_SERIES);
-        binding.rcvTopSeries.setLayoutManager(new LinearLayoutManager(getContext()));
-        binding.rcvTopSeries.setAdapter(topSeriesAdapter);
-        // Quan sát dữ liệu phim
-        comingSoonViewModel.getTopSeries().observe(getViewLifecycleOwner(), series -> {
-            if (series != null) {
-                topSeriesAdapter.setSeries(series);
-            }
-        });
-    }
-
-    private void loadTopMovies() {
-        // Cấu hình RecyclerView
-        topMoviesAdapter = new HotAdapter(HotAdapter.TYPE_TOP_MOVIES);
-        binding.rcvTopMovies.setLayoutManager(new LinearLayoutManager(getContext()));
-        binding.rcvTopMovies.setAdapter(topMoviesAdapter);
-        // Quan sát dữ liệu phim
-        comingSoonViewModel.getTopMovies().observe(getViewLifecycleOwner(), movies -> {
-            if (movies != null) {
-                topMoviesAdapter.setMovies(movies);
-            }
-        });
-    }
-
     private void loadComingSoon() {
-        // Cấu hình RecyclerView
         comingSoonAdapter = new ComingSoonAdapter();
         binding.rcvComingSoon.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.rcvComingSoon.setAdapter(comingSoonAdapter);
-        // Quan sát dữ liệu phim
-        comingSoonViewModel.getComingSoonMovies().observe(getViewLifecycleOwner(), movies -> {
+
+        comingSoonViewModel.getComingSoonMedia().observe(getViewLifecycleOwner(), media -> {
+            if (media != null) {
+                comingSoonAdapter.setMedia(media);
+            }
+        });
+    }
+
+    private void loadHotMedia(String userId) {
+        hotAdapter = initAdapter(userId, HotAdapter.TYPE_HOT);
+        binding.rcvHot.setLayoutManager(new LinearLayoutManager(getContext()));
+        binding.rcvHot.setAdapter(hotAdapter);
+
+        comingSoonViewModel.getHotMedia().observe(getViewLifecycleOwner(), media -> {
+            if (media != null) {
+                hotAdapter.setMedia(media);
+            }
+        });
+    }
+
+    private void loadTopSeries(String userId) {
+        topSeriesAdapter = initAdapter(userId, HotAdapter.TYPE_TOP_10);
+        binding.rcvTopSeries.setLayoutManager(new LinearLayoutManager(getContext()));
+        binding.rcvTopSeries.setAdapter(topSeriesAdapter);
+
+        comingSoonViewModel.getTopSeries().observe(getViewLifecycleOwner(), series -> {
+            if (series != null) {
+                topSeriesAdapter.setMedia(series);
+            }
+        });
+    }
+
+    private void loadTopMovies(String userId) {
+        topMoviesAdapter = initAdapter(userId, HotAdapter.TYPE_TOP_10);
+        binding.rcvTopMovies.setLayoutManager(new LinearLayoutManager(getContext()));
+        binding.rcvTopMovies.setAdapter(topMoviesAdapter);
+
+        comingSoonViewModel.getTopMovies().observe(getViewLifecycleOwner(), movies -> {
             if (movies != null) {
-                comingSoonAdapter.setMedia(movies);
+                topMoviesAdapter.setMedia(movies);
             }
         });
     }
@@ -113,6 +144,69 @@ public class ComingSoonFragment extends Fragment {
             binding.contentLayout.setVisibility(isLoading ? View.GONE : View.VISIBLE);
         });
     }
+
+    private HotAdapter initAdapter(String userId, int viewType) {
+        return new HotAdapter(viewType, userViewModel, new HotAdapter.OnMediaClickListener() {
+            @Override
+            public void onPlayClick(Media media) {
+                Toast.makeText(getContext(), "Play", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onAddClick(Media media, HotAdapter.HotViewHolder holder) {
+                userViewModel.checkMediaInWatchList(userId, media.getId(), new RepositoryCallback<Boolean>() {
+                    @Override
+                    public void onSuccess(Boolean isInWatchList) {
+                        if (Boolean.TRUE.equals(isInWatchList)) {
+                            mediaRepository.removeMediaFromWatchList(userId, media.getId());
+                            userViewModel.setIsInWatchList(false);
+                            holder.buttonAdd.setIcon(ContextCompat.getDrawable(holder.itemView.getContext(), R.drawable.ic_add));
+                        } else {
+                            mediaRepository.addToWatchList(userId, new AddToWatchListRequest(media.getId(), media.getType()));
+                            userViewModel.setIsInWatchList(true);
+                            holder.buttonAdd.setIcon(ContextCompat.getDrawable(holder.itemView.getContext(), R.drawable.ic_added));
+                        }
+
+                        // Cập nhật lại danh sách
+                        //userViewModel.fetchUserWatchList(userId);
+                    }
+
+                    @Override
+                    public void onError(String message) {
+                        Log.e("onAddClick", message);
+                    }
+                });
+            }
+
+            @Override
+            public void onMediaDetailClick(Media media) {
+                openMediaDetail(requireContext(), media.getId(), media.getType());
+            }
+        });
+    }
+
+    private void openMediaDetail(Context context, Long id, String type) {
+        if ("movie".equals(type)) {
+            Intent intent = new Intent(context, MovieDetailActivity.class);
+            intent.putExtra("media_id", id); // Truyền ID phim
+            launcher.launch(intent);
+        } else {
+            Intent intent = new Intent(context, TvSeriesDetailActivity.class);
+            intent.putExtra("media_id", id); // Truyền ID phim
+            launcher.launch(intent);
+        }
+    }
+
+    private final ActivityResultLauncher<Intent> launcher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    userViewModel.getUserId().observe(getViewLifecycleOwner(), userId -> {
+                        if (userId != null) {
+                            userViewModel.fetchUserWatchList(userId);
+                        }
+                    });
+                }
+            });
 
     @Override
     public void onDestroyView() {

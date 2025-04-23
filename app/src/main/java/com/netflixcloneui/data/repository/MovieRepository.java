@@ -10,7 +10,7 @@ import com.netflixcloneui.data.remote.ApiService;
 import com.netflixcloneui.data.remote.RetrofitClient;
 import com.netflixcloneui.model.Genre;
 import com.netflixcloneui.model.Media;
-import com.netflixcloneui.model.Movie;
+import com.netflixcloneui.model.Media;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -65,12 +65,12 @@ public class MovieRepository {
         }
     }
 
-    public void fetchTopMovies(MutableLiveData<List<Movie>> topMovies, MutableLiveData<Boolean> loadingLiveData) {
+    public void fetchTopMovies(MutableLiveData<List<Media>> topMovies, MutableLiveData<Boolean> loadingLiveData) {
         loadingLiveData.setValue(true); // Bắt đầu loading
 
-        apiService.getTopMovies().enqueue(new Callback<List<Movie>>() {
+        apiService.getTop10Movies().enqueue(new Callback<List<Media>>() {
             @Override
-            public void onResponse(@NonNull Call<List<Movie>> call, @NonNull Response<List<Movie>> response) {
+            public void onResponse(@NonNull Call<List<Media>> call, @NonNull Response<List<Media>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     topMovies.setValue(response.body());
                 } else {
@@ -81,7 +81,7 @@ public class MovieRepository {
             }
 
             @Override
-            public void onFailure(Call<List<Movie>> call, Throwable t) {
+            public void onFailure(Call<List<Media>> call, Throwable t) {
                 Log.e("API_ERROR", "Lỗi khi lấy phim sắp ra mắt: " + t.getMessage());
                 topMovies.setValue(null);
                 loadingLiveData.setValue(false);

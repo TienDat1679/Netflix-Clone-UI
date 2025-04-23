@@ -20,15 +20,20 @@
         android:theme="@style/Base.Theme.NetflixCloneUI"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-
+        <activity
+            android:name=".ui.WatchListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.NotificationActivity"
+            android:exported="false" />
         <activity
             android:name=".ui.PaymentPackageActivity"
             android:exported="false" />
         <activity
             android:name=".ui.PaymentSummaryActivity"
-            android:exported="false"
-            />
-        <!-- <activity
+            android:exported="false" />
+        <!--
+ <activity
             android:name=".qr_test"
             android:exported="false" />
             android:name=".screen.ui.my_netflix.PaymentSummaryActivity"
@@ -39,14 +44,15 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>-->
-
+        </activity>
+        -->
         <activity
             android:name=".ui.BottomNavActivity"
             android:exported="true"
             android:label="@string/title_activity_bottom_nav">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

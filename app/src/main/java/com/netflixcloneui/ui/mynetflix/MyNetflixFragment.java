@@ -22,12 +22,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.netflixcloneui.R;
 import com.netflixcloneui.adapter.MediaAdapter;
 import com.netflixcloneui.databinding.FragmentMyNetflixBinding;
+import com.netflixcloneui.ui.NotificationActivity;
 import com.netflixcloneui.ui.PaymentPackageActivity;
+import com.netflixcloneui.ui.WatchListActivity;
 import com.netflixcloneui.viewmodel.UserViewModel;
+
+import java.io.Serializable;
 
 public class MyNetflixFragment extends Fragment {
     private FragmentMyNetflixBinding binding;
-    private LinearLayout linearLayout;
     private MyNetflixViewModel myNetflixViewModel;
     private UserViewModel userViewModel;
     private MediaAdapter favoriteAdapter;
@@ -66,6 +69,11 @@ public class MyNetflixFragment extends Fragment {
         premium();
         loadMyList();
         addItemToActionBar();
+        handleButtonWatchList();
+        binding.btnNotification.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), NotificationActivity.class);
+            startActivity(intent);
+        });
 
         return root;
     }
@@ -80,6 +88,18 @@ public class MyNetflixFragment extends Fragment {
         }
     }
 
+    private void handleButtonWatchList() {
+        myNetflixViewModel.getUserMovieList().observe(getViewLifecycleOwner(), watchList -> {
+            if (watchList != null) {
+                binding.btnWatchlist.setOnClickListener(v -> {
+                    Intent intent = new Intent(getContext(), WatchListActivity.class);
+                    intent.putExtra("media_list", (Serializable)watchList);
+                    startActivity(intent);
+                });
+            }
+        });
+    }
+
     private void premium() {
         binding.premium.setOnClickListener(v -> openPaymentPackage());
     }
@@ -92,7 +112,7 @@ public class MyNetflixFragment extends Fragment {
     private void loadMyList() {
         // Adapter cho danh sách phim thông thường - dùng layout mặc định
         myListAdapter = new MediaAdapter(null, MediaAdapter.TYPE_NORMAL);
-        binding.rcvMyList.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        binding.rcvMyList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         binding.rcvMyList.setAdapter(myListAdapter);
 
         myNetflixViewModel.getUserMovieList().observe(getViewLifecycleOwner(), movies -> {
@@ -144,10 +164,4 @@ public class MyNetflixFragment extends Fragment {
         super.onDestroyView();
         binding = null;
     }
-
-//    private void openMovieDetail(Movie movie) {
-//        Intent intent = new Intent(getContext(), MovieDetailActivity.class);
-//        intent.putExtra("movie_id", movie.getId()); // Truyền ID phim
-//        startActivity(intent);
-//    }
 }
