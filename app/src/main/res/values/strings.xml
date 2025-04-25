@@ -4,4 +4,6 @@
     <string name="title_home">Trang chủ</string>
     <string name="title_coming_soon">Mới &amp; Hot</string>
     <string name="title_my_netflix">Netflix của tôi</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

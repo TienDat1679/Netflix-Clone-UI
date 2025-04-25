@@ -27,7 +27,7 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.EpisodeV
     public interface OnEpisodeClickListener {
         void onEpisodeClick(String videoKey);
     }
-    public EpisodeAdapter(Context context, List<Episode> episodeList,OnEpisodeClickListener listener) {
+    public EpisodeAdapter(Context context, List<Episode> episodeList, OnEpisodeClickListener listener) {
         this.context = context;
         this.episodeList = episodeList;
         this.listener = listener;

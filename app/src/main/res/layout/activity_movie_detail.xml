@@ -244,50 +244,69 @@
             android:layout_marginTop="20dp"
             android:orientation="vertical">
 
-            <LinearLayout
-                android:id="@+id/container"
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/appBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:theme="@style/Theme.AppCompat.DayNight">
 
-                <TextView
-                    android:id="@+id/movieSame"
-                    android:layout_width="wrap_content"
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/tabLayout"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:text="Nội dung tương tự"
-                    android:textStyle="bold"
-                    android:justificationMode="inter_word"
-                    android:maxLines="5"
-                    android:textColor="#fff"
-                    android:textSize="16sp" />
-                <TextView
-                    android:id="@+id/movieTrailer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:ellipsize="end"
-                    android:text="Trailer"
-                    android:textStyle="bold"
-                    android:justificationMode="inter_word"
-                    android:textColor="#fff"
-                    android:textSize="16sp" />
-            </LinearLayout>
-            <!-- Danh sách phim liên quan -->
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerViewMovies"
+                    android:background="@color/black"
+                    android:contentDescription="Navigation tabs"/>
+            </com.google.android.material.appbar.AppBarLayout>
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/viewPager2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:clipToPadding="false"
-                android:nestedScrollingEnabled="false"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:background="@color/black"
-                app:layout_constraintHorizontal_bias="0.315"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/container"
-                app:layout_constraintVertical_bias="0.831" />
+                app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
+<!--            <LinearLayout-->
+<!--                android:id="@+id/container"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="horizontal">-->
+
+<!--                <TextView-->
+<!--                    android:id="@+id/movieSame"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:ellipsize="end"-->
+<!--                    android:text="Nội dung tương tự"-->
+<!--                    android:textStyle="bold"-->
+<!--                    android:justificationMode="inter_word"-->
+<!--                    android:maxLines="5"-->
+<!--                    android:textColor="#fff"-->
+<!--                    android:textSize="16sp" />-->
+<!--                <TextView-->
+<!--                    android:id="@+id/movieTrailer"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginStart="20dp"-->
+<!--                    android:ellipsize="end"-->
+<!--                    android:text="Trailer"-->
+<!--                    android:textStyle="bold"-->
+<!--                    android:justificationMode="inter_word"-->
+<!--                    android:textColor="#fff"-->
+<!--                    android:textSize="16sp" />-->
+<!--            </LinearLayout>-->
+<!--            &lt;!&ndash; Danh sách phim liên quan &ndash;&gt;-->
+<!--            <androidx.recyclerview.widget.RecyclerView-->
+<!--                android:id="@+id/recyclerViewMovies"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="10dp"-->
+<!--                android:clipToPadding="false"-->
+<!--                android:nestedScrollingEnabled="false"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                android:background="@color/black"-->
+<!--                app:layout_constraintHorizontal_bias="0.315"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toBottomOf="@id/container"-->
+<!--                app:layout_constraintVertical_bias="0.831" />-->
         </LinearLayout>
     </LinearLayout>
 
