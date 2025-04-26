@@ -126,16 +126,15 @@ public interface ApiService {
     // Search
     @GET("api/media/search")
     Call<List<Media>> searchMedia(@Query("keyword") String keyword);
-
     // My Netflix Fragment
     @GET("api/media/same")
     Call<List<Media>> getSameMedia(@Query("id") Long id);
-
     @GET("api/series/trailer")
     Call<List<Trailer>> getSeriesTrailer(@Query("id") Long id);
-
     @GET("api/movies/trailer")
     Call<List<Trailer>> getmovieTrailer(@Query("id") Long id);
+    @GET("api/trailers/{mediaId}")
+    Call<ApiResponse<List<Trailer>>> getMediaTrailers(@Path("mediaId") Long mediaId);
 
     @GET("api/vnpay/generateQR")
     Call<QrResponse> generateVnpayQR(@Query("amount") String  amount);

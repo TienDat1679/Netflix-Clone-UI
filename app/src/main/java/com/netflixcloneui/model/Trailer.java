@@ -1,6 +1,8 @@
 package com.netflixcloneui.model;
 
-public class Trailer {
+import java.io.Serializable;
+
+public class Trailer implements Serializable {
 
     private String id;
     private String key;
