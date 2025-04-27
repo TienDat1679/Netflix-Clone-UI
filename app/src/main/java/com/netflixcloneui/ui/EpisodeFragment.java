@@ -36,108 +36,77 @@ import retrofit2.Response;
  * create an instance of this fragment.
  */
 public class EpisodeFragment extends Fragment {
-
-    private static final String ARG_MEDIA_ID = "media_id";
-    private static final String ARG_SEASON = "season";
-
     private RecyclerView recyclerViewEps;
     private EpisodeAdapter epsAdapter;
     private SnapHelper snapHelper;
 
     private long mediaId;
     private int season;
-    private List<Episode> listEps = new ArrayList<>();
-
-    public EpisodeFragment() {
-        // Required empty public constructor
-    }
+    private List<Episode> allEpisodes = new ArrayList<>();   // giữ toàn bộ data
 
     public static EpisodeFragment newInstance(long mediaId, int season) {
-        EpisodeFragment fragment = new EpisodeFragment();
+        EpisodeFragment f = new EpisodeFragment();
         Bundle args = new Bundle();
-        args.putLong(ARG_MEDIA_ID, mediaId);
-        args.putInt(ARG_SEASON, season);
-        fragment.setArguments(args);
-        return fragment;
+        args.putLong("media_id", mediaId);
+        args.putInt("season", season);
+        f.setArguments(args);
+        return f;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mediaId = getArguments().getLong(ARG_MEDIA_ID, -1);
-            season = getArguments().getInt(ARG_SEASON, 1);
-        }
+    @Override public void onCreate(Bundle s) {
+        super.onCreate(s);
+        mediaId = getArguments().getLong("media_id");
+        season  = getArguments().getInt("season");
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_episode, container, false);
+    @Override public View onCreateView(LayoutInflater i, ViewGroup c, Bundle s) {
+        View view = i.inflate(R.layout.fragment_episode, c, false);
 
-        // Khởi tạo RecyclerView và SnapHelper chỉ 1 lần
         recyclerViewEps = view.findViewById(R.id.recyclerEpisodes);
-        recyclerViewEps.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-
-        // SnapHelper chỉ attach 1 lần
+        recyclerViewEps.setLayoutManager(new LinearLayoutManager(getContext()));
         snapHelper = new LinearSnapHelper();
         snapHelper.attachToRecyclerView(recyclerViewEps);
 
-        // Lấy dữ liệu episodes khi view được tạo
-        getEsp(mediaId, season, view);
+        // tạo adapter với list rỗng
+        epsAdapter = new EpisodeAdapter(getContext(), new ArrayList<>(), id -> {
+            Intent it = new Intent(getContext(), FullScreenVideoActivity.class);
+            it.putExtra("VIDEO_ID", id);
+            startActivity(it);
+        });
+        recyclerViewEps.setAdapter(epsAdapter);
+
+        // Lần đầu gọi API để load tất cả episodes
+        loadAllEpisodes();
+
         return view;
     }
 
-    private void getEsp(long id, int season, View view) {
-        ApiService apiService = RetrofitClient.getApiService(getContext());
-        Call<List<Episode>> call = apiService.getEspOfSeries(id);
-
-        call.enqueue(new Callback<List<Episode>>() {
-            @Override
-            public void onResponse(@NonNull Call<List<Episode>> call, @NonNull Response<List<Episode>> response) {
-                if (!response.isSuccessful() || response.body() == null) {
-                    Log.e("getEsp", "API error or empty");
-                    return;
-                }
-
-                // Lấy toàn bộ episodes và lọc theo season
-                List<Episode> allEpisodes = response.body();
-                List<Episode> filteredEpisodes = new ArrayList<>();
-                for (Episode episode : allEpisodes) {
-                    if (episode.getSeasonNumber() == season) {
-                        filteredEpisodes.add(episode);
+    private void loadAllEpisodes() {
+        RetrofitClient.getApiService(getContext())
+                .getEspOfSeries(mediaId)
+                .enqueue(new Callback<List<Episode>>() {
+                    @Override public void onResponse(Call<List<Episode>> c, Response<List<Episode>> r) {
+                        if (!r.isSuccessful() || r.body()==null) return;
+                        allEpisodes = r.body();               // lưu toàn bộ
+                        applySeasonFilter();                  // lần đầu filter theo season khởi tạo
                     }
-                }
-
-                // Sắp xếp theo episodeNumber tăng dần
-                Collections.sort(filteredEpisodes, (e1, e2) -> Integer.compare(e1.getEpisodeNumber(), e2.getEpisodeNumber()));
-
-                // Cập nhật adapter với dữ liệu đã lọc và sắp xếp
-                if (epsAdapter == null) {
-                    epsAdapter = new EpisodeAdapter(getContext(), filteredEpisodes, new EpisodeAdapter.OnEpisodeClickListener() {
-                        @Override
-                        public void onEpisodeClick(Long episodeId) {
-                            Intent intent = new Intent(getContext(), FullScreenVideoActivity.class);
-                            intent.putExtra("VIDEO_ID", episodeId);
-                            startActivity(intent);
-                        }
-                    });
-                    recyclerViewEps.setAdapter(epsAdapter);
-                } else {
-                    epsAdapter.setData(filteredEpisodes);
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<List<Episode>> call, @NonNull Throwable t) {
-                Log.e("getEsp", "API Call failed: " + t.getMessage());
-            }
-        });
+                    @Override public void onFailure(Call<List<Episode>> c, Throwable t) { }
+                });
     }
 
+    // Lọc và sắp xếp theo season hiện tại, cập nhật adapter
+    private void applySeasonFilter() {
+        List<Episode> filtered = new ArrayList<>();
+        for (Episode e : allEpisodes) {
+            if (e.getSeasonNumber() == season) filtered.add(e);
+        }
+        Collections.sort(filtered, (a,b) -> Integer.compare(a.getEpisodeNumber(), b.getEpisodeNumber()));
+        epsAdapter.setData(filtered);
+    }
+
+    // Khi người dùng chọn season mới
     public void reload(int newSeason) {
         this.season = newSeason;
-        if (getView() != null) {
-            getEsp(mediaId, newSeason, getView());
-        }
+        applySeasonFilter();   // chỉ lọc lại, không gọi API
     }
 }
