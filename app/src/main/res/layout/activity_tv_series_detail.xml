@@ -230,12 +230,24 @@
                         android:text="Chia sẻ"/>
                 </LinearLayout>
 
-                <View
-                    android:layout_width="100dp"
-                    android:layout_height="match_parent"/>
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/season"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="left"
+                android:layout_marginTop="10dp">
+
+                <Spinner
+                    android:id="@+id/spinnerSeasons"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:popupBackground="@color/black"
+                    android:spinnerMode="dropdown" />
 
             </LinearLayout>
-
             <com.google.android.material.appbar.AppBarLayout
                 android:id="@+id/appBar"
                 android:layout_width="match_parent"

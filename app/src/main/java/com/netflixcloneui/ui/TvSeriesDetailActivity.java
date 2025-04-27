@@ -8,8 +8,11 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -52,7 +55,11 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -100,6 +107,7 @@ public class TvSeriesDetailActivity extends AppCompatActivity implements Episode
         long id = (long) getIntent().getLongExtra("media_id",-1);
         getEsp(id);
         getTvSeriesDetail(id);
+        getSeason(id);
         btnPlay.setOnClickListener(view -> playFullScreenVideo(id) );
         //getEsp(id);
         getTrailer(id);
@@ -107,7 +115,7 @@ public class TvSeriesDetailActivity extends AppCompatActivity implements Episode
         handleLikeAndWatchlistButton(id);
 
         viewPaper2Adapter = new ViewPaper2Adapter(this);
-        viewPaper2Adapter.addFragment(EpisodeFragment.newInstance(id));
+        viewPaper2Adapter.addFragment(EpisodeFragment.newInstance(id,1));
         viewPaper2Adapter.addFragment(SimilarMediaFragment.newInstance(id));
         viewPaper2Adapter.addFragment(TrailerFragment.newInstance(id, null));
         viewPaper2Adapter.addFragment(new CommentFragment());
@@ -127,6 +135,76 @@ public class TvSeriesDetailActivity extends AppCompatActivity implements Episode
             tab.setText(tabTitles[position]);
         }).attach();
     }
+
+    private void getSeason(long id) {
+        // 1. Gọi API để lấy danh sách tất cả episode của mediaId
+        ApiService apiService = RetrofitClient.getApiService(getApplicationContext());
+        Call<List<Episode>> call = apiService.getEspOfSeries(id);
+        call.enqueue(new Callback<List<Episode>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Episode>> call,
+                                   @NonNull Response<List<Episode>> response) {
+                if (!response.isSuccessful() || response.body() == null) {
+                    Log.e("getSeason", "API returned empty or error");
+                    return;
+                }
+
+                // 2. Lưu toàn bộ listEps và tách ra các season duy nhất
+                listEps = response.body();
+                Set<Integer> seasonsSet = new TreeSet<>();
+                for (Episode ep : listEps) {
+                    seasonsSet.add(ep.getSeasonNumber());
+                }
+
+                // 3. Chuyển Set -> List<String> để gán cho Spinner
+                List<String> seasonList = new ArrayList<>();
+                for (Integer s : seasonsSet) {
+                    seasonList.add("Season " + s);
+                }
+
+                // 4. Thiết lập Spinner
+                Spinner spinnerSeasons = findViewById(R.id.spinnerSeasons);
+                ArrayAdapter<String> seasonAdapter = new ArrayAdapter<>(
+                        TvSeriesDetailActivity.this,                                      // context
+                        R.layout.spinner_item_white,                            // layout cho item
+                        seasonList
+                );
+                spinnerSeasons.setAdapter(seasonAdapter);
+
+                // 5. Chọn mặc định "Season 1" nếu có
+                int defaultIndex = seasonList.indexOf("Season 1");
+                spinnerSeasons.setSelection(defaultIndex >= 0 ? defaultIndex : 0);
+
+                // 6. Lắng nghe sự kiện chọn season mới
+                spinnerSeasons.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view,
+                                               int position, long id) {
+                        String label = (String) parent.getItemAtPosition(position);
+                        int newSeason = Integer.parseInt(label.split(" ")[1]);
+                        Log.d("getSeason", "User selected season " + newSeason);
+
+                        // 7. Lấy EpisodeFragment trong ViewPager2 và gọi reload
+                        EpisodeFragment epFrag = (EpisodeFragment)
+                                viewPaper2Adapter.getFragment(0);    // tab 0 là EpisodeFragment
+                        if (epFrag != null) {
+                            epFrag.reload(newSeason);
+                        }
+                    }
+                    @Override public void onNothingSelected(AdapterView<?> parent) {}
+                });
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<Episode>> call, @NonNull Throwable t) {
+                Log.e("getSeason", "API call failed: " + t.getMessage());
+            }
+        });
+    }
+
+
+
+
 
     private void resizeViewPagerHeight(ViewPager2 viewPager2, int position) {
         viewPager2.post(() -> {

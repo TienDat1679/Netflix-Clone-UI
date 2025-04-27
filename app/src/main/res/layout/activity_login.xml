@@ -43,7 +43,7 @@
                 android:background="@drawable/edit_text_background"
                 android:hint="Email"
                 android:inputType="text"
-                android:text="dat@gmail.com"
+                android:text="admin@netflix.com"
                 android:padding="12dp"
                 android:textColor="#FFFFFF"
                 android:textColorHint="#CCCCCC" />
@@ -57,7 +57,7 @@
                 android:background="@drawable/edit_text_background"
                 android:hint="Password"
                 android:inputType="textPassword"
-                android:text="12345"
+                android:text="admin"
                 android:padding="12dp"
                 android:textColor="#FFFFFF"
                 android:textColorHint="#CCCCCC" />

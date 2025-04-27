@@ -24,6 +24,11 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.EpisodeV
     private OnEpisodeClickListener listener;
     String imageUrl = "https://image.tmdb.org/t/p/w500";
 
+    public void setData(List<Episode> filteredEpisodes) {
+        this.episodeList = filteredEpisodes;
+        notifyDataSetChanged();
+    }
+
     public interface OnEpisodeClickListener {
         void onEpisodeClick(Long episodeId);
     }

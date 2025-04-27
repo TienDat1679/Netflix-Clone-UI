@@ -39,4 +39,8 @@ public class ViewPaper2Adapter extends FragmentStateAdapter {
     public int getItemCount() {
         return fragmentList.size();
     }
+
+    public Fragment getFragment(int position) {
+        return fragmentList.get(position);
+    }
 }
