@@ -98,10 +98,10 @@ public class EpisodeFragment extends Fragment {
                 recyclerViewEps.setLayoutManager(layoutManager);
                 EpsAdapter = new EpisodeAdapter(getContext(), listEps, new EpisodeAdapter.OnEpisodeClickListener() {
                     @Override
-                    public void onEpisodeClick(String videoKey) {
+                    public void onEpisodeClick(Long episodeId) {
                         //youTubePlayerInstance.loadVideo(videoKey, 0);
                         Intent intent = new Intent(getContext(), FullScreenVideoActivity.class);
-                        intent.putExtra("VIDEO_ID", "xbsT5l4hdfA"); // Truyền videoId vào Intent
+                        intent.putExtra("VIDEO_ID", episodeId); // Truyền videoId vào Intent
                         startActivity(intent);
                     }
                 });

@@ -1,6 +1,6 @@
 package com.netflixcloneui.model.request;
 
-public class LogoutRequest {
+public class    LogoutRequest {
     private String token;
 
     public LogoutRequest(String token) {

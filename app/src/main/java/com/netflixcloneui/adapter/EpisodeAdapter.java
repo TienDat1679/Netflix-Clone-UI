@@ -25,7 +25,7 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.EpisodeV
     String imageUrl = "https://image.tmdb.org/t/p/w500";
 
     public interface OnEpisodeClickListener {
-        void onEpisodeClick(String videoKey);
+        void onEpisodeClick(Long episodeId);
     }
     public EpisodeAdapter(Context context, List<Episode> episodeList, OnEpisodeClickListener listener) {
         this.context = context;
@@ -55,7 +55,7 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.EpisodeV
                 .into(holder.imgThumbnail);
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
-                listener.onEpisodeClick("xbsT5l4hdfA"); // Gửi videoKey của tập phim được chọn
+                listener.onEpisodeClick(episode.getId()); // Gửi videoKey của tập phim được chọn
             }
         });
     }

@@ -47,7 +47,7 @@
         </activity>
         -->
         <activity
-            android:name=".ui.BottomNavActivity"
+            android:name=".ui.user.LoginActivity"
             android:exported="true"
             android:label="@string/title_activity_bottom_nav">
             <intent-filter>
@@ -72,7 +72,7 @@
             android:name=".ui.user.RegisterActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.user.LoginActivity"
+            android:name=".ui.BottomNavActivity"
             android:exported="false" />
         <activity
             android:name=".ui.SearchActivity"

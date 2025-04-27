@@ -71,4 +71,10 @@ dependencies {
     implementation ("com.android.volley:volley:1.2.1")
     implementation ("com.github.chthai64:SwipeRevealLayout:1.4.0")
 
+    //Media3
+    implementation ("androidx.media3:media3-exoplayer:1.2.0")
+    implementation ("androidx.media3:media3-exoplayer-dash:1.2.0")
+    implementation ("androidx.media3:media3-ui:1.2.0")
+
+
 }

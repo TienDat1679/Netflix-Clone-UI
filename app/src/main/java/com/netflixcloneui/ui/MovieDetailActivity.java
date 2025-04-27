@@ -12,6 +12,7 @@ import com.netflixcloneui.model.Media;
 import com.netflixcloneui.model.Movie;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -38,6 +39,7 @@ import com.netflixcloneui.data.remote.RetrofitClient;
 import com.netflixcloneui.model.Trailer;
 import com.netflixcloneui.model.request.AddToWatchListRequest;
 import com.netflixcloneui.model.request.LikeRequest;
+import com.netflixcloneui.model.request.PlaybackProgressRequest;
 import com.netflixcloneui.viewmodel.UserViewModel;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
@@ -96,7 +98,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         onMovieOverviewClick();
         close();
         handleLikeAndWatchlistButton(movieId);
-        btnPlay.setOnClickListener(view -> playFullScreenVideo() );
+        btnPlay.setOnClickListener(view -> playFullScreenVideo(movieId) );
 
         viewPaper2Adapter = new ViewPaper2Adapter(this);
         viewPaper2Adapter.addFragment(SimilarMediaFragment.newInstance(movieId));
@@ -108,11 +110,53 @@ public class MovieDetailActivity extends AppCompatActivity {
             tab.setText(tabTitles[position]);
         }).attach();
     }
+    private void showContinueWatchingDialog(Long savedPosition,Long mediaId) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Tiếp tục xem?");
+        builder.setMessage("Bạn muốn tiếp tục xem từ phút " + (savedPosition / 60000) + " không?");
 
-    private void playFullScreenVideo() {
-        Intent intent = new Intent(this, FullScreenVideoActivity.class);
-        intent.putExtra("VIDEO_ID", "fap07Hh7pSI"); // Truyền videoId vào Intent
-        startActivity(intent);
+        builder.setPositiveButton("Có", (dialog, which) -> {
+            Intent intent = new Intent(MovieDetailActivity.this, FullScreenVideoActivity.class);
+            intent.putExtra("VIDEO_ID", mediaId);
+            intent.putExtra("postion",savedPosition);// Truyền videoId vào Intent
+            startActivity(intent);
+        });
+
+        builder.setNegativeButton("Xem lại từ đầu", (dialog, which) -> {
+            Intent intent = new Intent(MovieDetailActivity.this, FullScreenVideoActivity.class);
+            intent.putExtra("VIDEO_ID", mediaId);
+            intent.putExtra("postion",0);// Truyền videoId vào Intent
+            startActivity(intent);
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void playFullScreenVideo(Long movieId) {
+        ApiService apiService = RetrofitClient.getApiService(getApplicationContext());
+        Call<PlaybackProgressRequest> call = apiService.getPlaybackProgress(movieId); // Không cần chuyển đổi bằng `Long.valueOf()`
+        call.enqueue(new Callback<PlaybackProgressRequest>() {
+            @Override
+            public void onResponse(@NonNull Call<PlaybackProgressRequest >call, @NonNull Response<PlaybackProgressRequest> response) {
+                if (response.isSuccessful() && response.body() != null) {
+
+                    PlaybackProgressRequest playbackProgressRequest = response.body();
+                    showContinueWatchingDialog(playbackProgressRequest.getPosition(),movieId);
+
+
+                }
+            }
+            @Override
+            public void onFailure(@NonNull Call<PlaybackProgressRequest> call, @NonNull Throwable t) {
+                Intent intent = new Intent(MovieDetailActivity.this, FullScreenVideoActivity.class);
+                intent.putExtra("VIDEO_ID", movieId);
+                intent.putExtra("postion",0);// Truyền videoId vào Intent
+                startActivity(intent);
+            }
+        });
+
+
     }
 
     private void close() {

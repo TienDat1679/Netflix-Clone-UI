@@ -1,6 +1,7 @@
 package com.netflixcloneui.ui;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -44,6 +45,7 @@ import com.netflixcloneui.model.TVSeries;
 import com.netflixcloneui.model.Trailer;
 import com.netflixcloneui.model.request.AddToWatchListRequest;
 import com.netflixcloneui.model.request.LikeRequest;
+import com.netflixcloneui.model.request.PlaybackProgressRequest;
 import com.netflixcloneui.utils.ViewPager2ViewHeightAnimator;
 import com.netflixcloneui.viewmodel.UserViewModel;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
@@ -63,6 +65,10 @@ public class TvSeriesDetailActivity extends AppCompatActivity implements Episode
     private ImageView ivAdd, ivLike;
     boolean isExpanded = false;
     List<Trailer> listTrailer;
+
+    private List<Episode> listEps;
+
+    private  Long episodeIdOne;
     private YouTubePlayer youTubePlayerInstance;
     private YouTubePlayerView youTubePlayerView;
     private MediaRepository mediaRepository;
@@ -92,8 +98,9 @@ public class TvSeriesDetailActivity extends AppCompatActivity implements Episode
         btnClose = findViewById(R.id.btnClose);
         tvLike = findViewById(R.id.tv_like);
         long id = (long) getIntent().getLongExtra("media_id",-1);
+        getEsp(id);
         getTvSeriesDetail(id);
-        btnPlay.setOnClickListener(view -> playFullScreenVideo() );
+        btnPlay.setOnClickListener(view -> playFullScreenVideo(id) );
         //getEsp(id);
         getTrailer(id);
         cLose();
@@ -141,11 +148,47 @@ public class TvSeriesDetailActivity extends AppCompatActivity implements Episode
             }
         });
     }
+    private void showContinueWatchingDialog(Long savedPosition,Long mediaId) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Tiếp tục xem?");
+        builder.setMessage("Bạn muốn tiếp tục xem từ phút " + (savedPosition / 60000) + " không?");
 
-    private void playFullScreenVideo() {
-        Intent intent = new Intent(this, FullScreenVideoActivity.class);
-        intent.putExtra("VIDEO_ID", "xbsT5l4hdfA"); // Truyền videoId vào Intent
-        startActivity(intent);
+        builder.setPositiveButton("Có", (dialog, which) -> {
+            Intent intent = new Intent(TvSeriesDetailActivity.this, FullScreenVideoActivity.class);
+            intent.putExtra("VIDEO_ID", mediaId);
+            intent.putExtra("postion",savedPosition);// Truyền videoId vào Intent
+            startActivity(intent);
+        });
+
+        builder.setNegativeButton("Xem lại từ đầu", (dialog, which) -> {
+            Intent intent = new Intent(TvSeriesDetailActivity.this, FullScreenVideoActivity.class);
+            intent.putExtra("VIDEO_ID", mediaId);
+            intent.putExtra("postion",0);// Truyền videoId vào Intent
+            startActivity(intent);
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+    private void playFullScreenVideo(Long episodeId) {
+        ApiService apiService = RetrofitClient.getApiService(getApplicationContext());
+        Call<PlaybackProgressRequest> call = apiService.getPlaybackProgress(episodeId); // Không cần chuyển đổi bằng `Long.valueOf()`
+        call.enqueue(new Callback<PlaybackProgressRequest>() {
+            @Override
+            public void onResponse(@NonNull Call<PlaybackProgressRequest >call, @NonNull Response<PlaybackProgressRequest> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    PlaybackProgressRequest playbackProgressRequest = response.body();
+                    showContinueWatchingDialog(playbackProgressRequest.getPosition(),episodeId);
+                }
+            }
+            @Override
+            public void onFailure(@NonNull Call<PlaybackProgressRequest> call, @NonNull Throwable t) {
+                Intent intent = new Intent(TvSeriesDetailActivity.this, FullScreenVideoActivity.class);
+                intent.putExtra("VIDEO_ID", episodeId);
+                intent.putExtra("postion",0);// Truyền videoId vào Intent
+                startActivity(intent);
+            }
+        });
     }
 
     private void cLose() {
@@ -298,9 +341,41 @@ public class TvSeriesDetailActivity extends AppCompatActivity implements Episode
         });
 
     }
-
+    private void getEsp(long id) {
+        ApiService apiService = RetrofitClient.getApiService(getApplicationContext());
+        Call<List<Episode>> call = apiService.getEspOfSeries(id); // Không cần chuyển đổi bằng `Long.valueOf()`
+        call.enqueue(new Callback<List<Episode>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Episode>>call, @NonNull Response<List<Episode>> response) {
+                listEps = response.body();
+                episodeIdOne = listEps.get(0).getId();
+            }
+            @Override
+            public void onFailure(@NonNull Call<List<Episode>> call, @NonNull Throwable t) {
+                Log.e("Tvseries Eps", "API Call failed: " + t.getMessage());
+            }
+        });
+    }
     @Override
-    public void onEpisodeClick(String videoKey) {
-        youTubePlayerInstance.loadVideo(videoKey, 0);
+    public void onEpisodeClick(Long episodeId) {
+        ApiService apiService = RetrofitClient.getApiService(getApplicationContext());
+        Call<PlaybackProgressRequest> call = apiService.getPlaybackProgress(episodeId); // Không cần chuyển đổi bằng `Long.valueOf()`
+        call.enqueue(new Callback<PlaybackProgressRequest>() {
+            @Override
+            public void onResponse(@NonNull Call<PlaybackProgressRequest >call, @NonNull Response<PlaybackProgressRequest> response) {
+                if (response.isSuccessful() && response.body() != null) {
+
+                    PlaybackProgressRequest playbackProgressRequest = response.body();
+                    showContinueWatchingDialog(playbackProgressRequest.getPosition(),episodeId);
+                }
+            }
+            @Override
+            public void onFailure(@NonNull Call<PlaybackProgressRequest> call, @NonNull Throwable t) {
+                Intent intent = new Intent(TvSeriesDetailActivity.this, FullScreenVideoActivity.class);
+                intent.putExtra("VIDEO_ID", episodeId);
+                intent.putExtra("postion",0);// Truyền videoId vào Intent
+                startActivity(intent);
+            }
+        });
     }
 }

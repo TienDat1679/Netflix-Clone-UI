@@ -4,6 +4,7 @@ import com.netflixcloneui.model.request.AddToWatchListRequest;
 import com.netflixcloneui.model.request.IntrospectRequest;
 import com.netflixcloneui.model.request.LikeRequest;
 import com.netflixcloneui.model.request.LogoutRequest;
+import com.netflixcloneui.model.request.PlaybackProgressRequest;
 import com.netflixcloneui.model.request.RefreshRequest;
 import com.netflixcloneui.model.response.ApiResponse;
 import com.netflixcloneui.model.request.ChangePasswordRequest;
@@ -141,5 +142,12 @@ public interface ApiService {
 
     @GET("api/vnpay/callback")
     Call<VNPayResponse> checkPayment(@QueryMap Map<String, String> params);
+
+    @GET("api/playback")
+    Call<PlaybackProgressRequest> getPlaybackProgress( @Query("mediaId") Long mediaId);
+    @POST("/api/playback/save")
+    Call<Void> savePlaybackProgress(@Query("mediaId") Long mediaId,
+                                    @Query("position") Long position);
+
 
 }
