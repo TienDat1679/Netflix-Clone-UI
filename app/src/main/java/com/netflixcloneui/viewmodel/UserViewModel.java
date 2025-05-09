@@ -101,6 +101,7 @@ public class UserViewModel extends ViewModel {
 
             @Override
             public void onError(String message) {
+                userId.postValue(null);
                 Log.e("UserViewModel", message);
             }
         });

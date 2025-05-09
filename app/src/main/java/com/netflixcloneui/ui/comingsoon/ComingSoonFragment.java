@@ -69,6 +69,10 @@ public class ComingSoonFragment extends Fragment {
                        loadTopMovies(userId);
                    }
                 });
+            } else {
+                loadHotMedia(null);
+                loadTopSeries(null);
+                loadTopMovies(null);
             }
         });
 
@@ -146,6 +150,24 @@ public class ComingSoonFragment extends Fragment {
     }
 
     private HotAdapter initAdapter(String userId, int viewType) {
+        if (userId == null) {
+            return new HotAdapter(viewType, userViewModel, new HotAdapter.OnMediaClickListener() {
+                @Override
+                public void onPlayClick(Media media) {
+
+                }
+
+                @Override
+                public void onAddClick(Media media, HotAdapter.HotViewHolder holder) {
+
+                }
+
+                @Override
+                public void onMediaDetailClick(Media media) {
+                    openMediaDetail(requireContext(), media.getId(), media.getType());
+                }
+            });
+        }
         return new HotAdapter(viewType, userViewModel, new HotAdapter.OnMediaClickListener() {
             @Override
             public void onPlayClick(Media media) {

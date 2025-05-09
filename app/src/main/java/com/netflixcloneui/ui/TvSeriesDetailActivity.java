@@ -2,10 +2,12 @@ package com.netflixcloneui.ui;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -55,6 +57,7 @@ import com.netflixcloneui.model.request.LikeRequest;
 import com.netflixcloneui.model.request.PlaybackProgressRequest;
 import com.netflixcloneui.model.response.ApiResponse;
 import com.netflixcloneui.model.response.CommentResponse;
+import com.netflixcloneui.ui.user.LoginActivity;
 import com.netflixcloneui.utils.ViewPager2ViewHeightAnimator;
 import com.netflixcloneui.viewmodel.UserViewModel;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
@@ -126,7 +129,8 @@ public class TvSeriesDetailActivity extends AppCompatActivity implements Episode
         viewPaper2Adapter.addFragment(EpisodeFragment.newInstance(id,1));
         viewPaper2Adapter.addFragment(SimilarMediaFragment.newInstance(id));
         viewPaper2Adapter.addFragment(TrailerFragment.newInstance(id, null));
-        viewPaper2Adapter.addFragment(CommentFragment.newInstance(id));
+        if (getSharedPreferences("MyAppPrefs", MODE_PRIVATE).getString("jwt_token", null) != null)
+            viewPaper2Adapter.addFragment(CommentFragment.newInstance(id));
         binding.viewPager2.setAdapter(viewPaper2Adapter);
         // Tự resize chiều cao mỗi khi thay tab
         binding.viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
@@ -296,24 +300,49 @@ public class TvSeriesDetailActivity extends AppCompatActivity implements Episode
         dialog.show();
     }
     private void playFullScreenVideo(Long episodeId) {
-        ApiService apiService = RetrofitClient.getApiService(getApplicationContext());
-        Call<PlaybackProgressRequest> call = apiService.getPlaybackProgress(episodeId); // Không cần chuyển đổi bằng `Long.valueOf()`
-        call.enqueue(new Callback<PlaybackProgressRequest>() {
-            @Override
-            public void onResponse(@NonNull Call<PlaybackProgressRequest >call, @NonNull Response<PlaybackProgressRequest> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    PlaybackProgressRequest playbackProgressRequest = response.body();
-                    showContinueWatchingDialog(playbackProgressRequest.getPosition(),episodeId);
+        if (getSharedPreferences("MyAppPrefs", MODE_PRIVATE).getString("jwt_token", null) != null) {
+            ApiService apiService = RetrofitClient.getApiService(getApplicationContext());
+            Call<PlaybackProgressRequest> call = apiService.getPlaybackProgress(episodeId); // Không cần chuyển đổi bằng `Long.valueOf()`
+            call.enqueue(new Callback<PlaybackProgressRequest>() {
+                @Override
+                public void onResponse(@NonNull Call<PlaybackProgressRequest >call, @NonNull Response<PlaybackProgressRequest> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        PlaybackProgressRequest playbackProgressRequest = response.body();
+                        showContinueWatchingDialog(playbackProgressRequest.getPosition(),episodeId);
+                    }
                 }
-            }
-            @Override
-            public void onFailure(@NonNull Call<PlaybackProgressRequest> call, @NonNull Throwable t) {
-                Intent intent = new Intent(TvSeriesDetailActivity.this, FullScreenVideoActivity.class);
-                intent.putExtra("VIDEO_ID", episodeId);
-                intent.putExtra("postion",0);// Truyền videoId vào Intent
-                startActivity(intent);
-            }
+                @Override
+                public void onFailure(@NonNull Call<PlaybackProgressRequest> call, @NonNull Throwable t) {
+                    Intent intent = new Intent(TvSeriesDetailActivity.this, FullScreenVideoActivity.class);
+                    intent.putExtra("VIDEO_ID", episodeId);
+                    intent.putExtra("postion",0);// Truyền videoId vào Intent
+                    startActivity(intent);
+                }
+            });
+        } else {
+            showLoginDialog(this);
+        }
+    }
+
+    public static void showLoginDialog(Context context) {
+        View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_login_required, null);
+
+        AlertDialog dialog = new AlertDialog.Builder(context)
+                .setView(dialogView)
+                .setCancelable(false)
+                .create();
+
+        Button btnLogin = dialogView.findViewById(R.id.btnLogin);
+        Button btnCancel = dialogView.findViewById(R.id.btnCancel);
+
+        btnLogin.setOnClickListener(v -> {
+            context.startActivity(new Intent(context, LoginActivity.class));
+            dialog.dismiss();
         });
+
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
+
+        dialog.show();
     }
 
     private void cLose() {
@@ -396,6 +425,8 @@ public class TvSeriesDetailActivity extends AppCompatActivity implements Episode
                         });
                     }
                 });
+            } else {
+                binding.layoutActions.setVisibility(View.GONE);
             }
         });
         userViewModel.getIsInWatchList().observe(this, isLike -> {

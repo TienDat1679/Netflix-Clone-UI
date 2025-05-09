@@ -1,6 +1,7 @@
 package com.netflixcloneui.ui.home;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModel;
@@ -31,6 +33,7 @@ import com.netflixcloneui.adapter.MediaAdapter;
 import com.netflixcloneui.databinding.FragmentHomeBinding;
 import com.netflixcloneui.model.Movie;
 import com.netflixcloneui.ui.TvSeriesDetailActivity;
+import com.netflixcloneui.ui.user.LoginActivity;
 import com.netflixcloneui.viewmodel.UserViewModel;
 
 import java.util.Arrays;
@@ -132,7 +135,7 @@ public class HomeFragment extends Fragment {
                 });
 
                 userViewModel.getUserId().observe(getViewLifecycleOwner(), userId -> {
-                    if (userId != null) {
+                    if (userId != null && !userId.isEmpty()) {
                         userViewModel.checkMediaInWatchList(userId, panelMedia.getId(), null);
                         userViewModel.getIsInWatchList().observe(getViewLifecycleOwner(), isInWatchList -> {
                             if (isInWatchList != null) {
@@ -155,6 +158,9 @@ public class HomeFragment extends Fragment {
                                 });
                             }
                         });
+                    } else {
+                        binding.buttonAdd.setVisibility(View.GONE);
+                        binding.buttonPlay.setVisibility(View.GONE);
                     }
                 });
             }

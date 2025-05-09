@@ -22,4 +22,16 @@
         android:name="com.netflixcloneui.ui.mynetflix.MyNetflixFragment"
         android:label="@string/title_my_netflix"
         tools:layout="@layout/fragment_my_netflix" />
+
+    <fragment
+        android:id="@+id/loginPromptFragment"
+        android:name="com.netflixcloneui.ui.LoginPromptFragment"
+        android:label="Đăng nhập để sử dụng"
+        tools:layout="@layout/fragment_login_prompt" />
+
+    <action
+        android:id="@+id/action_global_loginPromptFragment"
+        app:destination="@id/loginPromptFragment"
+        app:popUpTo="@id/mobile_navigation"
+        app:popUpToInclusive="false" />
 </navigation>

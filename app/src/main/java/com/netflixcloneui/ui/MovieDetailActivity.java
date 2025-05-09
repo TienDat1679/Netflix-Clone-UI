@@ -112,7 +112,8 @@ public class MovieDetailActivity extends AppCompatActivity {
         viewPaper2Adapter = new ViewPaper2Adapter(this);
         viewPaper2Adapter.addFragment(SimilarMediaFragment.newInstance(movieId));
         viewPaper2Adapter.addFragment(TrailerFragment.newInstance(movieId, listTrailer));
-        viewPaper2Adapter.addFragment(CommentFragment.newInstance(movieId));
+        if (getSharedPreferences("MyAppPrefs", MODE_PRIVATE).getString("jwt_token", null) != null)
+            viewPaper2Adapter.addFragment(CommentFragment.newInstance(movieId));
         binding.viewPager2.setAdapter(viewPaper2Adapter);
 
         binding.viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
@@ -187,29 +188,31 @@ public class MovieDetailActivity extends AppCompatActivity {
     }
 
     private void playFullScreenVideo(Long movieId) {
-        ApiService apiService = RetrofitClient.getApiService(getApplicationContext());
-        Call<PlaybackProgressRequest> call = apiService.getPlaybackProgress(movieId); // Không cần chuyển đổi bằng `Long.valueOf()`
-        call.enqueue(new Callback<PlaybackProgressRequest>() {
-            @Override
-            public void onResponse(@NonNull Call<PlaybackProgressRequest >call, @NonNull Response<PlaybackProgressRequest> response) {
-                if (response.isSuccessful() && response.body() != null) {
+        if (getSharedPreferences("MyAppPrefs", MODE_PRIVATE).getString("jwt_token", null) != null) {
+            ApiService apiService = RetrofitClient.getApiService(getApplicationContext());
+            Call<PlaybackProgressRequest> call = apiService.getPlaybackProgress(movieId); // Không cần chuyển đổi bằng `Long.valueOf()`
+            call.enqueue(new Callback<PlaybackProgressRequest>() {
+                @Override
+                public void onResponse(@NonNull Call<PlaybackProgressRequest >call, @NonNull Response<PlaybackProgressRequest> response) {
+                    if (response.isSuccessful() && response.body() != null) {
 
-                    PlaybackProgressRequest playbackProgressRequest = response.body();
-                    showContinueWatchingDialog(playbackProgressRequest.getPosition(),movieId);
+                        PlaybackProgressRequest playbackProgressRequest = response.body();
+                        showContinueWatchingDialog(playbackProgressRequest.getPosition(),movieId);
 
 
+                    }
                 }
-            }
-            @Override
-            public void onFailure(@NonNull Call<PlaybackProgressRequest> call, @NonNull Throwable t) {
-                Intent intent = new Intent(MovieDetailActivity.this, FullScreenVideoActivity.class);
-                intent.putExtra("VIDEO_ID", movieId);
-                intent.putExtra("postion",0);// Truyền videoId vào Intent
-                startActivity(intent);
-            }
-        });
-
-
+                @Override
+                public void onFailure(@NonNull Call<PlaybackProgressRequest> call, @NonNull Throwable t) {
+                    Intent intent = new Intent(MovieDetailActivity.this, FullScreenVideoActivity.class);
+                    intent.putExtra("VIDEO_ID", movieId);
+                    intent.putExtra("postion",0);// Truyền videoId vào Intent
+                    startActivity(intent);
+                }
+            });
+        } else {
+            TvSeriesDetailActivity.showLoginDialog(this);
+        }
     }
 
     private void close() {
@@ -292,6 +295,8 @@ public class MovieDetailActivity extends AppCompatActivity {
                         });
                     }
                 });
+            } else {
+                binding.layoutActions.setVisibility(View.GONE);
             }
         });
         userViewModel.getIsLike().observe(this, isLike -> {

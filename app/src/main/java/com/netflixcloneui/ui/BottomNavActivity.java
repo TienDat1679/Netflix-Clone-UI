@@ -45,10 +45,30 @@ public class BottomNavActivity extends AppCompatActivity {
                 R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_bottom_nav);
+
+        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+            int destId = destination.getId();
+
+            if (destId == R.id.navigation_notifications && !isUserLoggedIn()) {
+                // Ngăn không cho hiển thị MyNetflixFragment
+                controller.popBackStack(); // về lại fragment trước đó (home chẳng hạn)
+
+                // Hiển thị fragment yêu cầu đăng nhập
+                controller.navigate(R.id.action_global_loginPromptFragment);
+            }
+        });
+
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
 
     }
+
+    private boolean isUserLoggedIn() {
+        // Có thể check SharedPreferences, Session, ViewModel, hoặc JWT token
+        return getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
+                .getString("jwt_token", null) != null;
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

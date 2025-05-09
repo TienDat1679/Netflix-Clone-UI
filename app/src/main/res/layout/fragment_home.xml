@@ -129,15 +129,15 @@
                             android:layout_height="match_parent"
                             android:background="@drawable/gradient_bottom_top_bg" />
 
-                        <TextView
-                            android:id="@+id/textView"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Hào sữa   •   Quá   •   Đẹp trai"
-                            android:textSize="13sp"
-                            android:textColor="@android:color/white"
-                            android:layout_above="@+id/button_play"
-                            android:layout_centerHorizontal="true" />
+<!--                        <TextView-->
+<!--                            android:id="@+id/textView"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:text="Hào sữa   •   Quá   •   Đẹp trai"-->
+<!--                            android:textSize="13sp"-->
+<!--                            android:textColor="@android:color/white"-->
+<!--                            android:layout_above="@+id/button_play"-->
+<!--                            android:layout_centerHorizontal="true" />-->
 
                         <!-- Button -->
                         <com.google.android.material.button.MaterialButton
