@@ -1,6 +1,7 @@
 package com.netflixcloneui.data.remote;
 
 import com.netflixcloneui.model.request.AddToWatchListRequest;
+import com.netflixcloneui.model.request.CreateCommentRequest;
 import com.netflixcloneui.model.request.IntrospectRequest;
 import com.netflixcloneui.model.request.LikeRequest;
 import com.netflixcloneui.model.request.LogoutRequest;
@@ -14,6 +15,7 @@ import com.netflixcloneui.model.request.LoginRequest;
 import com.netflixcloneui.model.response.AuthResponse;
 import com.netflixcloneui.model.Media;
 import com.netflixcloneui.model.Movie;
+import com.netflixcloneui.model.response.CommentResponse;
 import com.netflixcloneui.model.response.IntrospectResponse;
 import com.netflixcloneui.model.response.QrResponse;
 import com.netflixcloneui.model.request.RegisterRequest;
@@ -149,5 +151,17 @@ public interface ApiService {
     Call<Void> savePlaybackProgress(@Query("mediaId") Long mediaId,
                                     @Query("position") Long position);
 
-
+    // Comments
+    @GET("api/comments/{mediaId}")
+    Call<ApiResponse<List<CommentResponse>>> getCommentsByMediaId(
+            @Path("mediaId") Long mediaId,
+            @Query("page") int page,
+            @Query("size") int size
+    );
+    @POST("api/comments")
+    Call<ApiResponse<CommentResponse>> createComment(@Body CreateCommentRequest request);
+    @POST("api/comments/{commentId}/like")
+    Call<Void> likeComment(@Path("commentId") Long commentId);
+    @POST("api/comments/{commentId}/unlike")
+    Call<Void> unlikeComment(@Path("commentId") Long commentId);
 }

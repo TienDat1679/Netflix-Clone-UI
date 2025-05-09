@@ -311,6 +311,35 @@
     </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
+
+    <LinearLayout
+        android:id="@+id/commentBoxContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        android:layout_alignParentBottom="true"
+        android:padding="8dp"
+        android:background="@color/white"
+        app:layout_constraintEnd_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <EditText
+            android:id="@+id/etComment"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:hint="Nhập bình luận..." />
+
+        <Button
+            android:id="@+id/btnSendComment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Gửi" />
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
 
 

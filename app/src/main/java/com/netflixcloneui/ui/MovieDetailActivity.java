@@ -20,7 +20,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.bumptech.glide.Glide;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -28,18 +31,23 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.netflixcloneui.data.remote.ApiService;
 import com.netflixcloneui.data.remote.RetrofitClient;
 import com.netflixcloneui.model.Trailer;
 import com.netflixcloneui.model.request.AddToWatchListRequest;
+import com.netflixcloneui.model.request.CreateCommentRequest;
 import com.netflixcloneui.model.request.LikeRequest;
 import com.netflixcloneui.model.request.PlaybackProgressRequest;
+import com.netflixcloneui.model.response.ApiResponse;
+import com.netflixcloneui.model.response.CommentResponse;
 import com.netflixcloneui.viewmodel.UserViewModel;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
@@ -98,18 +106,63 @@ public class MovieDetailActivity extends AppCompatActivity {
         onMovieOverviewClick();
         close();
         handleLikeAndWatchlistButton(movieId);
+        createComment(movieId);
         btnPlay.setOnClickListener(view -> playFullScreenVideo(movieId) );
 
         viewPaper2Adapter = new ViewPaper2Adapter(this);
         viewPaper2Adapter.addFragment(SimilarMediaFragment.newInstance(movieId));
         viewPaper2Adapter.addFragment(TrailerFragment.newInstance(movieId, listTrailer));
-        viewPaper2Adapter.addFragment(new CommentFragment());
+        viewPaper2Adapter.addFragment(CommentFragment.newInstance(movieId));
         binding.viewPager2.setAdapter(viewPaper2Adapter);
+
+        binding.viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                Fragment currentFragment = viewPaper2Adapter.getFragment(position);
+                LinearLayout commentBox = findViewById(R.id.commentBoxContainer);
+                if (currentFragment instanceof CommentFragment) {
+                    commentBox.setVisibility(View.VISIBLE);
+                } else {
+                    commentBox.setVisibility(View.GONE);
+                }
+            }
+        });
 
         new TabLayoutMediator(binding.tabLayout, binding.viewPager2, (tab, position) -> {
             tab.setText(tabTitles[position]);
         }).attach();
     }
+
+    private void createComment(long mediaId) {
+        userViewModel.getUserId().observe(this, userId -> {
+            if (userId != null) {
+                binding.btnSendComment.setOnClickListener(v -> {
+                    String content = binding.etComment.getText().toString();
+                    if (!content.isEmpty()) {
+                        CreateCommentRequest request = new CreateCommentRequest(content, mediaId, userId);
+
+                        RetrofitClient.getApiService(this).createComment(request).enqueue(new Callback<ApiResponse<CommentResponse>>() {
+                            @Override
+                            public void onResponse(Call<ApiResponse<CommentResponse>> call, Response<ApiResponse<CommentResponse>> response) {
+                                binding.etComment.setText("");
+                                if (response.isSuccessful() && response.body() != null) {
+                                    CommentFragment commentFragment = (CommentFragment) viewPaper2Adapter.getFragment(2);
+                                    commentFragment.addNewComment(response.body().getResult());
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<ApiResponse<CommentResponse>> call, Throwable t) {
+                                Toast.makeText(MovieDetailActivity.this, "Lỗi: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }
+
     private void showContinueWatchingDialog(Long savedPosition,Long mediaId) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Tiếp tục xem?");

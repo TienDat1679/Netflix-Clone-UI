@@ -2,13 +2,31 @@ package com.netflixcloneui.ui;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.netflixcloneui.R;
+import com.netflixcloneui.adapter.CommentAdapter;
+import com.netflixcloneui.adapter.MediaAdapter;
+import com.netflixcloneui.data.remote.ApiService;
+import com.netflixcloneui.data.remote.RetrofitClient;
+import com.netflixcloneui.model.Media;
+import com.netflixcloneui.model.response.ApiResponse;
+import com.netflixcloneui.model.response.CommentResponse;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -16,34 +34,19 @@ import com.netflixcloneui.R;
  * create an instance of this fragment.
  */
 public class CommentFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private long mediaId;
+    private CommentAdapter commentAdapter;
+    private List<CommentResponse> comments;
+    private RecyclerView recyclerView;
 
     public CommentFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment CommentFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static CommentFragment newInstance(String param1, String param2) {
+    public static CommentFragment newInstance(long mediaId) {
         CommentFragment fragment = new CommentFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putLong("media_id", mediaId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -52,8 +55,7 @@ public class CommentFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            mediaId = getArguments().getLong("media_id", -1);
         }
     }
 
@@ -61,6 +63,85 @@ public class CommentFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_comment, container, false);
+        View view = inflater.inflate(R.layout.fragment_comment, container, false);
+        setComments(view);
+        return view;
+    }
+
+    private void setComments(View view) {
+        ApiService apiService = RetrofitClient.getApiService(getContext());
+        Call<ApiResponse<List<CommentResponse>>> call = apiService.getCommentsByMediaId(mediaId, 0, 10);
+        call.enqueue(new Callback<ApiResponse<List<CommentResponse>>>() {
+            @Override
+            public void onResponse(@NonNull Call<ApiResponse<List<CommentResponse>>> call, @NonNull Response<ApiResponse<List<CommentResponse>>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    comments = response.body().getResult();
+                    recyclerView = view.findViewById(R.id.rcvComments);
+                    recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                    commentAdapter = new CommentAdapter(comments);
+                    commentAdapter.setOnLikeClickListener((position, comment) -> {
+                        if (comment.isLikedByUser()) {
+                            // Unlike
+                            comment.setLikedByUser(false);
+                            comment.setLikes(comment.getLikes() - 1);
+                            commentAdapter.notifyItemChanged(position);
+
+                            RetrofitClient.getApiService(getContext()).unlikeComment(comment.getId())
+                                    .enqueue(new Callback<Void>() {
+                                        @Override
+                                        public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
+                                            // Xử lý nếu cần
+                                            if (!response.isSuccessful()) {
+                                                Log.e("CommentFragment", "Unlike API failed: " + response.code());
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
+                                            Log.e("CommentFragment", "Unlike failed: " + t.getMessage());
+                                        }
+                                    });
+
+                        } else {
+                            // Like
+                            comment.setLikedByUser(true);
+                            comment.setLikes(comment.getLikes() + 1);
+                            commentAdapter.notifyItemChanged(position);
+
+                            RetrofitClient.getApiService(getContext()).likeComment(comment.getId())
+                                    .enqueue(new Callback<Void>() {
+                                        @Override
+                                        public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
+                                            if (!response.isSuccessful()) {
+                                                Log.e("CommentFragment", "Like API failed: " + response.code());
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
+                                            Log.e("CommentFragment", "Like failed: " + t.getMessage());
+                                        }
+                                    });
+                        }
+
+                        // Cập nhật item sau khi thay đổi
+                        commentAdapter.notifyItemChanged(position);
+                    });
+                    recyclerView.setAdapter(commentAdapter);
+                }
+            }
+            @Override
+            public void onFailure(@NonNull Call<ApiResponse<List<CommentResponse>>> call, @NonNull Throwable t) {
+                Log.e("CommentFragment", "API Call failed: " + t.getMessage());
+            }
+        });
+    }
+
+    public void addNewComment(CommentResponse comment) {
+        if (comments != null && commentAdapter != null) {
+            comments.add(0, comment); // thêm comment mới lên đầu danh sách
+            commentAdapter.notifyItemInserted(0);
+            recyclerView.scrollToPosition(0);
+        }
     }
 }
