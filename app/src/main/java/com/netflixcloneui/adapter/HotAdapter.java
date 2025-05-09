@@ -80,6 +80,12 @@ public class HotAdapter extends RecyclerView.Adapter<HotAdapter.HotViewHolder> {
         holder.textTitle.setText(movie.getTitle());
         holder.textOverview.setText(movie.getOverview());
 
+        if (holder.itemView.getContext().getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+                .getString("jwt_token", null) == null) {
+            holder.buttonAdd.setVisibility(View.GONE);
+            holder.buttonPlay.setVisibility(View.GONE);
+        }
+
         holder.linearLayout.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onMediaDetailClick(movie);

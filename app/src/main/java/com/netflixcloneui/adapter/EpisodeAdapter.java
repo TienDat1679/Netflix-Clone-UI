@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.netflixcloneui.R;
 import com.netflixcloneui.model.Episode;
+import com.netflixcloneui.ui.TvSeriesDetailActivity;
 
 import java.util.List;
 
@@ -59,8 +60,11 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.EpisodeV
                 .placeholder(R.drawable.load_image)
                 .into(holder.imgThumbnail);
         holder.itemView.setOnClickListener(v -> {
-            if (listener != null) {
+            if (listener != null && context.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+                    .getString("jwt_token", null) != null) {
                 listener.onEpisodeClick(episode.getId()); // Gửi videoKey của tập phim được chọn
+            } else {
+                TvSeriesDetailActivity.showLoginDialog(context);
             }
         });
     }
