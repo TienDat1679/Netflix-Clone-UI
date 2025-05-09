@@ -1,6 +1,8 @@
 package com.netflixcloneui.ui;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -13,6 +15,8 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -21,8 +25,10 @@ import androidx.core.view.WindowInsetsCompat;
 import com.netflixcloneui.R;
 import com.netflixcloneui.data.remote.ApiService;
 import com.netflixcloneui.data.remote.RetrofitClient;
-import com.netflixcloneui.model.response.QrResponse;
-import com.netflixcloneui.model.response.VNPayResponse;
+import com.netflixcloneui.model.response.PaymentResponse;
+
+
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,6 +45,7 @@ public class PaymentSummaryActivity extends AppCompatActivity {
     Integer amount;
     Button button,btnOk,btnCancel,btnSuccess;
 
+    private ActivityResultLauncher<Intent> paymentLauncher;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,86 +58,74 @@ public class PaymentSummaryActivity extends AppCompatActivity {
         });
         amount = (Integer) getIntent().getIntExtra("amount",-1);
         button = findViewById(R.id.btnConfirmPayment);
-        button.setOnClickListener(view -> openDialog()
+        button.setOnClickListener(view -> payment()
                 );
-
-    }
-    private void openDialog() {
-        Log.d("amout",amount.toString());
-        ApiService apiService = RetrofitClient.getApiService(getApplicationContext());
-        Call<QrResponse> call = apiService.generateVnpayQR(amount.toString());
-        call.enqueue(new Callback<QrResponse>() {
-            @Override
-            public void onResponse(Call<QrResponse> call, Response<QrResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    String qrBase64 = response.body().getQrCode();
-                    byte[] decodedString = Base64.decode(qrBase64, Base64.DEFAULT);
-                    Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                    Log.d("qr", "tao thanh cong");
-                    AlertDialog.Builder builder = new AlertDialog.Builder(PaymentSummaryActivity.this);
-                    LayoutInflater inflater = getLayoutInflater();
-                    View dialogView = inflater.inflate(R.layout.qr_payment_dialog, null);
-                    builder.setView(dialogView);
-                    AlertDialog dialog = builder.create();
-                    imageViewQR = dialogView.findViewById(R.id.qr_code_image);
-                    imageViewQR.setImageBitmap(bitmap);
-                    dialog.setCanceledOnTouchOutside(true);
-                    dialog.show();
-
-                    Button btnOk = dialogView.findViewById(R.id.btn_ok);
-                    btnOk.setOnClickListener(v -> testCallBack(amount,"00",dialog));
-                } else {
-                    Toast.makeText(PaymentSummaryActivity.this, "Lỗi khi lấy mã QR!", Toast.LENGTH_SHORT).show();
-                }
-            }
-            private void testCallBack(Integer amount, String status,AlertDialog dialog) {
-                Map<String, String> params = new HashMap<>();
-                params.put("vnp_ResponseCode", "00");
-                params.put("vnp_Amount", amount.toString());
-
-                ApiService apiService = RetrofitClient.getApiService(getApplicationContext());
-                Call<VNPayResponse > call = apiService.checkPayment(params);
-                call.enqueue(new Callback<VNPayResponse >() {
-                    @Override
-                    public void onResponse(Call<VNPayResponse> call, Response<VNPayResponse > response) {
-                        if (response.isSuccessful()) {
-                            VNPayResponse vnPayResponse=response.body();
-                            if (vnPayResponse.getStatus().equals("success")) {
-                                congratulations(dialog);
-                            } else {
-
-                            }
-                        } else {
-                            Toast.makeText(PaymentSummaryActivity.this, "Lỗi khi lấy mã QR!", Toast.LENGTH_SHORT).show();
+        paymentLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK) {
+                        Intent data = result.getData();
+                        if (data != null && "00".equals(data.getStringExtra("vnp_ResponseCode"))) {
+                            congratulations();
+                        }
+                        else {
+                            failed();
                         }
                     }
+                }
+        );
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"})
+        ImageView btnBack = findViewById(R.id.back);
+        btnBack.setOnClickListener(v -> {
+            getOnBackPressedDispatcher().onBackPressed();
+        });
 
-                    @Override
-                    public void onFailure(Call<VNPayResponse > call, Throwable t) {
-                        Log.e("Payment process", "API Call failed: " + t.getMessage());
-                    }
+    }
 
-                });
-            }
+    private void failed() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(PaymentSummaryActivity.this);
+        LayoutInflater inflater = getLayoutInflater();
+        View dialog1 = inflater.inflate(R.layout.failed_dialog, null);
+        builder.setView(dialog1);
+        AlertDialog dialogS = builder.create();
+        dialogS.setCanceledOnTouchOutside(true);
+        dialogS.show();
+        Button btn = dialogS.findViewById(R.id.btnOk);
+        btn.setOnClickListener(v->dialogS.dismiss());
+    }
 
-            private void congratulations(AlertDialog dialog ) {
-                dialog.dismiss();
-                AlertDialog.Builder builder = new AlertDialog.Builder(PaymentSummaryActivity.this);
-                LayoutInflater inflater = getLayoutInflater();
-                View dialog1 = inflater.inflate(R.layout.success_dialog, null);
-                builder.setView(dialog1);
-                AlertDialog dialogS = builder.create();
-                dialogS.setCanceledOnTouchOutside(true);
-                dialogS.show();
-                Button btn = dialogS.findViewById(R.id.btnSuccess);
-                btn.setOnClickListener(v->dialogS.dismiss());
-            }
-
+    private void payment() {
+        ApiService apiService = RetrofitClient.getApiService(getApplicationContext());
+        Call<PaymentResponse> call = apiService.payment(amount.toString(),"NCB");
+        call.enqueue(new Callback<PaymentResponse>() {
             @Override
-            public void onFailure(Call<QrResponse> call, Throwable t) {
+            public void onResponse(Call<PaymentResponse> call, Response<PaymentResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    String url = response.body().data.paymentUrl;
+                    Intent intent=new Intent(PaymentSummaryActivity.this,PaymentProcessAcitvity.class);
+                    intent.putExtra("url",url);
+                    paymentLauncher.launch(intent);
+                } else {
+                    Toast.makeText(PaymentSummaryActivity.this, "Lỗi khi thanh toan!", Toast.LENGTH_SHORT).show();
+                }
+            }
+            @Override
+            public void onFailure(Call<PaymentResponse> call, Throwable t) {
                 Log.e("API_ERROR", "Lỗi: " + t.getMessage());
 
             }
         });
+    }
+    private void congratulations () {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(PaymentSummaryActivity.this);
+        LayoutInflater inflater = getLayoutInflater();
+        View dialog1 = inflater.inflate(R.layout.success_dialog, null);
+        builder.setView(dialog1);
+        AlertDialog dialogS = builder.create();
+        dialogS.setCanceledOnTouchOutside(true);
+        dialogS.show();
+        Button btn = dialogS.findViewById(R.id.btnSuccess);
+        btn.setOnClickListener(v->dialogS.dismiss());
     }
 }

@@ -9,6 +9,15 @@
     tools:context=".ui.PaymentSummaryActivity">
 
     <!-- Tiêu đề -->
+    <ImageView
+        android:id="@+id/back"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/ic_left_arrow"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="20dp"
+        tools:layout_editor_absoluteY="16dp" />
+
     <TextView
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
