@@ -35,7 +35,7 @@ public class MyApplication extends Application {
         executorService = Executors.newSingleThreadExecutor();
         mainHandler = new Handler(Looper.getMainLooper());
 
-        checkTokenValidity(); // Kiểm tra token trong background thread
+//        checkTokenValidity(); // Kiểm tra token trong background thread
     }
 
     public static MyApplication getInstance() {

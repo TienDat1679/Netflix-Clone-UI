@@ -22,6 +22,7 @@ import com.netflixcloneui.model.response.PaymentResponse;
 import com.netflixcloneui.model.request.RegisterRequest;
 import com.netflixcloneui.model.TVSeries;
 import com.netflixcloneui.model.Trailer;
+import com.netflixcloneui.model.response.PlayBackResponse;
 import com.netflixcloneui.model.response.UserResponse;
 
 import java.util.List;
@@ -159,4 +160,7 @@ public interface ApiService {
     Call<Void> likeComment(@Path("commentId") Long commentId);
     @POST("api/comments/{commentId}/unlike")
     Call<Void> unlikeComment(@Path("commentId") Long commentId);
+
+    @GET("api/playback/user")
+    Call<List<PlayBackResponse>> getPlaybackProgressByUser();
 }

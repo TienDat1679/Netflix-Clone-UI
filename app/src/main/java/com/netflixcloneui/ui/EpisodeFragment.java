@@ -21,6 +21,8 @@ import com.netflixcloneui.adapter.EpisodeAdapter;
 import com.netflixcloneui.data.remote.ApiService;
 import com.netflixcloneui.data.remote.RetrofitClient;
 import com.netflixcloneui.model.Episode;
+import com.netflixcloneui.model.request.PlaybackProgressRequest;
+import com.netflixcloneui.model.response.PlayBackResponse;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,9 +39,10 @@ import retrofit2.Response;
  */
 public class EpisodeFragment extends Fragment {
     private RecyclerView recyclerViewEps;
-    private EpisodeAdapter epsAdapter;
+    private EpisodeAdapter    epsAdapter;
     private SnapHelper snapHelper;
 
+    private List<PlayBackResponse> playbackProgress;
     private long mediaId;
     private int season;
     private List<Episode> allEpisodes = new ArrayList<>();   // giữ toàn bộ data
@@ -77,10 +80,25 @@ public class EpisodeFragment extends Fragment {
 
         // Lần đầu gọi API để load tất cả episodes
         loadAllEpisodes();
-
+        getPlayBackProgress();
         return view;
     }
 
+
+    private void getPlayBackProgress(){
+        RetrofitClient.getApiService(getContext())
+                .getPlaybackProgressByUser()
+                .enqueue(new Callback<List<PlayBackResponse>>() {
+                    @Override public void onResponse(@NonNull Call<List<PlayBackResponse>> c, @NonNull Response<List<PlayBackResponse>> r) {
+                        if (!r.isSuccessful() || r.body()==null) return;
+                        Log.d("api", r.body().toString());
+                        playbackProgress = r.body();
+                        Log.d("playbackk", playbackProgress.toString());
+
+                    }
+                    @Override public void onFailure(@NonNull Call<List<PlayBackResponse>> c, @NonNull Throwable t) { }
+                });
+    }
     private void loadAllEpisodes() {
         RetrofitClient.getApiService(getContext())
                 .getEspOfSeries(mediaId)
@@ -101,7 +119,7 @@ public class EpisodeFragment extends Fragment {
             if (e.getSeasonNumber() == season) filtered.add(e);
         }
         Collections.sort(filtered, (a,b) -> Integer.compare(a.getEpisodeNumber(), b.getEpisodeNumber()));
-        epsAdapter.setData(filtered);
+        epsAdapter.setData(filtered,playbackProgress);
     }
 
     // Khi người dùng chọn season mới

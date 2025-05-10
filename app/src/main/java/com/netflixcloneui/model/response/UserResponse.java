@@ -1,6 +1,7 @@
 package com.netflixcloneui.model.response;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 public class UserResponse {
@@ -12,7 +13,12 @@ public class UserResponse {
     LocalDate dob;
     Set<RoleResponse> roles;
 
-    public UserResponse(String id, String name, String email, Integer otp, int enabled, LocalDate dob, Set<RoleResponse> roles) {
+
+
+    LocalDateTime startDate;
+    LocalDateTime endDate;
+    public UserResponse(String id, String name, String email, Integer otp, int enabled, LocalDate dob, LocalDateTime startDate,
+    LocalDateTime endDate, Set<RoleResponse> roles) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -20,6 +26,8 @@ public class UserResponse {
         this.enabled = enabled;
         this.dob = dob;
         this.roles = roles;
+        this.startDate=startDate;
+        this.endDate=endDate;
     }
 
     public String getId() {
@@ -76,5 +84,20 @@ public class UserResponse {
 
     public void setRoles(Set<RoleResponse> roles) {
         this.roles = roles;
+    }
+    public LocalDateTime getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDateTime endDate) {
+        this.endDate = endDate;
+    }
+
+    public LocalDateTime getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDateTime startDate) {
+        this.startDate = startDate;
     }
 }

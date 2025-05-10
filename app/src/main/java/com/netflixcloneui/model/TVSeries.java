@@ -10,12 +10,16 @@ public class TVSeries {
     private String posterPath;
     private String backdropPath;
     private boolean adult;
+    private Long voteCount;
+    private Long viewCount;
+
+    private int isPrenium;
     private List<Episode> episodes;
     private List<Trailer> trailers;
     private List<Genre> genres;
     private List<Credit> credits;
 
-    public TVSeries(Long id, String name, String overview, String firstAirDate, String posterPath, String backdropPath, boolean adult, List<Episode> episodes, List<Trailer> trailers, List<Genre> genres, List<Credit> credits) {
+    public TVSeries(Long id, String name, String overview, String firstAirDate, String posterPath,int isPrenium, String backdropPath, boolean adult,Long voteCount,long viewCount, List<Episode> episodes, List<Trailer> trailers, List<Genre> genres, List<Credit> credits) {
         this.id = id;
         this.name = name;
         this.overview = overview;
@@ -24,11 +28,20 @@ public class TVSeries {
         this.backdropPath = backdropPath;
         this.adult = adult;
         this.episodes = episodes;
+        this.viewCount=viewCount;
+        this.voteCount=voteCount;
+        this.isPrenium=isPrenium;
         this.trailers = trailers;
         this.genres = genres;
         this.credits = credits;
     }
+    public int getIsPrenium() {
+        return isPrenium;
+    }
 
+    public void setIsPrenium(int isPrenium) {
+        this.isPrenium = isPrenium;
+    }
     public Long getId() {
         return id;
     }

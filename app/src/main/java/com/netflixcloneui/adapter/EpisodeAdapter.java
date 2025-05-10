@@ -14,6 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.netflixcloneui.R;
 import com.netflixcloneui.model.Episode;
+import com.netflixcloneui.model.request.PlaybackProgressRequest;
+import com.netflixcloneui.model.response.PlayBackResponse;
 import com.netflixcloneui.ui.TvSeriesDetailActivity;
 
 import java.util.List;
@@ -22,11 +24,14 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.EpisodeV
 
     private Context context;
     private List<Episode> episodeList;
+
+    private List<PlayBackResponse> episoPlaybackList;
     private OnEpisodeClickListener listener;
     String imageUrl = "https://image.tmdb.org/t/p/w500";
 
-    public void setData(List<Episode> filteredEpisodes) {
+    public void setData(List<Episode> filteredEpisodes, List<PlayBackResponse> episoPlaybackList) {
         this.episodeList = filteredEpisodes;
+        this.episoPlaybackList=episoPlaybackList;
         notifyDataSetChanged();
     }
 
@@ -67,6 +72,24 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.EpisodeV
                 TvSeriesDetailActivity.showLoginDialog(context);
             }
         });
+        Long currentMediaId = episode.getId();
+        if(episoPlaybackList!=null){
+            for (PlayBackResponse progress : episoPlaybackList) {
+                if (currentMediaId.equals(progress.getMediaId())) {
+                    float percentWatched = (float) progress.getPosition() /(episode.getRuntime()*60*1000);
+                    if (percentWatched < 0f || percentWatched > 1f) percentWatched = 0f;
+
+                    float density = context.getResources().getDisplayMetrics().density;
+                    int thumbnailWidthPx = (int) (120 * density); // thumbnail width cố định 120dp
+
+                    int progressWidth = (int) (thumbnailWidthPx * percentWatched);
+
+                    ViewGroup.LayoutParams layoutParams = holder.viewProgress.getLayoutParams();
+                    layoutParams.width = progressWidth;
+                    holder.viewProgress.setLayoutParams(layoutParams);
+                }
+            }
+        }
     }
 
     @Override
@@ -78,6 +101,8 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.EpisodeV
         ImageView imgThumbnail, imgPlayIcon, imgDownload;
         TextView tvEpisodeTitle, tvEpisodeDuration, tvEpisodeDescription;
 
+        View viewProgress; // thêm dòng này
+
         public EpisodeViewHolder(@NonNull View itemView) {
             super(itemView);
             imgThumbnail = itemView.findViewById(R.id.imgThumbnail);
@@ -86,6 +111,7 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.EpisodeV
             tvEpisodeTitle = itemView.findViewById(R.id.tvEpisodeTitle);
             tvEpisodeDuration = itemView.findViewById(R.id.tvEpisodeDuration);
             tvEpisodeDescription = itemView.findViewById(R.id.tvEpisodeDescription);
+            viewProgress = itemView.findViewById(R.id.viewProgress);
         }
     }
 }

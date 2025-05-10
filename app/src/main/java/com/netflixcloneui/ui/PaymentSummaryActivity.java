@@ -117,7 +117,6 @@ public class PaymentSummaryActivity extends AppCompatActivity {
         });
     }
     private void congratulations () {
-
         AlertDialog.Builder builder = new AlertDialog.Builder(PaymentSummaryActivity.this);
         LayoutInflater inflater = getLayoutInflater();
         View dialog1 = inflater.inflate(R.layout.success_dialog, null);

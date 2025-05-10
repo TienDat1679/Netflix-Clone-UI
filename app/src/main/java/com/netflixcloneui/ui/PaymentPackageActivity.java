@@ -36,8 +36,8 @@ public class PaymentPackageActivity extends AppCompatActivity {
         });
         option1=findViewById(R.id.option1);
         option2=findViewById(R.id.option2);
-        option1.setOnClickListener(v->openSumary(3000));
-        option2.setOnClickListener(v->openSumary(28000));
+        option1.setOnClickListener(v->openSumary(30000));
+        option2.setOnClickListener(v->openSumary(280000));
     }
 
     private void openSumary(int v) {
