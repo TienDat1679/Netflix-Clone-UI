@@ -26,6 +26,7 @@ import com.netflixcloneui.model.response.PlayBackResponse;
 import com.netflixcloneui.model.response.UserResponse;
 
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -163,4 +164,6 @@ public interface ApiService {
 
     @GET("api/playback/user")
     Call<List<PlayBackResponse>> getPlaybackProgressByUser();
+
+
 }
