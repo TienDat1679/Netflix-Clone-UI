@@ -39,7 +39,8 @@ public class FullScreenVideoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_full_screen_video);
-        long postiton = (long) getIntent().getLongExtra("positon",-1);
+        long position = (long) getIntent().getLongExtra("position",-1);
+
         long mediaId = (long) getIntent().getLongExtra("VIDEO_ID",-1);
         playerView = findViewById(R.id.playerView);
         closeButton = findViewById(R.id.closeButton);
@@ -53,13 +54,7 @@ public class FullScreenVideoActivity extends AppCompatActivity {
         MediaItem mediaItem = MediaItem.fromUri(videoUri);
         player.setMediaItem(mediaItem);
         player.prepare();
-        if(postiton !=0 )
-        {
-            player.seekTo(postiton);
-        }
-        else {
-            player.seekTo(0);
-        }
+        player.seekTo(position);
         player.play();
         startUpdatingPlaybackProgress(mediaId);
         // Đóng video khi nhấn nút

@@ -143,7 +143,7 @@ public interface ApiService {
     Call<PaymentResponse> payment(@Query("amount") String  amount,@Query("bankCode") String bankCode);
 
     @GET("api/playback")
-    Call<PlaybackProgressRequest> getPlaybackProgress( @Query("mediaId") Long mediaId);
+    Call<PlayBackResponse> getPlaybackProgress( @Query("mediaId") Long mediaId);
     @POST("/api/playback/save")
     Call<Void> savePlaybackProgress(@Query("mediaId") Long mediaId,
                                     @Query("position") Long position);
@@ -167,4 +167,7 @@ public interface ApiService {
 
     @GET("api/payment/vn-pay-callback")
     Call<Void> playbackVnpay(@Query("amount") String amount);
+
+    @POST("api/playback/delete")
+    Call<Void> deletePlayback(@Query("mediaId") Long mediaId);
 }

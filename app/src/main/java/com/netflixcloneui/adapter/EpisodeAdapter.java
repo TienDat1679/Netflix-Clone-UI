@@ -2,6 +2,7 @@ package com.netflixcloneui.adapter;
 
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,6 +68,7 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.EpisodeV
         holder.itemView.setOnClickListener(v -> {
             if (listener != null && context.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
                     .getString("jwt_token", null) != null) {
+
                 listener.onEpisodeClick(episode.getId()); // Gửi videoKey của tập phim được chọn
             } else {
                 TvSeriesDetailActivity.showLoginDialog(context);

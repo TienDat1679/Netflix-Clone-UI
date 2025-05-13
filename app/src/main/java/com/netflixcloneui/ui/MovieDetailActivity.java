@@ -48,6 +48,7 @@ import com.netflixcloneui.model.request.LikeRequest;
 import com.netflixcloneui.model.request.PlaybackProgressRequest;
 import com.netflixcloneui.model.response.ApiResponse;
 import com.netflixcloneui.model.response.CommentResponse;
+import com.netflixcloneui.model.response.PlayBackResponse;
 import com.netflixcloneui.model.response.UserResponse;
 import com.netflixcloneui.viewmodel.UserViewModel;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
@@ -216,14 +217,14 @@ public class MovieDetailActivity extends AppCompatActivity {
         builder.setPositiveButton("Có", (dialog, which) -> {
             Intent intent = new Intent(MovieDetailActivity.this, FullScreenVideoActivity.class);
             intent.putExtra("VIDEO_ID", mediaId);
-            intent.putExtra("postion",savedPosition);// Truyền videoId vào Intent
+            intent.putExtra("position",savedPosition);// Truyền videoId vào Intent
             startActivity(intent);
         });
 
         builder.setNegativeButton("Xem lại từ đầu", (dialog, which) -> {
             Intent intent = new Intent(MovieDetailActivity.this, FullScreenVideoActivity.class);
             intent.putExtra("VIDEO_ID", mediaId);
-            intent.putExtra("postion",0);// Truyền videoId vào Intent
+            intent.putExtra("position",0);// Truyền videoId vào Intent
             startActivity(intent);
         });
 
@@ -238,20 +239,20 @@ public class MovieDetailActivity extends AppCompatActivity {
                 if(isPrenium)
                 {
                     ApiService apiService = RetrofitClient.getApiService(getApplicationContext());
-                    Call<PlaybackProgressRequest> call = apiService.getPlaybackProgress(movieId); // Không cần chuyển đổi bằng `Long.valueOf()`
-                    call.enqueue(new Callback<PlaybackProgressRequest>() {
+                    Call<PlayBackResponse> call = apiService.getPlaybackProgress(movieId); // Không cần chuyển đổi bằng `Long.valueOf()`
+                    call.enqueue(new Callback<PlayBackResponse>() {
                         @Override
-                        public void onResponse(@NonNull Call<PlaybackProgressRequest >call, @NonNull Response<PlaybackProgressRequest> response) {
+                        public void onResponse(@NonNull Call<PlayBackResponse >call, @NonNull Response<PlayBackResponse> response) {
                             if (response.isSuccessful() && response.body() != null) {
-                                PlaybackProgressRequest playbackProgressRequest = response.body();
-                                showContinueWatchingDialog(playbackProgressRequest.getPosition(),movieId);
+                                PlayBackResponse PlayBackResponse = response.body();
+                                showContinueWatchingDialog(PlayBackResponse.getPosition(),movieId);
                             }
                         }
                         @Override
-                        public void onFailure(@NonNull Call<PlaybackProgressRequest> call, @NonNull Throwable t) {
+                        public void onFailure(@NonNull Call<PlayBackResponse> call, @NonNull Throwable t) {
                             Intent intent = new Intent(MovieDetailActivity.this, FullScreenVideoActivity.class);
                             intent.putExtra("VIDEO_ID", movieId);
-                            intent.putExtra("postion",0);// Truyền videoId vào Intent
+                            intent.putExtra("position",0);// Truyền videoId vào Intent
                             startActivity(intent);
                         }
                     });
@@ -262,21 +263,21 @@ public class MovieDetailActivity extends AppCompatActivity {
             }
             else {
                 ApiService apiService = RetrofitClient.getApiService(getApplicationContext());
-                Call<PlaybackProgressRequest> call = apiService.getPlaybackProgress(movieId); // Không cần chuyển đổi bằng `Long.valueOf()`
-                call.enqueue(new Callback<PlaybackProgressRequest>() {
+                Call<PlayBackResponse> call = apiService.getPlaybackProgress(movieId); // Không cần chuyển đổi bằng `Long.valueOf()`
+                call.enqueue(new Callback<PlayBackResponse>() {
                     @Override
-                    public void onResponse(@NonNull Call<PlaybackProgressRequest >call, @NonNull Response<PlaybackProgressRequest> response) {
+                    public void onResponse(@NonNull Call<PlayBackResponse >call, @NonNull Response<PlayBackResponse> response) {
                         if (response.isSuccessful() && response.body() != null) {
 
-                            PlaybackProgressRequest playbackProgressRequest = response.body();
-                            showContinueWatchingDialog(playbackProgressRequest.getPosition(),movieId);
+                            PlayBackResponse PlayBackResponse = response.body();
+                            showContinueWatchingDialog(PlayBackResponse.getPosition(),movieId);
                         }
                     }
                     @Override
-                    public void onFailure(@NonNull Call<PlaybackProgressRequest> call, @NonNull Throwable t) {
+                    public void onFailure(@NonNull Call<PlayBackResponse> call, @NonNull Throwable t) {
                         Intent intent = new Intent(MovieDetailActivity.this, FullScreenVideoActivity.class);
                         intent.putExtra("VIDEO_ID", movieId);
-                        intent.putExtra("postion",0);// Truyền videoId vào Intent
+                        intent.putExtra("position",0);// Truyền videoId vào Intent
                         startActivity(intent);
                     }
                 });
