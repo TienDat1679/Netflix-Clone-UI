@@ -54,8 +54,10 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
@@ -143,6 +145,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     }
 
     private void checkPrenium() {
+
         ApiService apiService = RetrofitClient.getApiService(getApplicationContext());
         Call<ApiResponse<UserResponse>> call = apiService.getMyInfo();// Không cần chuyển đổi bằng `Long.valueOf()`
         call.enqueue(new Callback<ApiResponse<UserResponse>>() {
@@ -150,10 +153,22 @@ public class MovieDetailActivity extends AppCompatActivity {
             @Override
             public void onResponse(@NonNull Call<ApiResponse<UserResponse> >call, @NonNull Response<ApiResponse<UserResponse>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    ApiResponse<UserResponse> userResponseApiResponse=response.body();
-                    @SuppressLint({"NewApi", "LocalSuppress"}) LocalDateTime now = LocalDateTime.now();
-                    if(userResponseApiResponse.getResult().getEndDate() != null && now.isBefore(userResponseApiResponse.getResult().getEndDate())){
-                        isPrenium=true;
+                    ApiResponse<UserResponse> userResponseApiResponse = response.body();
+                    String endDateStr = userResponseApiResponse.getResult().getEndDate();
+
+                    if (endDateStr != null) {
+                        try {
+                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS");
+                            Date endDate = sdf.parse(endDateStr);
+                            Date now = new Date();
+
+                            if (now.before(endDate)) {
+                                isPrenium = true;
+                            }
+
+                        } catch (Exception e) {
+                            e.printStackTrace(); // handle parse error
+                        }
                     }
                 }
             }

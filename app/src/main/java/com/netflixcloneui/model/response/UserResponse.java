@@ -10,15 +10,12 @@ public class UserResponse {
     String email;
     Integer otp;
     int enabled;
-    LocalDate dob;
+    String dob;
     Set<RoleResponse> roles;
-
-
-
-    LocalDateTime startDate;
-    LocalDateTime endDate;
-    public UserResponse(String id, String name, String email, Integer otp, int enabled, LocalDate dob, LocalDateTime startDate,
-    LocalDateTime endDate, Set<RoleResponse> roles) {
+    String startDate;
+    String endDate;
+    public UserResponse(String id, String name, String email, Integer otp, int enabled, String dob, String startDate,
+                        String endDate, Set<RoleResponse> roles) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -70,11 +67,11 @@ public class UserResponse {
         this.enabled = enabled;
     }
 
-    public LocalDate getDob() {
+    public String getDob() {
         return dob;
     }
 
-    public void setDob(LocalDate dob) {
+    public void setDob(String dob) {
         this.dob = dob;
     }
 
@@ -85,19 +82,19 @@ public class UserResponse {
     public void setRoles(Set<RoleResponse> roles) {
         this.roles = roles;
     }
-    public LocalDateTime getEndDate() {
+    public String getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(LocalDateTime endDate) {
+    public void setEndDate(String endDate) {
         this.endDate = endDate;
     }
 
-    public LocalDateTime getStartDate() {
+    public String getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(LocalDateTime startDate) {
+    public void setStartDate(String startDate) {
         this.startDate = startDate;
     }
 }
