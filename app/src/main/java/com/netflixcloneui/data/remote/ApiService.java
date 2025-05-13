@@ -173,4 +173,7 @@ public interface ApiService {
     Call<ApiResponse<List<Media>>> getUserInbox();
     @GET("api/reminders/by-user")
     Call<ApiResponse<List<Media>>> getAllReminders();
+
+    @GET("api/payment/vn-pay-callback")
+    Call<Void> playbackVnpay(@Query("amount") String amount);
 }

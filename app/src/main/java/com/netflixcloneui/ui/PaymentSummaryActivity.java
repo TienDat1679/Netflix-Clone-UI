@@ -125,6 +125,11 @@ public class PaymentSummaryActivity extends AppCompatActivity {
         dialogS.setCanceledOnTouchOutside(true);
         dialogS.show();
         Button btn = dialogS.findViewById(R.id.btnSuccess);
-        btn.setOnClickListener(v->dialogS.dismiss());
+        btn.setOnClickListener(v -> {
+            dialogS.dismiss();
+            Intent intent = new Intent(PaymentSummaryActivity.this, BottomNavActivity.class);
+            startActivity(intent);
+            finish();
+        });
     }
 }
