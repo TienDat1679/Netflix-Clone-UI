@@ -14,8 +14,9 @@ public class Media implements Serializable {
     private String backdropPath;
     private String releaseDate;
     private String type; // "movie" or "tv_series"
+    private boolean remind;
 
-    public Media(Long id, String title, String overview, String posterPath, String backdropPath, String releaseDate, String type) {
+    public Media(Long id, String title, String overview, String posterPath, String backdropPath, String releaseDate, String type, boolean remind) {
         this.id = id;
         this.title = title;
         this.overview = overview;
@@ -23,6 +24,7 @@ public class Media implements Serializable {
         this.backdropPath = backdropPath;
         this.releaseDate = releaseDate;
         this.type = type;
+        this.remind = remind;
     }
 
     public Long getId() {
@@ -79,6 +81,14 @@ public class Media implements Serializable {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public boolean isRemind() {
+        return remind;
+    }
+
+    public void setRemind(boolean remind) {
+        this.remind = remind;
     }
 
     @Override

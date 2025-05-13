@@ -43,7 +43,7 @@
                 android:background="@drawable/edit_text_background"
                 android:hint="Email"
                 android:inputType="text"
-                android:text="vophuhao2004@gmail.com"
+                android:text="trantiendat1679@gmail.com"
                 android:padding="12dp"
                 android:textColor="#FFFFFF"
                 android:textColorHint="#CCCCCC" />

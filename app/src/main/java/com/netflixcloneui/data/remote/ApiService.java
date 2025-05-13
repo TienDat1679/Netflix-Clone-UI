@@ -107,7 +107,7 @@ public interface ApiService {
     @GET("api/series/esp")
     Call<List<Episode>> getEspOfSeries(@Query("seriesId") Long id);
  // Coming Soon Fragment
-    @GET("api/media/trending") // api test. Chưa có api thật
+    @GET("api/media/coming-soon")
     Call<List<Media>> getComingSoon();
     @GET("api/media/trending")
     Call<List<Media>> getHotSeriesMovies();
@@ -165,5 +165,12 @@ public interface ApiService {
     @GET("api/playback/user")
     Call<List<PlayBackResponse>> getPlaybackProgressByUser();
 
-
+    @POST("api/reminders/{mediaId}")
+    Call<Void> createReminder(@Path("mediaId") Long mediaId);
+    @DELETE("api/reminders/{mediaId}")
+    Call<Void> deleteReminder(@Path("mediaId") Long mediaId);
+    @GET("api/reminders")
+    Call<ApiResponse<List<Media>>> getUserInbox();
+    @GET("api/reminders/by-user")
+    Call<ApiResponse<List<Media>>> getAllReminders();
 }

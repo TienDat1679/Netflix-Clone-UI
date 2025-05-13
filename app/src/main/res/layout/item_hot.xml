@@ -33,6 +33,7 @@
             android:layout_marginBottom="6dp"
             android:textColor="@color/white"
             android:textSize="35sp"
+            android:fontFamily="@font/tagesschrift_regular"
             android:text="Title"/>
 
         <TextView
