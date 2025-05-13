@@ -23,6 +23,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.netflixcloneui.R;
 import com.netflixcloneui.adapter.ComingSoonAdapter;
 import com.netflixcloneui.adapter.HotAdapter;
+import com.netflixcloneui.data.remote.ApiService;
+import com.netflixcloneui.data.remote.RetrofitClient;
 import com.netflixcloneui.data.repository.MediaRepository;
 import com.netflixcloneui.data.repository.RepositoryCallback;
 import com.netflixcloneui.databinding.FragmentComingSoonBinding;
@@ -31,6 +33,12 @@ import com.netflixcloneui.model.request.AddToWatchListRequest;
 import com.netflixcloneui.ui.MovieDetailActivity;
 import com.netflixcloneui.ui.TvSeriesDetailActivity;
 import com.netflixcloneui.viewmodel.UserViewModel;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ComingSoonFragment extends Fragment {
     private FragmentComingSoonBinding binding;
@@ -91,7 +99,52 @@ public class ComingSoonFragment extends Fragment {
     }
 
     private void loadComingSoon() {
-        comingSoonAdapter = new ComingSoonAdapter();
+        comingSoonAdapter = new ComingSoonAdapter(new ComingSoonAdapter.OnMediaClickListener() {
+            @Override
+            public void onRemindClick(Media media, int position, ComingSoonAdapter.ComingSoonViewHolder holder) {
+                ApiService apiService = RetrofitClient.getApiService(getContext());
+
+                if (!holder.buttonNotification.getText().equals("Đã đặt lời nhắc")) {
+                    Call<Void> call = apiService.createReminder(media.getId());
+                    call.enqueue(new Callback<Void>() {
+                        @Override
+                        public void onResponse(Call<Void> call, Response<Void> response) {
+                            if (response.isSuccessful()) {
+                                media.setRemind(true);
+                                comingSoonAdapter.notifyItemChanged(position);
+                                holder.buttonNotification.setText("Đã đặt lời nhắc");
+                                holder.buttonNotification.setIcon(ContextCompat.getDrawable(holder.itemView.getContext(), R.drawable.ic_added));
+                                holder.buttonNotification.setIconTintResource(R.color.black);
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) {
+
+                        }
+                    });
+                } else {
+                    Call<Void> call = apiService.deleteReminder(media.getId());
+                    call.enqueue(new Callback<Void>() {
+                        @Override
+                        public void onResponse(Call<Void> call, Response<Void> response) {
+                            if (response.isSuccessful()) {
+                                media.setRemind(false);
+                                comingSoonAdapter.notifyItemChanged(position);
+                                holder.buttonNotification.setText("Nhắc tôi");
+                                holder.buttonNotification.setIcon(ContextCompat.getDrawable(holder.itemView.getContext(), R.drawable.ic_notifications_black_24dp));
+                                holder.buttonNotification.setIconTintResource(R.color.black);
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) {
+
+                        }
+                    });
+                }
+            }
+        });
         binding.rcvComingSoon.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.rcvComingSoon.setAdapter(comingSoonAdapter);
 

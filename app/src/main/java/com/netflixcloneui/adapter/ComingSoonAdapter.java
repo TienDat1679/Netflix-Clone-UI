@@ -9,22 +9,29 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.button.MaterialButton;
 import com.netflixcloneui.R;
 import com.netflixcloneui.model.Media;
 import com.netflixcloneui.model.Movie;
+import com.netflixcloneui.viewmodel.UserViewModel;
 
 import java.util.List;
 
 public class ComingSoonAdapter extends RecyclerView.Adapter<ComingSoonAdapter.ComingSoonViewHolder> {
-
     private List<Media> movieSeries;
+    private final OnMediaClickListener listener;
 
     public void setMedia(List<Media> movieSeries) {
         this.movieSeries = movieSeries;
         notifyDataSetChanged();
+    }
+
+    public ComingSoonAdapter(OnMediaClickListener listener) {
+        this.listener = listener;
     }
 
     @NonNull
@@ -45,12 +52,20 @@ public class ComingSoonAdapter extends RecyclerView.Adapter<ComingSoonAdapter.Co
                 .into(holder.imgItem);
 
         holder.textTitle.setText(movie.getTitle());
-        holder.textReleaseDate.setText("Ra mắt vào ngày 30 tháng 8 (chưa có dữ liệu)");
+        holder.textReleaseDate.setText("Ra mắt vào  " + movie.getReleaseDate());
         holder.textOverview.setText(movie.getOverview());
+
+        if (movie.isRemind()) {
+            holder.buttonNotification.setText("Đã đặt lời nhắc");
+            holder.buttonNotification.setIcon(ContextCompat.getDrawable(holder.itemView.getContext(), R.drawable.ic_added));
+            holder.buttonNotification.setIconTintResource(R.color.black);
+        }
 
         // Xử lý sự kiện khi bấm vào nút "Nhắc tôi"
         holder.buttonNotification.setOnClickListener(v -> {
-            Toast.makeText(v.getContext(), "Bạn đã nhấn vào Nhac toi", Toast.LENGTH_SHORT).show();
+            if (listener != null) {
+                listener.onRemindClick(movie, position, holder);
+            }
         });
     }
 
@@ -62,7 +77,7 @@ public class ComingSoonAdapter extends RecyclerView.Adapter<ComingSoonAdapter.Co
     public static class ComingSoonViewHolder extends RecyclerView.ViewHolder {
         ImageView imgItem;
         TextView textTitle, textReleaseDate, textOverview;
-        Button buttonNotification;
+        public MaterialButton buttonNotification;
 
         public ComingSoonViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -72,5 +87,9 @@ public class ComingSoonAdapter extends RecyclerView.Adapter<ComingSoonAdapter.Co
             textOverview = itemView.findViewById(R.id.text_overview);
             buttonNotification = itemView.findViewById(R.id.button_notification);
         }
+    }
+
+    public interface OnMediaClickListener {
+        void onRemindClick(Media media, int position, ComingSoonViewHolder holder);
     }
 }
