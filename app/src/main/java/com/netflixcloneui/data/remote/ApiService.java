@@ -165,5 +165,6 @@ public interface ApiService {
     @GET("api/playback/user")
     Call<List<PlayBackResponse>> getPlaybackProgressByUser();
 
-
+    @GET("api/payment/vn-pay-callback")
+    Call<Void> playbackVnpay(@Query("amount") String amount);
 }
