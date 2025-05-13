@@ -12,12 +12,23 @@ import android.webkit.WebViewClient;
 import android.widget.ImageButton;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.netflixcloneui.R;
+import com.netflixcloneui.data.remote.ApiService;
+import com.netflixcloneui.data.remote.RetrofitClient;
+import com.netflixcloneui.model.response.ApiResponse;
+import com.netflixcloneui.model.response.UserResponse;
+
+import java.time.LocalDateTime;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class PaymentProcessAcitvity extends AppCompatActivity {
 
@@ -50,12 +61,28 @@ public class PaymentProcessAcitvity extends AppCompatActivity {
                     Uri uri = Uri.parse(url);
                     String responseCode = uri.getQueryParameter("vnp_ResponseCode"); // lấy mã phản hồi
                     if ("00".equals(responseCode)) {
+                        ApiService apiService = RetrofitClient.getApiService(getApplicationContext());
+                        Call<Void> call = apiService.playbackVnpay(uri.getQueryParameter("vnp_Amount"));// Không cần chuyển đổi bằng `Long.valueOf()`
+                        call.enqueue(new Callback<Void>() {
+                                         @Override
+                                         public void onResponse(Call<Void> call, Response<Void> response) {
+
+                                         }
+
+                                         @Override
+                                         public void onFailure(Call<Void> call, Throwable t) {
+
+                                         }
+                                     }
+
+                        );
                         Log.d("VNPayCallback", "Thanh toán THÀNH CÔNG");
 
                         Intent resultIntent = new Intent();
                         resultIntent.putExtra("vnp_ResponseCode", "00");
                         setResult(Activity.RESULT_OK, resultIntent);
                         finish(); // Quay về PaymentSummaryActivity
+
                     } else {
                         Log.d("VNPayCallback", "Thanh toán THẤT BẠI, code: " + responseCode);
                         // TODO: Hiển thị lỗi, xử lý retry v.v.
