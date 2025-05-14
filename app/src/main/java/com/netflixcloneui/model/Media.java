@@ -15,8 +15,9 @@ public class Media implements Serializable {
     private String releaseDate;
     private String type; // "movie" or "tv_series"
     private boolean remind;
+    private int isPrenium;
 
-    public Media(Long id, String title, String overview, String posterPath, String backdropPath, String releaseDate, String type, boolean remind) {
+    public Media(Long id, String title, String overview, String posterPath, String backdropPath, String releaseDate, String type, boolean remind, int isPrenium) {
         this.id = id;
         this.title = title;
         this.overview = overview;
@@ -25,6 +26,7 @@ public class Media implements Serializable {
         this.releaseDate = releaseDate;
         this.type = type;
         this.remind = remind;
+        this.isPrenium = isPrenium;
     }
 
     public Long getId() {
@@ -89,6 +91,14 @@ public class Media implements Serializable {
 
     public void setRemind(boolean remind) {
         this.remind = remind;
+    }
+
+    public int getIsPrenium() {
+        return isPrenium;
+    }
+
+    public void setIsPrenium(int isPrenium) {
+        this.isPrenium = isPrenium;
     }
 
     @Override
