@@ -95,6 +95,8 @@ public class SearchActivity extends AppCompatActivity {
             public void onItemClick(Media media) {
                 if (media.getIsPrenium() == 1) {
                     isPre = true;
+                } else {
+                    isPre = false;
                 }
 
                 Long mediaId = media.getId();

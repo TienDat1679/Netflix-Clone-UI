@@ -202,10 +202,12 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/layoutLikeList"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="45dp"
                 android:layout_marginEnd="6dp"
+                android:visibility="gone"
                 android:orientation="vertical">
 
                 <TextView
@@ -224,8 +226,10 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/layoutWatchList"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 android:layout_marginTop="25dp"
                 android:orientation="vertical">
 

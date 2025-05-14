@@ -86,7 +86,6 @@ public class BottomNavActivity extends AppCompatActivity {
             // Xử lý khi nhấn nút tìm kiếm
             Intent intent = new Intent(this, SearchActivity.class);
             startActivity(intent);
-            Toast.makeText(this, "Search clicked", Toast.LENGTH_SHORT).show();
             return true;
         } else if (id == android.R.id.home) {
             // Xử lý khi nhấn nút back
