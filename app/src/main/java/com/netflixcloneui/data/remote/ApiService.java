@@ -109,7 +109,7 @@ public interface ApiService {
     @GET("api/series/esp")
     Call<List<Episode>> getEspOfSeries(@Query("seriesId") Long id);
  // Coming Soon Fragment
-    @GET("api/media/coming-soon") // api test. Chưa có api thật
+    @GET("api/media/coming-soon")
     Call<List<Media>> getComingSoon();
     @GET("api/media/trending")
     Call<List<Media>> getHotSeriesMovies();
