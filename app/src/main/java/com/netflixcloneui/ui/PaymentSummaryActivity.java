@@ -58,12 +58,21 @@ public class PaymentSummaryActivity extends AppCompatActivity {
             return insets;
         });
         TextView price=findViewById(R.id.tvPrice);
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"})
+        TextView amout=findViewById(R.id.amout);
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"})
+        TextView total=findViewById(R.id.total);
+
         amount = (Integer) getIntent().getIntExtra("amount",-1);
         if(amount==30000){
-            price.setText("$30000 /tháng");
+            price.setText("$30.000 /tháng");
+            amout.setText("30.000");
+            total.setText("30.000");
         }
         else{
-            price.setText("$280000 /tháng");
+            price.setText("$280.000 /tháng");
+            amout.setText("280.000");
+            total.setText("280.000");
         }
         button = findViewById(R.id.btnConfirmPayment);
         button.setOnClickListener(view -> payment()
