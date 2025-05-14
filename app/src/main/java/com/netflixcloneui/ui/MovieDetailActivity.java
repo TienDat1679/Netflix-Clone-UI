@@ -222,6 +222,21 @@ public class MovieDetailActivity extends AppCompatActivity {
         });
 
         builder.setNegativeButton("Xem lại từ đầu", (dialog, which) -> {
+            ApiService apiService = RetrofitClient.getApiService(MovieDetailActivity.this);
+            Call<Void> call = apiService.deletePlayback(mediaId);// Không cần chuyển đổi bằng `Long.valueOf()`
+            call.enqueue(new Callback<Void>() {
+                             @Override
+                             public void onResponse(Call<Void> call, Response<Void> response) {
+
+                             }
+
+                             @Override
+                             public void onFailure(Call<Void> call, Throwable t) {
+
+                             }
+                         }
+
+            );
             Intent intent = new Intent(MovieDetailActivity.this, FullScreenVideoActivity.class);
             intent.putExtra("VIDEO_ID", mediaId);
             intent.putExtra("position",0);// Truyền videoId vào Intent
