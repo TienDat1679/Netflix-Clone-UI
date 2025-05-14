@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import com.netflixcloneui.R;
 import com.netflixcloneui.ui.user.LoginActivity;
 
+import java.util.Objects;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link LoginPromptFragment#newInstance} factory method to
@@ -72,6 +74,7 @@ public class LoginPromptFragment extends Fragment {
         view.findViewById(R.id.btnLogin).setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), LoginActivity.class);
             startActivity(intent);
+            if (getActivity() != null) getActivity().finish();
         });
     }
 }

@@ -11,8 +11,9 @@ public class CommentResponse {
     public Long likes;
     public Long mediaId;
     public boolean likedByUser;
+    private String userImage;
 
-    public CommentResponse(Long id, String content, String userId, String userName, String createdAt, Long likes, Long mediaId, boolean likedByUser) {
+    public CommentResponse(Long id, String content, String userId, String userName, String createdAt, Long likes, Long mediaId, boolean likedByUser, String userImage) {
         this.id = id;
         this.content = content;
         this.userId = userId;
@@ -21,6 +22,7 @@ public class CommentResponse {
         this.likes = likes;
         this.mediaId = mediaId;
         this.likedByUser = likedByUser;
+        this.userImage = userImage;
     }
 
     public Long getId() {
@@ -85,5 +87,13 @@ public class CommentResponse {
 
     public void setLikedByUser(boolean likedByUser) {
         this.likedByUser = likedByUser;
+    }
+
+    public String getUserImage() {
+        return userImage;
+    }
+
+    public void setUserImage(String userImage) {
+        this.userImage = userImage;
     }
 }

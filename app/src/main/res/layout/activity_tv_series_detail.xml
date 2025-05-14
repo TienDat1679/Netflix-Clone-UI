@@ -62,10 +62,12 @@
             android:padding="10dp">
 
             <LinearLayout
+                android:id="@+id/premium"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 tools:ignore="UseCompoundDrawables">
 
                 <ImageView
@@ -286,6 +288,7 @@
         android:visibility="gone"
         android:layout_alignParentBottom="true"
         android:padding="8dp"
+        android:backgroundTint="@color/black"
         android:background="@color/white"
         app:layout_constraintEnd_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -297,14 +300,22 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:focusable="true"
+            android:background="@drawable/edit_text_bg_1"
             android:focusableInTouchMode="true"
+            android:textSize="20sp"
+            android:padding="12dp"
+            android:textColor="@color/white"
+            android:textColorHint="@color/dark_gray"
             android:hint="Nhập bình luận..." />
 
-        <Button
+        <ImageButton
             android:id="@+id/btnSendComment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Gửi" />
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:backgroundTint="@color/black"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:src="@drawable/ic_share"/>
     </LinearLayout>
 
 

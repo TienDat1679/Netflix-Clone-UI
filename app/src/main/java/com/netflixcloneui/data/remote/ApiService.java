@@ -7,6 +7,7 @@ import com.netflixcloneui.model.request.LikeRequest;
 import com.netflixcloneui.model.request.LogoutRequest;
 import com.netflixcloneui.model.request.PlaybackProgressRequest;
 import com.netflixcloneui.model.request.RefreshRequest;
+import com.netflixcloneui.model.request.UserUpdateRequest;
 import com.netflixcloneui.model.response.ApiResponse;
 import com.netflixcloneui.model.request.ChangePasswordRequest;
 import com.netflixcloneui.model.Episode;
@@ -33,6 +34,7 @@ import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -176,4 +178,7 @@ public interface ApiService {
 
     @GET("api/payment/vn-pay-callback")
     Call<Void> playbackVnpay(@Query("amount") String amount);
+
+    @PUT("users/{userId}")
+    Call<ApiResponse<UserResponse>> updateUser(@Path("userId") String userId, @Body UserUpdateRequest request);
 }

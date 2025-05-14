@@ -54,6 +54,7 @@
             android:textColor="@color/light_gray"
             android:textSize="14sp"
             android:maxLines="3"
+            android:layout_marginBottom="10dp"
             android:ellipsize="end"
             android:text="overview"/>
 
@@ -61,7 +62,8 @@
             android:id="@+id/button_notification"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginBottom="10dp"
             android:textColor="@color/black"
             android:textSize="18sp"
             android:backgroundTint="@color/white"

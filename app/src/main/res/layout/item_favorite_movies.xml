@@ -20,12 +20,13 @@
             android:layout_height="150dp"
             android:scaleType="fitXY"/>
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="11sp"
             android:backgroundTint="@color/transparent"
-            android:drawableLeft="@drawable/ic_share"
+            app:iconSize="25dp"
+            app:icon="@drawable/ic_share"
             android:text="Chia sẻ"/>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

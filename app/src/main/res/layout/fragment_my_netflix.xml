@@ -29,14 +29,15 @@
                 app:cardCornerRadius="16dp">
 
                 <ImageView
-                    android:id="@+id/image_user"
+                    android:id="@+id/ivAvatar"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/profile_1" />
+                    android:src="@drawable/avatar_1" />
             </androidx.cardview.widget.CardView>
 
             <TextView
+                android:id="@+id/tvName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
@@ -70,7 +71,7 @@
                         android:src="@drawable/ic_crown"
                         android:layout_gravity="center_horizontal"
                         app:tint="@color/red"
-                        android:layout_marginRight="40dp"
+                        android:layout_marginRight="15dp"
                         />
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -78,19 +79,21 @@
                         android:orientation="vertical"
                         android:layout_marginRight="10dp">
                         <TextView
+                            android:id="@+id/tvPremium"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Join Premium!"
+                            android:text="Tham gia Premium ngay !"
                             android:textColor="@color/red"
                             android:textSize="22dp"
                             android:textStyle="bold"
-                            android:layout_marginTop="8dp"
+                            android:layout_marginTop="0dp"
                             android:layout_gravity=""/>
 
                         <TextView
+                            android:id="@+id/tvPremiumDetail"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Enjoy watching Full-HD movies\nwithout restrictions and without ads"
+                            android:text="Tham gia để trải nghiệm các loạt phim\nđộc quyền trên ứng dụng của chúng tôi"
                             android:textColor="@color/white"
                             android:textSize="14sp"
 
@@ -111,7 +114,6 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
                 android:orientation="horizontal">
 
                 <androidx.cardview.widget.CardView

@@ -1,5 +1,6 @@
 package com.netflixcloneui.adapter;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,6 +55,11 @@ public class ComingSoonAdapter extends RecyclerView.Adapter<ComingSoonAdapter.Co
         holder.textTitle.setText(movie.getTitle());
         holder.textReleaseDate.setText("Ra mắt vào  " + movie.getReleaseDate());
         holder.textOverview.setText(movie.getOverview());
+
+        if (holder.itemView.getContext().getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+                .getString("jwt_token", null) == null) {
+            holder.buttonNotification.setVisibility(View.GONE);
+        }
 
         if (movie.isRemind()) {
             holder.buttonNotification.setText("Đã đặt lời nhắc");

@@ -413,6 +413,7 @@ public class MovieDetailActivity extends AppCompatActivity {
                     Movie movie = response.body();
                     if(movie.getIsPrenium()==1){
                         isPre=true;
+                        binding.premium.setVisibility(View.VISIBLE);
                     }
                     binding.movieTitle.setText(movie.getTitle());
                     binding.movieOverview.setText(movie.getOverview());

@@ -2,7 +2,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="#121212"
+    android:background="@color/black"
     android:id="@+id/main"
     android:padding="16dp"
     tools:context=".ui.PaymentPackageActivity">
@@ -25,7 +25,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Subscribe to Premium"
+            android:text="Đăng ký Premium"
             android:textSize="25sp"
             android:textStyle="bold"
             android:textColor="#FF0000"
@@ -34,7 +34,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Enjoy watching Full-HD movies\nwithout restrictions and without ads"
+            android:text="Tham gia để trải nghiệm các loạt phim\nđộc quyền trên ứng dụng của chúng tôi"
             android:textSize="20sp"
             android:textColor="#B0B0B0"
             android:gravity="center"
@@ -74,7 +74,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="/month"
+                android:text="/ tháng"
                 android:textSize="17sp"
                 android:textColor="#B0B0B0"
                 android:layout_gravity="center_horizontal"/>
@@ -94,21 +94,21 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="  ✔     Watch all you want. Ad-free."
+                    android:text="  ✔     Xem mọi loạt phim bạn muốn."
                     android:textSize="17sp"
                     android:textColor="#FFFFFF"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="  ✔     Allows streaming of 4K."
+                    android:text="  ✔     Mở khoá các tính năng."
                     android:textSize="17sp"
                     android:textColor="#FFFFFF"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="  ✔     Video &amp; Audio Quality is Better."
+                    android:text="  ✔     Video &amp; Audio tốt hơn."
                     android:textSize="17sp"
                     android:textColor="#FFFFFF"/>
             </LinearLayout>
@@ -145,7 +145,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="/year"
+                android:text="/ năm"
                 android:textSize="17sp"
                 android:textColor="#B0B0B0"
                 android:layout_gravity="center_horizontal"/>
@@ -165,21 +165,21 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="  ✔     Watch all you want. Ad-free."
+                    android:text="  ✔     Xem mọi loạt phim bạn muốn."
                     android:textSize="17sp"
                     android:textColor="#FFFFFF"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="  ✔     Allows streaming of 4K."
+                    android:text="  ✔     Mở khoá các tính năng."
                     android:textSize="17sp"
                     android:textColor="#FFFFFF"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="  ✔     Video &amp; Audio Quality is Better."
+                    android:text="  ✔     Video &amp; Audio tốt hơn."
                     android:textSize="17sp"
                     android:textColor="#FFFFFF"/>
             </LinearLayout>

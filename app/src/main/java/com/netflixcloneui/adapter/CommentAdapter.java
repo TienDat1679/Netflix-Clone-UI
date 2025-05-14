@@ -42,6 +42,14 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             holder.createdAt.setText(TimeAgoUtil.getTimeAgo(comment.getCreatedAt()));
         }
+
+        int resId = holder.itemView.getContext()
+                .getResources()
+                .getIdentifier(comment.getUserImage(), "drawable", holder.itemView.getContext().getPackageName());
+        if (resId != 0) {
+            holder.avatar.setImageResource(resId);
+        }
+
         holder.content.setText(comment.getContent());
         holder.likes.setText(String.valueOf(comment.getLikes()));
         if (comment.isLikedByUser()) {

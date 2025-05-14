@@ -14,8 +14,9 @@ public class UserResponse {
     Set<RoleResponse> roles;
     String startDate;
     String endDate;
-    public UserResponse(String id, String name, String email, Integer otp, int enabled, String dob, String startDate,
-                        String endDate, Set<RoleResponse> roles) {
+    String image;
+
+    public UserResponse(String id, String name, String email, Integer otp, int enabled, String dob, Set<RoleResponse> roles, String startDate, String endDate, String image) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -23,8 +24,9 @@ public class UserResponse {
         this.enabled = enabled;
         this.dob = dob;
         this.roles = roles;
-        this.startDate=startDate;
-        this.endDate=endDate;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.image = image;
     }
 
     public String getId() {
@@ -82,6 +84,15 @@ public class UserResponse {
     public void setRoles(Set<RoleResponse> roles) {
         this.roles = roles;
     }
+
+    public String getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
+
     public String getEndDate() {
         return endDate;
     }
@@ -90,11 +101,11 @@ public class UserResponse {
         this.endDate = endDate;
     }
 
-    public String getStartDate() {
-        return startDate;
+    public String getImage() {
+        return image;
     }
 
-    public void setStartDate(String startDate) {
-        this.startDate = startDate;
+    public void setImage(String image) {
+        this.image = image;
     }
 }

@@ -538,6 +538,7 @@ public class TvSeriesDetailActivity extends AppCompatActivity implements Episode
                     TVSeries series= response.body();
                     if(series.getIsPrenium()==1){
                         isPre=true;
+                        binding.premium.setVisibility(View.VISIBLE);
                     }
                     TextView tvName= (TextView) findViewById(R.id.tvName);
                     tvName.setText(series.getName());

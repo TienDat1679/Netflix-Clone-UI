@@ -22,9 +22,9 @@
         <ImageView
             android:id="@+id/img_back"
             android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/ic_arrow_back"/>
+            android:src="@drawable/ic_arrow_back" />
 
         <EditText
             android:id="@+id/edt_search"
