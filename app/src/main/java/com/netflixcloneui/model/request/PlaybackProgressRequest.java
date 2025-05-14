@@ -8,6 +8,8 @@ public class PlaybackProgressRequest {
         this.episodeId = episodeId;
         this.movieId = movieId;
     }
+    private Long episodeId;
+    private Long position;
     private Long movieId;
 
     public PlaybackProgressRequest() {
@@ -38,6 +40,5 @@ public class PlaybackProgressRequest {
         this.position = position;
     }
 
-    private Long episodeId;
-    private Long position;
+
 }

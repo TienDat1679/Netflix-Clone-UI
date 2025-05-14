@@ -34,7 +34,6 @@ import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
-import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -109,7 +108,7 @@ public interface ApiService {
     @GET("api/series/esp")
     Call<List<Episode>> getEspOfSeries(@Query("seriesId") Long id);
  // Coming Soon Fragment
-    @GET("api/media/coming-soon")
+    @GET("api/media/trending") // api test. Chưa có api thật
     Call<List<Media>> getComingSoon();
     @GET("api/media/trending")
     Call<List<Media>> getHotSeriesMovies();
@@ -178,6 +177,9 @@ public interface ApiService {
 
     @GET("api/payment/vn-pay-callback")
     Call<Void> playbackVnpay(@Query("amount") String amount);
+
+    @POST("api/playback/delete")
+    Call<Void> deletePlayback(@Query("mediaId") Long mediaId);
 
     @PUT("users/{userId}")
     Call<ApiResponse<UserResponse>> updateUser(@Path("userId") String userId, @Body UserUpdateRequest request);

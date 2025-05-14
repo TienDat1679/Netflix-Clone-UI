@@ -1,5 +1,7 @@
 package com.netflixcloneui.ui;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,10 +24,14 @@ import com.netflixcloneui.data.remote.ApiService;
 import com.netflixcloneui.data.remote.RetrofitClient;
 import com.netflixcloneui.model.Episode;
 import com.netflixcloneui.model.request.PlaybackProgressRequest;
+import com.netflixcloneui.model.response.ApiResponse;
 import com.netflixcloneui.model.response.PlayBackResponse;
+import com.netflixcloneui.model.response.UserResponse;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
@@ -45,6 +51,9 @@ public class EpisodeFragment extends Fragment {
     private List<PlayBackResponse> playbackProgress;
     private long mediaId;
     private int season;
+
+    private boolean isPrenium=false;
+    private boolean isPre=false;
     private List<Episode> allEpisodes = new ArrayList<>();   // giữ toàn bộ data
 
     public static EpisodeFragment newInstance(long mediaId, int season) {
@@ -61,7 +70,93 @@ public class EpisodeFragment extends Fragment {
         mediaId = getArguments().getLong("media_id");
         season  = getArguments().getInt("season");
     }
+    private void checkPrenium() {
+        ApiService apiService = RetrofitClient.getApiService(getContext());
+        Call<ApiResponse<UserResponse>> call = apiService.getMyInfo();// Không cần chuyển đổi bằng `Long.valueOf()`
+        call.enqueue(new Callback<ApiResponse<UserResponse>>() {
+            @SuppressLint("NewApi")
+            @Override
+            public void onResponse(@NonNull Call<ApiResponse<UserResponse> >call, @NonNull Response<ApiResponse<UserResponse>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    ApiResponse<UserResponse> userResponseApiResponse = response.body();
+                    String endDateStr = userResponseApiResponse.getResult().getEndDate();
 
+                    if (endDateStr != null) {
+                        try {
+                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS");
+                            Date endDate = sdf.parse(endDateStr);
+                            Date now = new Date();
+                            if (now.before(endDate)) {
+                                isPrenium = true;
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace(); // handle parse error
+                        }
+                    }
+                }
+            }
+            @Override
+            public void onFailure(@NonNull Call<ApiResponse<UserResponse>> call, @NonNull Throwable t) {
+
+            }
+        });
+    }
+
+    private void showContinueWatchingDialog(Long savedPosition,Long mediaId) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Tiếp tục xem?");
+        builder.setMessage("Bạn muốn tiếp tục xem từ phút " + (savedPosition / 60000) + " không?");
+
+        builder.setPositiveButton("Có", (dialog, which) -> {
+            Intent intent = new Intent(getContext(), FullScreenVideoActivity.class);
+            intent.putExtra("VIDEO_ID", mediaId);
+            intent.putExtra("position",savedPosition);// Truyền videoId vào Intent
+            startActivity(intent);
+        });
+
+        builder.setNegativeButton("Xem lại từ đầu", (dialog, which) -> {
+
+            ApiService apiService = RetrofitClient.getApiService(getContext());
+            Call<Void> call = apiService.deletePlayback(mediaId);// Không cần chuyển đổi bằng `Long.valueOf()`
+            call.enqueue(new Callback<Void>() {
+                             @Override
+                             public void onResponse(Call<Void> call, Response<Void> response) {
+
+                             }
+
+                             @Override
+                             public void onFailure(Call<Void> call, Throwable t) {
+
+                             }
+                         }
+
+            );
+            Intent intent = new Intent(getContext(), FullScreenVideoActivity.class);
+            intent.putExtra("VIDEO_ID", mediaId);
+            intent.putExtra("position",0);// Truyền videoId vào Intent
+            startActivity(intent);
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+    private void showPreniumDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Phim chỉ dành cho tài khoan prenium");
+        builder.setMessage("Hãy trỏe thành thành vien prenium");
+
+        builder.setPositiveButton("Đăng ki prenium", (dialog, which) -> {
+            Intent intent = new Intent(getContext(), PaymentPackageActivity.class);
+            startActivity(intent);
+        });
+
+        builder.setNegativeButton("Đóng", (dialog, which) -> {
+            dialog.dismiss();
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
     @Override public View onCreateView(LayoutInflater i, ViewGroup c, Bundle s) {
         View view = i.inflate(R.layout.fragment_episode, c, false);
 
@@ -70,11 +165,60 @@ public class EpisodeFragment extends Fragment {
         snapHelper = new LinearSnapHelper();
         snapHelper.attachToRecyclerView(recyclerViewEps);
 
-        // tạo adapter với list rỗng
         epsAdapter = new EpisodeAdapter(getContext(), new ArrayList<>(), id -> {
-            Intent it = new Intent(getContext(), FullScreenVideoActivity.class);
-            it.putExtra("VIDEO_ID", id);
-            startActivity(it);
+            if (getContext().getSharedPreferences("MyAppPrefs",Context.MODE_PRIVATE).getString("jwt_token", null) != null) {
+                if(isPre)
+                {
+                    if(isPrenium)
+                    {
+                        ApiService apiService = RetrofitClient.getApiService(getContext());
+                        Call<PlayBackResponse> call = apiService.getPlaybackProgress(id); // Không cần chuyển đổi bằng `Long.valueOf()`
+                        call.enqueue(new Callback<PlayBackResponse>() {
+                            @Override
+                            public void onResponse(@NonNull Call<PlayBackResponse >call, @NonNull Response<PlayBackResponse> response) {
+                                if (response.isSuccessful() && response.body() != null) {
+                                    PlayBackResponse PlayBackResponse = response.body();
+                                    showContinueWatchingDialog(PlayBackResponse.getPosition(),id);
+                                }
+                            }
+                            @Override
+                            public void onFailure(@NonNull Call<PlayBackResponse> call, @NonNull Throwable t) {
+                                Intent intent = new Intent(getContext(), FullScreenVideoActivity.class);
+                                intent.putExtra("VIDEO_ID", id);
+                                intent.putExtra("postion",0);// Truyền videoId vào Intent
+                                startActivity(intent);
+                            }
+                        });
+                    }
+                    else {
+                        showPreniumDialog();
+                    }
+                }
+                else {
+                    ApiService apiService = RetrofitClient.getApiService(getContext());
+                    Call<PlayBackResponse> call = apiService.getPlaybackProgress(id); // Không cần chuyển đổi bằng `Long.valueOf()`
+                    call.enqueue(new Callback<PlayBackResponse>() {
+                        @Override
+                        public void onResponse(@NonNull Call<PlayBackResponse >call, @NonNull Response<PlayBackResponse> response) {
+                            if (response.isSuccessful() && response.body() != null) {
+
+                                PlayBackResponse PlayBackResponse = response.body();
+                                showContinueWatchingDialog(PlayBackResponse.getPosition(),id);
+                            }
+                        }
+                        @Override
+                        public void onFailure(@NonNull Call<PlayBackResponse> call, @NonNull Throwable t) {
+                            Intent intent = new Intent(getContext(), FullScreenVideoActivity.class);
+                            intent.putExtra("VIDEO_ID", id);
+                            intent.putExtra("postion",0);// Truyền videoId vào Intent
+                            startActivity(intent);
+                        }
+                    });
+                }
+
+            } else {
+                TvSeriesDetailActivity.showLoginDialog(getContext());
+            }
         });
         recyclerViewEps.setAdapter(epsAdapter);
 
