@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -56,7 +57,14 @@ public class PaymentSummaryActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        TextView price=findViewById(R.id.tvPrice);
         amount = (Integer) getIntent().getIntExtra("amount",-1);
+        if(amount==30000){
+            price.setText("$30000 /tháng");
+        }
+        else{
+            price.setText("$280000 /tháng");
+        }
         button = findViewById(R.id.btnConfirmPayment);
         button.setOnClickListener(view -> payment()
                 );
