@@ -86,7 +86,7 @@ public class TvSeriesDetailActivity extends AppCompatActivity implements Episode
     private ImageView ivAdd, ivLike;
     boolean isExpanded = false;
     List<Trailer> listTrailer;
-
+    public static Episode firstEpisode;
     private List<Episode> listEps;
 
     private  Long episodeIdOne;
@@ -367,7 +367,7 @@ public class TvSeriesDetailActivity extends AppCompatActivity implements Episode
         AlertDialog dialog = builder.create();
         dialog.show();
     }
-    private void playFullScreenVideo(Long episodeIdOne) {
+    public void playFullScreenVideo(Long episodeIdOne) {
         Log.d("esp",String.valueOf(episodeIdOne));
         if (getSharedPreferences("MyAppPrefs", MODE_PRIVATE).getString("jwt_token", null) != null) {
             if(isPre)
