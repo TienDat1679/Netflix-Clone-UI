@@ -109,7 +109,7 @@ public interface ApiService {
     @GET("api/series/esp")
     Call<List<Episode>> getEspOfSeries(@Query("seriesId") Long id);
  // Coming Soon Fragment
-    @GET("api/media/coming-soon")
+    @GET("api/media/coming-soon") // api test. Chưa có api thật
     Call<List<Media>> getComingSoon();
     @GET("api/media/trending")
     Call<List<Media>> getHotSeriesMovies();
@@ -145,7 +145,7 @@ public interface ApiService {
     Call<PaymentResponse> payment(@Query("amount") String  amount,@Query("bankCode") String bankCode);
 
     @GET("api/playback")
-    Call<PlaybackProgressRequest> getPlaybackProgress( @Query("mediaId") Long mediaId);
+    Call<PlayBackResponse> getPlaybackProgress( @Query("mediaId") Long mediaId);
     @POST("/api/playback/save")
     Call<Void> savePlaybackProgress(@Query("mediaId") Long mediaId,
                                     @Query("position") Long position);
@@ -178,6 +178,9 @@ public interface ApiService {
 
     @GET("api/payment/vn-pay-callback")
     Call<Void> playbackVnpay(@Query("amount") String amount);
+
+    @POST("api/playback/delete")
+    Call<Void> deletePlayback(@Query("mediaId") Long mediaId);
 
     @PUT("users/{userId}")
     Call<ApiResponse<UserResponse>> updateUser(@Path("userId") String userId, @Body UserUpdateRequest request);
