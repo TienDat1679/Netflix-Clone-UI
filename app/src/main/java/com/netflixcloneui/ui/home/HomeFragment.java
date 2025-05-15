@@ -109,7 +109,7 @@ public class HomeFragment extends Fragment {
         loadTop10Series();
         loadTop10Movies();
         loadPanelMedia();
-
+        checkPrenium();
         // Theo dõi trạng thái loading của data
         loading();
 

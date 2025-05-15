@@ -56,7 +56,9 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.Abs
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -81,6 +83,8 @@ public class MovieDetailActivity extends AppCompatActivity {
     private List<Media> listMedia;
     private ActivityMovieDetailBinding binding;
     private ViewPaper2Adapter viewPaper2Adapter;
+
+    private String release_date;
     private final String[] tabTitles = {"Nội dung tương tự", "Trailers", "Bình luận"};
 
     private boolean isPrenium=false;
@@ -247,18 +251,55 @@ public class MovieDetailActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    @SuppressLint("NewApi")
     private void playFullScreenVideo(Long movieId) {
         if (getSharedPreferences("MyAppPrefs", MODE_PRIVATE).getString("jwt_token", null) != null) {
-            if(isPre)
-            {
-                if(isPrenium)
+            @SuppressLint({"NewApi", "LocalSuppress"})
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+            // Chuyển chuỗi thành LocalDate
+            @SuppressLint({"NewApi", "LocalSuppress"})
+            LocalDate inputDate = LocalDate.parse(release_date, formatter);
+
+            // Lấy ngày hiện tại
+            @SuppressLint({"NewApi", "LocalSuppress"})
+            LocalDate currentDate = LocalDate.now();
+            if (!inputDate.isAfter(currentDate)) {
+                if(isPre)
                 {
+                    if(isPrenium)
+                    {
+                        ApiService apiService = RetrofitClient.getApiService(getApplicationContext());
+                        Call<PlayBackResponse> call = apiService.getPlaybackProgress(movieId); // Không cần chuyển đổi bằng `Long.valueOf()`
+                        call.enqueue(new Callback<PlayBackResponse>() {
+                            @Override
+                            public void onResponse(@NonNull Call<PlayBackResponse >call, @NonNull Response<PlayBackResponse> response) {
+                                if (response.isSuccessful() && response.body() != null) {
+                                    PlayBackResponse PlayBackResponse = response.body();
+                                    showContinueWatchingDialog(PlayBackResponse.getPosition(),movieId);
+                                }
+                            }
+                            @Override
+                            public void onFailure(@NonNull Call<PlayBackResponse> call, @NonNull Throwable t) {
+                                Intent intent = new Intent(MovieDetailActivity.this, FullScreenVideoActivity.class);
+                                intent.putExtra("VIDEO_ID", movieId);
+                                intent.putExtra("position",0);// Truyền videoId vào Intent
+                                startActivity(intent);
+                            }
+                        });
+                    }
+                    else {
+                        showPreniumDialog();
+                    }
+                }
+                else {
                     ApiService apiService = RetrofitClient.getApiService(getApplicationContext());
                     Call<PlayBackResponse> call = apiService.getPlaybackProgress(movieId); // Không cần chuyển đổi bằng `Long.valueOf()`
                     call.enqueue(new Callback<PlayBackResponse>() {
                         @Override
                         public void onResponse(@NonNull Call<PlayBackResponse >call, @NonNull Response<PlayBackResponse> response) {
                             if (response.isSuccessful() && response.body() != null) {
+
                                 PlayBackResponse PlayBackResponse = response.body();
                                 showContinueWatchingDialog(PlayBackResponse.getPosition(),movieId);
                             }
@@ -272,37 +313,28 @@ public class MovieDetailActivity extends AppCompatActivity {
                         }
                     });
                 }
-                else {
-                    showPreniumDialog();
-                }
             }
             else {
-                ApiService apiService = RetrofitClient.getApiService(getApplicationContext());
-                Call<PlayBackResponse> call = apiService.getPlaybackProgress(movieId); // Không cần chuyển đổi bằng `Long.valueOf()`
-                call.enqueue(new Callback<PlayBackResponse>() {
-                    @Override
-                    public void onResponse(@NonNull Call<PlayBackResponse >call, @NonNull Response<PlayBackResponse> response) {
-                        if (response.isSuccessful() && response.body() != null) {
-
-                            PlayBackResponse PlayBackResponse = response.body();
-                            showContinueWatchingDialog(PlayBackResponse.getPosition(),movieId);
-                        }
-                    }
-                    @Override
-                    public void onFailure(@NonNull Call<PlayBackResponse> call, @NonNull Throwable t) {
-                        Intent intent = new Intent(MovieDetailActivity.this, FullScreenVideoActivity.class);
-                        intent.putExtra("VIDEO_ID", movieId);
-                        intent.putExtra("position",0);// Truyền videoId vào Intent
-                        startActivity(intent);
-                    }
-                });
+                showDate();
             }
+
 
         } else {
             TvSeriesDetailActivity.showLoginDialog(this);
         }
     }
+    private void showDate() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Phim chưa được ra mắt");
+        builder.setMessage("Vui lòng quay lại sau");
 
+        builder.setNegativeButton("Đóng", (dialog, which) -> {
+            dialog.dismiss();
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
     private void showPreniumDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Phim chỉ dành cho tài khoan prenium");
@@ -427,6 +459,7 @@ public class MovieDetailActivity extends AppCompatActivity {
             public void onResponse(@NonNull Call<Movie> call, @NonNull Response<Movie> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     Movie movie = response.body();
+                    release_date = movie.getReleaseDate();
                     if(movie.getIsPrenium()==1){
                         isPre=true;
                         binding.premium.setVisibility(View.VISIBLE);

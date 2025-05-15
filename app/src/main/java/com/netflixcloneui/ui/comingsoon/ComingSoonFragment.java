@@ -106,7 +106,7 @@ public class ComingSoonFragment extends Fragment {
         binding.btnHot.setOnClickListener(v -> scrollToRecyclerView(binding.rcvHot));
         binding.btnTopSeries.setOnClickListener(v -> scrollToRecyclerView(binding.rcvTopSeries));
         binding.btnTopMovies.setOnClickListener(v -> scrollToRecyclerView(binding.rcvTopMovies));
-
+        checkPrenium();
         loadComingSoon();
         loading();
 
