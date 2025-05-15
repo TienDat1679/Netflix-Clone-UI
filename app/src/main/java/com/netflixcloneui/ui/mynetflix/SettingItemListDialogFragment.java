@@ -24,6 +24,7 @@ import com.netflixcloneui.R;
 import com.netflixcloneui.data.repository.AuthRepository;
 import com.netflixcloneui.databinding.FragmentItemListDialogListDialogItemBinding;
 import com.netflixcloneui.databinding.FragmentItemListDialogListDialogBinding;
+import com.netflixcloneui.ui.EditProfileActivity;
 import com.netflixcloneui.ui.user.LoginActivity;
 
 import java.util.Objects;
@@ -88,14 +89,18 @@ public class SettingItemListDialogFragment extends BottomSheetDialogFragment {
 
         // Danh sách tiêu đề và icon của mỗi mục
         private final String[] settingOptions = {
-                "Quản lý hồ sơ", "Cài đặt ứng dụng", "Tài khoản", "Trợ giúp", "Đăng xuất"
+                "Quản lý hồ sơ",
+                //"Cài đặt ứng dụng",
+                //"Tài khoản",
+                //"Trợ giúp",
+                "Đăng xuất"
         };
 
         private final int[] settingIcons = {
                 R.drawable.ic_edit,   // Icon tài khoản
-                R.drawable.ic_settings_outline,  // Icon thông báo
-                R.drawable.ic_user,  // Icon ngôn ngữ
-                R.drawable.ic_help,  // Icon trợ giúp
+                //R.drawable.ic_settings_outline,  // Icon thông báo
+                //R.drawable.ic_user,  // Icon ngôn ngữ
+                //R.drawable.ic_help,  // Icon trợ giúp
                 R.drawable.ic_logout // Icon đăng xuất
         };
 
@@ -113,9 +118,11 @@ public class SettingItemListDialogFragment extends BottomSheetDialogFragment {
 
             holder.itemView.setOnClickListener(v -> {
                 if (settingOptions[position].equals("Đăng xuất")) { // Sửa so sánh String
+                    MyNetflixFragment.isPremium = false;
                     logout();
-                } else {
-                    Toast.makeText(getContext(), "Bạn chọn: " + settingOptions[position], Toast.LENGTH_SHORT).show();
+                } else if (settingOptions[position].equals("Quản lý hồ sơ")){
+                    Intent intent = new Intent(requireContext(), EditProfileActivity.class);
+                    startActivity(intent);
                 }
                 dismiss(); // Đóng BottomSheet sau khi chọn
             });

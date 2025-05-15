@@ -80,7 +80,7 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MovieViewHol
         holder.itemView.setOnClickListener(v -> {
             Context context = holder.itemView.getContext(); // Lấy Context từ View
             openMediaDetail(context, media.getId(),media.getType());
-            Toast.makeText(holder.itemView.getContext(), "Bạn đã chọn: " + media.getTitle(), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(holder.itemView.getContext(), "Bạn đã chọn: " + media.getTitle(), Toast.LENGTH_SHORT).show();
         });
     }
 

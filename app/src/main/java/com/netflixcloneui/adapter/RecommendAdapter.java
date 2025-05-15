@@ -2,6 +2,7 @@ package com.netflixcloneui.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.netflixcloneui.data.remote.ApiService;
+import com.netflixcloneui.data.remote.RetrofitClient;
+import com.netflixcloneui.model.response.PlayBackResponse;
+import com.netflixcloneui.ui.FullScreenVideoActivity;
 import com.netflixcloneui.ui.MovieDetailActivity;
 import com.netflixcloneui.R;
 import com.netflixcloneui.model.Media;
@@ -21,8 +26,17 @@ import com.netflixcloneui.ui.TvSeriesDetailActivity;
 
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class RecommendAdapter extends RecyclerView.Adapter<RecommendAdapter.ViewHolder> {
     private List<Media> media;
+    private onCLickListener listener;
+
+    public RecommendAdapter(onCLickListener listener) {
+        this.listener = listener;
+    }
 
     public void setMedia(List<Media> media) {
         this.media = media;
@@ -49,12 +63,14 @@ public class RecommendAdapter extends RecyclerView.Adapter<RecommendAdapter.View
         holder.title.setText(media.getTitle());
 
         holder.play.setOnClickListener(v -> {
-            Toast.makeText(v.getContext(), "Bạn đã nhấn vào Play", Toast.LENGTH_SHORT).show();
+            if (listener != null) {
+                listener.onItemClick(media);
+            }
         });
         holder.container.setOnClickListener(v -> {
             Context context = holder.itemView.getContext(); // Lấy Context từ View
             openMediaDetail(context, media.getId(),media.getType());
-            Toast.makeText(holder.itemView.getContext(), "Bạn đã chọn: " + media.getTitle(), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(holder.itemView.getContext(), "Bạn đã chọn: " + media.getTitle(), Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -91,5 +107,9 @@ public class RecommendAdapter extends RecyclerView.Adapter<RecommendAdapter.View
             title = itemView.findViewById(R.id.tv_title);
             play = itemView.findViewById(R.id.btn_play);
         }
+    }
+
+    public interface onCLickListener {
+        void onItemClick(Media media);
     }
 }

@@ -1,6 +1,7 @@
 package com.netflixcloneui.model.response;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 public class UserResponse {
@@ -9,10 +10,13 @@ public class UserResponse {
     String email;
     Integer otp;
     int enabled;
-    LocalDate dob;
+    String dob;
     Set<RoleResponse> roles;
+    String startDate;
+    String endDate;
+    String image;
 
-    public UserResponse(String id, String name, String email, Integer otp, int enabled, LocalDate dob, Set<RoleResponse> roles) {
+    public UserResponse(String id, String name, String email, Integer otp, int enabled, String dob, Set<RoleResponse> roles, String startDate, String endDate, String image) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -20,6 +24,9 @@ public class UserResponse {
         this.enabled = enabled;
         this.dob = dob;
         this.roles = roles;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.image = image;
     }
 
     public String getId() {
@@ -62,11 +69,11 @@ public class UserResponse {
         this.enabled = enabled;
     }
 
-    public LocalDate getDob() {
+    public String getDob() {
         return dob;
     }
 
-    public void setDob(LocalDate dob) {
+    public void setDob(String dob) {
         this.dob = dob;
     }
 
@@ -76,5 +83,29 @@ public class UserResponse {
 
     public void setRoles(Set<RoleResponse> roles) {
         this.roles = roles;
+    }
+
+    public String getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
+
+    public String getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }

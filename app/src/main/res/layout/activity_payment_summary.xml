@@ -5,17 +5,26 @@
     android:layout_width="match_parent"
     android:id="@+id/main"
     android:layout_height="match_parent"
-    android:background="#121212"
+    android:background="@color/black"
     tools:context=".ui.PaymentSummaryActivity">
 
     <!-- Tiêu đề -->
+    <ImageView
+        android:id="@+id/back"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/ic_left_arrow"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="20dp"
+        tools:layout_editor_absoluteY="16dp" />
+
     <TextView
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:layout_marginBottom="40dp"
-        android:text="Review Summary"
+        android:text="Tóm tắt gói"
         android:textColor="#FFFFFF"
         android:textSize="22sp"
         android:textStyle="bold"
@@ -57,7 +66,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
-                android:text="$9.99 /month"
+                android:text=""
                 android:textColor="#FFFFFF"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -66,7 +75,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="     ✓    Watch all you want. Ad-free."
+                android:text="     ✓    Xem mọi loạt phim bạn muốn."
                 android:textColor="#FFFFFF"
                 android:textSize="17dp" />
 
@@ -74,7 +83,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:text="     ✓    Allows streaming of 4K."
+                android:text="     ✓    Mở khoá các tính năng."
                 android:textColor="#FFFFFF"
                 android:textSize="17dp" />
 
@@ -82,7 +91,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:text="     ✓    Video &amp; Audio Quality is Better."
+                android:text="     ✓    Video &amp; Audio tốt hơn."
                 android:textColor="#FFFFFF"
                 android:textSize="17dp" />
         </LinearLayout>
@@ -121,10 +130,11 @@
                     android:textColor="#B0B0B0" />
 
                 <TextView
+                    android:id="@+id/amout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="right"
-                    android:text="$9.99"
+                    android:text="30.000 VNĐ"
                     android:textColor="#FFFFFF"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -146,7 +156,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="right"
-                    android:text="$1.99"
+                    android:text="0 VNĐ"
                     android:textColor="#FFFFFF"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -169,10 +179,11 @@
                     android:textColor="#B0B0B0" />
 
                 <TextView
+                    android:id="@+id/total"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="right"
-                    android:text="$11.99"
+                    android:text="30.000 VNĐ"
                     android:textColor="#FFFFFF"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -189,7 +200,7 @@
         android:layout_marginHorizontal="20dp"
         android:layout_marginBottom="56dp"
         android:backgroundTint="#FF4444"
-        android:text="Confirm Payment"
+        android:text="Xác nhận thanh toán"
         android:textColor="#FFFFFF"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"

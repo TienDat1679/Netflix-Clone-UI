@@ -1,6 +1,7 @@
 package com.netflixcloneui.ui.mynetflix;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -22,20 +23,26 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.netflixcloneui.R;
 import com.netflixcloneui.adapter.MediaAdapter;
 import com.netflixcloneui.databinding.FragmentMyNetflixBinding;
+import com.netflixcloneui.model.response.UserResponse;
 import com.netflixcloneui.ui.NotificationActivity;
 import com.netflixcloneui.ui.PaymentPackageActivity;
 import com.netflixcloneui.ui.WatchListActivity;
 import com.netflixcloneui.viewmodel.UserViewModel;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 
 public class MyNetflixFragment extends Fragment {
     private FragmentMyNetflixBinding binding;
     private MyNetflixViewModel myNetflixViewModel;
-    private UserViewModel userViewModel;
+    private static UserViewModel userViewModel;
     private MediaAdapter favoriteAdapter;
     private MediaAdapter myListAdapter;
     private String userId;
+    public static boolean isPremium = false;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -57,11 +64,42 @@ public class MyNetflixFragment extends Fragment {
         binding = FragmentMyNetflixBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        userViewModel.getUserId().observe(getViewLifecycleOwner(), userId -> {
-            if (userId != null) {
-                this.userId = userId;
-                myNetflixViewModel.fetchUserLikeList(userId);
-                myNetflixViewModel.fetchUserWatchList(userId);
+        userViewModel.getUser().observe(getViewLifecycleOwner(), user -> {
+            if (user != null) {
+                this.userId = user.getId();
+                binding.tvName.setText(user.getName());
+                myNetflixViewModel.fetchUserLikeList(user.getId());
+                myNetflixViewModel.fetchUserWatchList(user.getId());
+                int resId = getResources().getIdentifier(user.getImage(), "drawable", getContext().getPackageName());
+                if (resId != 0) {
+                    binding.ivAvatar.setImageResource(resId);
+                }
+
+                if (user.getEndDate() != null) {
+                    DateTimeFormatter formatter = null;
+                    LocalDateTime endDateTime;
+                    LocalDateTime now;
+                    String result = "";
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS"); // Định dạng ISO hoặc bạn tùy chỉnh theo định dạng bạn lưu
+                        endDateTime = LocalDateTime.parse(user.getEndDate(), formatter);
+                        now = LocalDateTime.now();
+
+                        long daysBetween = ChronoUnit.DAYS.between(now.toLocalDate(), endDateTime.toLocalDate());
+
+                        if (daysBetween > 0) {
+                            isPremium = true;
+                            result = "Còn " + daysBetween + " ngày nữa đến hạn";
+                        } else if (daysBetween == 0) {
+                            result = "Hết hạn hôm nay";
+                        } else {
+                            result = "Đã quá hạn " + Math.abs(daysBetween) + " ngày";
+                        }
+                    }
+                    binding.tvPremium.setText("Bạn đã tham gia Premium");
+                    binding.tvPremium.setTextSize(20);
+                    binding.tvPremiumDetail.setText(result);
+                }
             }
         });
 
@@ -76,6 +114,10 @@ public class MyNetflixFragment extends Fragment {
         });
 
         return root;
+    }
+
+    public static void setUser(UserResponse user) {
+        userViewModel.setUser(user);
     }
 
     @Override
@@ -116,7 +158,8 @@ public class MyNetflixFragment extends Fragment {
         binding.rcvMyList.setAdapter(myListAdapter);
 
         myNetflixViewModel.getUserMovieList().observe(getViewLifecycleOwner(), movies -> {
-            if (movies != null) {
+            if (movies != null && !movies.isEmpty()) {
+                binding.layoutLikeList.setVisibility(View.VISIBLE);
                 myListAdapter.setMedia(movies);
             }
         });
@@ -129,7 +172,8 @@ public class MyNetflixFragment extends Fragment {
         binding.rcvMyFavorite.setAdapter(favoriteAdapter);
 
         myNetflixViewModel.getFavoriteMovies().observe(getViewLifecycleOwner(), movies -> {
-            if (movies != null) {
+            if (movies != null &&!movies.isEmpty()) {
+                binding.layoutWatchList.setVisibility(View.VISIBLE);
                 favoriteAdapter.setMedia(movies);
             }
         });

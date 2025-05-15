@@ -10,10 +10,12 @@ public class Episode {
 
     private String overview;
     private String airDate;
+    private int seasonNumber;
+    private int runtime;
 
     private String stillPath;
 
-    private TVSeries tvSerie;
+
 
     public Long getId() {
         return id;
@@ -79,16 +81,8 @@ public class Episode {
         this.stillPath = stillPath;
     }
 
-    public TVSeries getTvSerie() {
-        return tvSerie;
-    }
 
-    public void setTvSerie(TVSeries tvSerie) {
-        this.tvSerie = tvSerie;
-    }
 
-    private int seasonNumber;
-    private int runtime;
 
     public Episode(Long id, int episodeNumber, String name, String overview, String airDate, int seasonNumber, int runtime, String stillPath, TVSeries tvSerie) {
         this.id = id;
@@ -99,7 +93,7 @@ public class Episode {
         this.seasonNumber = seasonNumber;
         this.runtime = runtime;
         this.stillPath = stillPath;
-        this.tvSerie = tvSerie;
+
     }
 
 

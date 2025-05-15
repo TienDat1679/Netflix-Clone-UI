@@ -43,7 +43,7 @@
                 android:background="@drawable/edit_text_background"
                 android:hint="Email"
                 android:inputType="text"
-                android:text="dat@gmail.com"
+                android:text="trantiendat1679@gmail.com"
                 android:padding="12dp"
                 android:textColor="#FFFFFF"
                 android:textColorHint="#CCCCCC" />
@@ -68,10 +68,21 @@
                 android:layout_width="306dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:layout_marginBottom="20dp"
+                android:layout_marginBottom="5dp"
                 android:backgroundTint="#E50914"
-                android:text="Login"
+                android:text="LOGIN"
                 android:textColor="#FFFFFF" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnGuestLogin"
+                android:layout_width="306dp"
+                android:layout_height="wrap_content"
+                app:strokeColor="#E50914"
+                android:backgroundTint="@color/transparent"
+                app:strokeWidth="2dp"
+                android:text="GUEST LOGIN"
+                android:textColor="#E50914"
+                android:layout_marginBottom="20dp"/>
 
             <!-- Register Link -->
             <TextView

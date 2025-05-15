@@ -51,6 +51,7 @@ public class MyNetflixViewModel extends ViewModel {
 
             @Override
             public void onError(String errorMessage) {
+                likeLists.postValue(null);
                 Log.e("MyNetflixViewModel", "Error fetching user like list: " + errorMessage);
             }
         });
@@ -65,6 +66,7 @@ public class MyNetflixViewModel extends ViewModel {
 
             @Override
             public void onError(String errorMessage) {
+                watchLists.postValue(null);
                 Log.e("MyNetflixViewModel", "Error fetching user watch list: " + errorMessage);
             }
         });

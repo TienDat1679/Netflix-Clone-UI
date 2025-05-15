@@ -18,6 +18,7 @@ import java.util.List;
 public class UserViewModel extends ViewModel {
     private final UserRepository userRepository;
     private final MutableLiveData<String> userId = new MutableLiveData<>();
+    private final MutableLiveData<UserResponse> user = new MutableLiveData<>();
     private final MutableLiveData<List<Media>> watchList = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isLike = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isInWatchList = new MutableLiveData<>(false);
@@ -33,6 +34,17 @@ public class UserViewModel extends ViewModel {
             loadUserId();
         }
         return userId;
+    }
+
+    public LiveData<UserResponse> getUser() {
+        if (user.getValue() == null) {
+            loadUserId();
+        }
+        return user;
+    }
+
+    public void setUser(UserResponse user) {
+        this.user.setValue(user);
     }
 
     public LiveData<Boolean> getIsLike() {
@@ -97,10 +109,12 @@ public class UserViewModel extends ViewModel {
             @Override
             public void onSuccess(UserResponse result) {
                 userId.postValue(result.getId());
+                user.postValue(result);
             }
 
             @Override
             public void onError(String message) {
+                userId.postValue(null);
                 Log.e("UserViewModel", message);
             }
         });

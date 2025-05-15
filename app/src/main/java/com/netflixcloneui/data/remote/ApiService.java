@@ -1,10 +1,13 @@
 package com.netflixcloneui.data.remote;
 
 import com.netflixcloneui.model.request.AddToWatchListRequest;
+import com.netflixcloneui.model.request.CreateCommentRequest;
 import com.netflixcloneui.model.request.IntrospectRequest;
 import com.netflixcloneui.model.request.LikeRequest;
 import com.netflixcloneui.model.request.LogoutRequest;
+import com.netflixcloneui.model.request.PlaybackProgressRequest;
 import com.netflixcloneui.model.request.RefreshRequest;
+import com.netflixcloneui.model.request.UserUpdateRequest;
 import com.netflixcloneui.model.response.ApiResponse;
 import com.netflixcloneui.model.request.ChangePasswordRequest;
 import com.netflixcloneui.model.Episode;
@@ -13,13 +16,15 @@ import com.netflixcloneui.model.request.LoginRequest;
 import com.netflixcloneui.model.response.AuthResponse;
 import com.netflixcloneui.model.Media;
 import com.netflixcloneui.model.Movie;
+import com.netflixcloneui.model.response.CommentResponse;
 import com.netflixcloneui.model.response.IntrospectResponse;
-import com.netflixcloneui.model.response.QrResponse;
+import com.netflixcloneui.model.response.PaymentResponse;
+
 import com.netflixcloneui.model.request.RegisterRequest;
 import com.netflixcloneui.model.TVSeries;
 import com.netflixcloneui.model.Trailer;
+import com.netflixcloneui.model.response.PlayBackResponse;
 import com.netflixcloneui.model.response.UserResponse;
-import com.netflixcloneui.model.response.VNPayResponse;
 
 import java.util.List;
 import java.util.Map;
@@ -29,9 +34,9 @@ import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
-import retrofit2.http.QueryMap;
 
 public interface ApiService {
     // user's api
@@ -104,7 +109,7 @@ public interface ApiService {
     @GET("api/series/esp")
     Call<List<Episode>> getEspOfSeries(@Query("seriesId") Long id);
  // Coming Soon Fragment
-    @GET("api/media/trending") // api test. Chưa có api thật
+    @GET("api/media/coming-soon")
     Call<List<Media>> getComingSoon();
     @GET("api/media/trending")
     Call<List<Media>> getHotSeriesMovies();
@@ -126,21 +131,57 @@ public interface ApiService {
     // Search
     @GET("api/media/search")
     Call<List<Media>> searchMedia(@Query("keyword") String keyword);
-
     // My Netflix Fragment
     @GET("api/media/same")
     Call<List<Media>> getSameMedia(@Query("id") Long id);
-
     @GET("api/series/trailer")
     Call<List<Trailer>> getSeriesTrailer(@Query("id") Long id);
-
     @GET("api/movies/trailer")
     Call<List<Trailer>> getmovieTrailer(@Query("id") Long id);
+    @GET("api/trailers/{mediaId}")
+    Call<ApiResponse<List<Trailer>>> getMediaTrailers(@Path("mediaId") Long mediaId);
 
-    @GET("api/vnpay/generateQR")
-    Call<QrResponse> generateVnpayQR(@Query("amount") String  amount);
+    @GET("api/payment/vn-pay")
+    Call<PaymentResponse> payment(@Query("amount") String  amount,@Query("bankCode") String bankCode);
 
-    @GET("api/vnpay/callback")
-    Call<VNPayResponse> checkPayment(@QueryMap Map<String, String> params);
+    @GET("api/playback")
+    Call<PlayBackResponse> getPlaybackProgress( @Query("mediaId") Long mediaId);
+    @POST("/api/playback/save")
+    Call<Void> savePlaybackProgress(@Query("mediaId") Long mediaId,
+                                    @Query("position") Long position);
 
+    // Comments
+    @GET("api/comments/{mediaId}")
+    Call<ApiResponse<List<CommentResponse>>> getCommentsByMediaId(
+            @Path("mediaId") Long mediaId,
+            @Query("page") int page,
+            @Query("size") int size
+    );
+    @POST("api/comments")
+    Call<ApiResponse<CommentResponse>> createComment(@Body CreateCommentRequest request);
+    @POST("api/comments/{commentId}/like")
+    Call<Void> likeComment(@Path("commentId") Long commentId);
+    @POST("api/comments/{commentId}/unlike")
+    Call<Void> unlikeComment(@Path("commentId") Long commentId);
+
+    @GET("api/playback/user")
+    Call<List<PlayBackResponse>> getPlaybackProgressByUser();
+
+    @POST("api/reminders/{mediaId}")
+    Call<Void> createReminder(@Path("mediaId") Long mediaId);
+    @DELETE("api/reminders/{mediaId}")
+    Call<Void> deleteReminder(@Path("mediaId") Long mediaId);
+    @GET("api/reminders")
+    Call<ApiResponse<List<Media>>> getUserInbox();
+    @GET("api/reminders/by-user")
+    Call<ApiResponse<List<Media>>> getAllReminders();
+
+    @GET("api/payment/vn-pay-callback")
+    Call<Void> playbackVnpay(@Query("amount") String amount);
+
+    @POST("api/playback/delete")
+    Call<Void> deletePlayback(@Query("mediaId") Long mediaId);
+
+    @PUT("users/{userId}")
+    Call<ApiResponse<UserResponse>> updateUser(@Path("userId") String userId, @Body UserUpdateRequest request);
 }

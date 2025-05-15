@@ -1,14 +1,23 @@
 package com.netflixcloneui.ui;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -16,6 +25,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -23,56 +33,82 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
+import androidx.viewpager2.widget.ViewPager2;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.tabs.TabLayoutMediator;
 import com.netflixcloneui.R;
 import com.netflixcloneui.adapter.EpisodeAdapter;
 import com.netflixcloneui.adapter.MediaAdapter;
 import com.netflixcloneui.adapter.MovieDetailAdapter;
+import com.netflixcloneui.adapter.ViewPaper2Adapter;
 import com.netflixcloneui.data.remote.ApiService;
 import com.netflixcloneui.data.remote.RetrofitClient;
 import com.netflixcloneui.data.repository.MediaRepository;
+import com.netflixcloneui.databinding.ActivityTvSeriesDetailBinding;
 import com.netflixcloneui.model.Episode;
 import com.netflixcloneui.model.Media;
 import com.netflixcloneui.model.TVSeries;
 import com.netflixcloneui.model.Trailer;
 import com.netflixcloneui.model.request.AddToWatchListRequest;
+import com.netflixcloneui.model.request.CreateCommentRequest;
 import com.netflixcloneui.model.request.LikeRequest;
+import com.netflixcloneui.model.request.PlaybackProgressRequest;
+import com.netflixcloneui.model.response.ApiResponse;
+import com.netflixcloneui.model.response.CommentResponse;
+import com.netflixcloneui.model.response.PlayBackResponse;
+import com.netflixcloneui.model.response.UserResponse;
+import com.netflixcloneui.ui.user.LoginActivity;
+import com.netflixcloneui.utils.ViewPager2ViewHeightAnimator;
 import com.netflixcloneui.viewmodel.UserViewModel;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class TvSeriesDetailActivity extends AppCompatActivity implements EpisodeAdapter.OnEpisodeClickListener{
-
-    private RecyclerView recyclerViewEps;
     private TextView tvLike;
     private Button btnPlay;
     private MaterialCardView btnClose;
     private ImageView ivAdd, ivLike;
     boolean isExpanded = false;
-    private EpisodeAdapter EpsAdapter;
-    List<Episode> listEps;
-    List <Media> listMedia;
     List<Trailer> listTrailer;
+    public static Episode firstEpisode;
+    private List<Episode> listEps;
+
+    private  Long episodeIdOne;
     private YouTubePlayer youTubePlayerInstance;
     private YouTubePlayerView youTubePlayerView;
-    private MovieDetailAdapter movieAdapter;
     private MediaRepository mediaRepository;
     private UserViewModel userViewModel;
-    private SnapHelper snapHelper;
+    private ActivityTvSeriesDetailBinding binding;
+    private ViewPaper2Adapter viewPaper2Adapter;
+    private final String[] tabTitles = {"Các tập", "Nội dung tương tự", "Trailers", "Bình luận"};
+    private boolean isPrenium=false;
+    private boolean isPre=false;
 
+    private String release_date;
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tv_series_detail);
+        binding = ActivityTvSeriesDetailBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         userViewModel = new ViewModelProvider(this, new ViewModelProvider.Factory() {
             @NonNull
@@ -87,14 +123,393 @@ public class TvSeriesDetailActivity extends AppCompatActivity implements Episode
         btnPlay = findViewById(R.id.btnPlay);
         btnClose = findViewById(R.id.btnClose);
         tvLike = findViewById(R.id.tv_like);
+        listTrailer = new ArrayList<>();
         long id = (long) getIntent().getLongExtra("media_id",-1);
-        getTvSeriesDetail(id);
-        btnPlay.setOnClickListener(view ->playFullScreenVideo() );
         getEsp(id);
+        getTvSeriesDetail(id);
+        getSeason(id);
+        btnPlay.setOnClickListener(view -> playFullScreenVideo(episodeIdOne) );
+        //getEsp(id);
         getTrailer(id);
-        getMediaSame(id);
-        ChangeRecycle();
         cLose();
+        handleLikeAndWatchlistButton(id);
+        createComment(id);
+        checkPrenium();
+        viewPaper2Adapter = new ViewPaper2Adapter(this);
+        viewPaper2Adapter.addFragment(EpisodeFragment.newInstance(id,1));
+        viewPaper2Adapter.addFragment(SimilarMediaFragment.newInstance(id));
+        viewPaper2Adapter.addFragment(TrailerFragment.newInstance(id, null));
+        if (getSharedPreferences("MyAppPrefs", MODE_PRIVATE).getString("jwt_token", null) != null)
+            viewPaper2Adapter.addFragment(CommentFragment.newInstance(id));
+        binding.viewPager2.setAdapter(viewPaper2Adapter);
+        // Tự resize chiều cao mỗi khi thay tab
+        binding.viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                resizeViewPagerHeight(binding.viewPager2, position);
+
+                Fragment currentFragment = viewPaper2Adapter.getFragment(position);
+
+                LinearLayout commentBox = findViewById(R.id.commentBoxContainer);
+
+                if (currentFragment instanceof CommentFragment) {
+                    commentBox.setVisibility(View.VISIBLE);
+                } else {
+                    commentBox.setVisibility(View.GONE);
+                }
+            }
+        });
+        // Resize lần đầu khi layout xong
+        binding.viewPager2.post(() -> resizeViewPagerHeight(binding.viewPager2, binding.viewPager2.getCurrentItem()));
+
+        new TabLayoutMediator(binding.tabLayout, binding.viewPager2, (tab, position) -> {
+            tab.setText(tabTitles[position]);
+        }).attach();
+    }
+    private void checkPrenium() {
+        ApiService apiService = RetrofitClient.getApiService(getApplicationContext());
+        Call<ApiResponse<UserResponse>> call = apiService.getMyInfo();// Không cần chuyển đổi bằng `Long.valueOf()`
+        call.enqueue(new Callback<ApiResponse<UserResponse>>() {
+            @SuppressLint("NewApi")
+            @Override
+            public void onResponse(@NonNull Call<ApiResponse<UserResponse> >call, @NonNull Response<ApiResponse<UserResponse>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    ApiResponse<UserResponse> userResponseApiResponse = response.body();
+                    String endDateStr = userResponseApiResponse.getResult().getEndDate();
+
+                    if (endDateStr != null) {
+                        try {
+                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS");
+                            Date endDate = sdf.parse(endDateStr);
+                            Date now = new Date();
+                            if (now.before(endDate)) {
+                                isPrenium = true;
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace(); // handle parse error
+                        }
+                    }
+                }
+            }
+            @Override
+            public void onFailure(@NonNull Call<ApiResponse<UserResponse>> call, @NonNull Throwable t) {
+
+            }
+        });
+    }
+    private void createComment(long mediaId) {
+        userViewModel.getUserId().observe(this, userId -> {
+            if (userId != null) {
+                binding.btnSendComment.setOnClickListener(v -> {
+                    String content = binding.etComment.getText().toString();
+                    if (!content.isEmpty()) {
+                        CreateCommentRequest request = new CreateCommentRequest(content, mediaId, userId);
+
+                        RetrofitClient.getApiService(this).createComment(request).enqueue(new Callback<ApiResponse<CommentResponse>>() {
+                            @Override
+                            public void onResponse(Call<ApiResponse<CommentResponse>> call, Response<ApiResponse<CommentResponse>> response) {
+                                binding.etComment.setText("");
+                                if (response.isSuccessful() && response.body() != null) {
+                                    CommentFragment commentFragment = (CommentFragment) viewPaper2Adapter.getFragment(3);
+                                    commentFragment.addNewComment(response.body().getResult());
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<ApiResponse<CommentResponse>> call, Throwable t) {
+                                Toast.makeText(TvSeriesDetailActivity.this, "Lỗi: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }
+
+    private void getSeason(long id) {
+        // 1. Gọi API để lấy danh sách tất cả episode của mediaId
+        ApiService apiService = RetrofitClient.getApiService(getApplicationContext());
+        Call<List<Episode>> call = apiService.getEspOfSeries(id);
+        call.enqueue(new Callback<List<Episode>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Episode>> call,
+                                   @NonNull Response<List<Episode>> response) {
+                if (!response.isSuccessful() || response.body() == null) {
+                    Log.e("getSeason", "API returned empty or error");
+                    return;
+                }
+
+                // 2. Lưu toàn bộ listEps và tách ra các season duy nhất
+                listEps = response.body();
+                Set<Integer> seasonsSet = new TreeSet<>();
+                for (Episode ep : listEps) {
+                    seasonsSet.add(ep.getSeasonNumber());
+                }
+
+                // 3. Chuyển Set -> List<String> để gán cho Spinner
+                List<String> seasonList = new ArrayList<>();
+                for (Integer s : seasonsSet) {
+                    seasonList.add("Season " + s);
+                }
+
+                // 4. Thiết lập Spinner
+                Spinner spinnerSeasons = findViewById(R.id.spinnerSeasons);
+                ArrayAdapter<String> seasonAdapter = new ArrayAdapter<>(
+                        TvSeriesDetailActivity.this,                                      // context
+                        R.layout.spinner_item_white,                            // layout cho item
+                        seasonList
+                );
+                spinnerSeasons.setAdapter(seasonAdapter);
+
+                // 5. Chọn mặc định "Season 1" nếu có
+                int defaultIndex = seasonList.indexOf("Season 1");
+                spinnerSeasons.setSelection(defaultIndex >= 0 ? defaultIndex : 0);
+
+                // 6. Lắng nghe sự kiện chọn season mới
+                spinnerSeasons.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view,
+                                               int position, long id) {
+                        String label = (String) parent.getItemAtPosition(position);
+                        int newSeason = Integer.parseInt(label.split(" ")[1]);
+                        Log.d("getSeason", "User selected season " + newSeason);
+
+                        // 7. Lấy EpisodeFragment trong ViewPager2 và gọi reload
+                        EpisodeFragment epFrag = (EpisodeFragment)
+                                viewPaper2Adapter.getFragment(0);    // tab 0 là EpisodeFragment
+                        if (epFrag != null) {
+                            epFrag.reload(newSeason);
+                        }
+                    }
+                    @Override public void onNothingSelected(AdapterView<?> parent) {}
+                });
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<Episode>> call, @NonNull Throwable t) {
+                Log.e("getSeason", "API call failed: " + t.getMessage());
+            }
+        });
+    }
+
+    private void resizeViewPagerHeight(ViewPager2 viewPager2, int position) {
+        viewPager2.post(() -> {
+            RecyclerView recyclerView = (RecyclerView) viewPager2.getChildAt(0);
+            RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(position);
+
+            if (viewHolder != null && viewHolder.itemView != null) {
+                View itemView = viewHolder.itemView;
+
+                itemView.measure(
+                        View.MeasureSpec.makeMeasureSpec(itemView.getWidth(), View.MeasureSpec.EXACTLY),
+                        View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+                );
+
+                int measuredHeight = itemView.getMeasuredHeight();
+                ViewGroup.LayoutParams layoutParams = viewPager2.getLayoutParams();
+                layoutParams.height = measuredHeight;
+                viewPager2.setLayoutParams(layoutParams);
+            }
+        });
+    }
+    private void showContinueWatchingDialog(Long savedPosition,Long mediaId) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Tiếp tục xem?");
+        builder.setMessage("Bạn muốn tiếp tục xem từ phút " + (savedPosition / 60000) + " không?");
+
+        builder.setPositiveButton("Có", (dialog, which) -> {
+            Intent intent = new Intent(TvSeriesDetailActivity.this, FullScreenVideoActivity.class);
+            intent.putExtra("VIDEO_ID", mediaId);
+            intent.putExtra("position",savedPosition);// Truyền videoId vào Intent
+            startActivity(intent);
+        });
+
+        builder.setNegativeButton("Xem lại từ đầu", (dialog, which) -> {
+            ApiService apiService = RetrofitClient.getApiService(TvSeriesDetailActivity.this);
+            Call<Void> call = apiService.deletePlayback(mediaId);// Không cần chuyển đổi bằng `Long.valueOf()`
+            call.enqueue(new Callback<Void>() {
+                             @Override
+                             public void onResponse(Call<Void> call, Response<Void> response) {
+
+                             }
+
+                             @Override
+                             public void onFailure(Call<Void> call, Throwable t) {
+
+                             }
+                         }
+
+            );
+            Intent intent = new Intent(TvSeriesDetailActivity.this, FullScreenVideoActivity.class);
+            intent.putExtra("VIDEO_ID", mediaId);
+            intent.putExtra("position",0);// Truyền videoId vào Intent
+            startActivity(intent);
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+    private void showPreniumDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Phim chỉ dành cho tài khoan prenium");
+        builder.setMessage("Hãy trỏe thành thành vien prenium");
+
+        builder.setPositiveButton("Đăng ki prenium", (dialog, which) -> {
+            Intent intent = new Intent(TvSeriesDetailActivity.this, PaymentPackageActivity.class);
+            startActivity(intent);
+        });
+
+        builder.setNegativeButton("Đóng", (dialog, which) -> {
+            dialog.dismiss();
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+    @SuppressLint("NewApi")
+    private void playFullScreenVideo(Long movieId) {
+        if (getSharedPreferences("MyAppPrefs", MODE_PRIVATE).getString("jwt_token", null) != null) {
+            @SuppressLint({"NewApi", "LocalSuppress"})
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+            // Chuyển chuỗi thành LocalDate
+            @SuppressLint({"NewApi", "LocalSuppress"})
+            LocalDate inputDate = LocalDate.parse(release_date, formatter);
+
+            // Lấy ngày hiện tại
+            @SuppressLint({"NewApi", "LocalSuppress"})
+            LocalDate currentDate = LocalDate.now();
+            if (!inputDate.isAfter(currentDate)) {
+                if(isPre)
+                {
+                    if(isPrenium)
+                    {
+                        ApiService apiService = RetrofitClient.getApiService(getApplicationContext());
+                        Call<PlayBackResponse> call = apiService.getPlaybackProgress(movieId); // Không cần chuyển đổi bằng `Long.valueOf()`
+                        call.enqueue(new Callback<PlayBackResponse>() {
+                            @Override
+                            public void onResponse(@NonNull Call<PlayBackResponse >call, @NonNull Response<PlayBackResponse> response) {
+                                if (response.isSuccessful() && response.body() != null) {
+                                    PlayBackResponse PlayBackResponse = response.body();
+                                    showContinueWatchingDialog(PlayBackResponse.getPosition(),movieId);
+                                }
+                            }
+                            @Override
+                            public void onFailure(@NonNull Call<PlayBackResponse> call, @NonNull Throwable t) {
+                                Intent intent = new Intent(TvSeriesDetailActivity.this, FullScreenVideoActivity.class);
+                                intent.putExtra("VIDEO_ID", movieId);
+                                intent.putExtra("position",0);// Truyền videoId vào Intent
+                                startActivity(intent);
+                            }
+                        });
+                    }
+                    else {
+                        showPreniumDialog();
+                    }
+                }
+                else {
+                    ApiService apiService = RetrofitClient.getApiService(getApplicationContext());
+                    Call<PlayBackResponse> call = apiService.getPlaybackProgress(movieId); // Không cần chuyển đổi bằng `Long.valueOf()`
+                    call.enqueue(new Callback<PlayBackResponse>() {
+                        @Override
+                        public void onResponse(@NonNull Call<PlayBackResponse >call, @NonNull Response<PlayBackResponse> response) {
+                            if (response.isSuccessful() && response.body() != null) {
+
+                                PlayBackResponse PlayBackResponse = response.body();
+                                showContinueWatchingDialog(PlayBackResponse.getPosition(),movieId);
+                            }
+                        }
+                        @Override
+                        public void onFailure(@NonNull Call<PlayBackResponse> call, @NonNull Throwable t) {
+                            Intent intent = new Intent(TvSeriesDetailActivity.this, FullScreenVideoActivity.class);
+                            intent.putExtra("VIDEO_ID", movieId);
+                            intent.putExtra("position",0);// Truyền videoId vào Intent
+                            startActivity(intent);
+                        }
+                    });
+                }
+            }
+            else {
+                showDate();
+            }
+
+
+        } else {
+            TvSeriesDetailActivity.showLoginDialog(this);
+        }
+    }
+    private void showDate() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Phim chưa được ra mắt");
+        builder.setMessage("Vui lòng quay lại sau");
+
+        builder.setNegativeButton("Đóng", (dialog, which) -> {
+            dialog.dismiss();
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+    public static void showLoginDialog(Context context) {
+        View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_login_required, null);
+
+        AlertDialog dialog = new AlertDialog.Builder(context)
+                .setView(dialogView)
+                .setCancelable(false)
+                .create();
+
+        Button btnLogin = dialogView.findViewById(R.id.btnLogin);
+        Button btnCancel = dialogView.findViewById(R.id.btnCancel);
+
+        btnLogin.setOnClickListener(v -> {
+            context.startActivity(new Intent(context, LoginActivity.class));
+            dialog.dismiss();
+        });
+
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
+
+        dialog.show();
+    }
+
+    private void cLose() {
+        btnClose.setOnClickListener(v -> {
+            Intent resultIntent = new Intent();
+            setResult(RESULT_OK, resultIntent); // báo cho fragment biết có thay đổi
+            finish();
+        });
+    }
+
+    private void getTrailer(long id) {
+        ApiService apiService = RetrofitClient.getApiService(getApplicationContext());
+        Call<List<Trailer>> call = apiService.getSeriesTrailer(id); // Không cần chuyển đổi bằng `Long.valueOf()`
+        call.enqueue(new Callback<List<Trailer>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Trailer> >call, @NonNull Response<List<Trailer>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    listTrailer = response.body();
+                    if (!listTrailer.isEmpty()) {
+                        binding.youtubePlayer.setVisibility(View.VISIBLE);
+                        binding.moviePoster.setVisibility(View.GONE);
+                        getLifecycle().addObserver(binding.youtubePlayer);
+                        binding.youtubePlayer.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
+                            @Override
+                            public void onReady(@NonNull YouTubePlayer youTubePlayer) {
+                                String videoKey = listTrailer.get(0).getKey(); // ID của video YouTube
+                                youTubePlayer.loadVideo(videoKey, 0);
+                            }
+                        });
+                    }
+                }
+            }
+            @Override
+            public void onFailure(@NonNull Call<List<Trailer>> call, @NonNull Throwable t) {
+                Log.e("Trailer", "API Call failed: " + t.getMessage());
+            }
+        });
+    }
+
+    private void handleLikeAndWatchlistButton(long id) {
         userViewModel.getUserId().observe(this, userId -> {
             if (userId != null) {
                 userViewModel.checkMediaInLikeList(userId, id);
@@ -137,6 +552,8 @@ public class TvSeriesDetailActivity extends AppCompatActivity implements Episode
                         });
                     }
                 });
+            } else {
+                binding.layoutActions.setVisibility(View.GONE);
             }
         });
         userViewModel.getIsInWatchList().observe(this, isLike -> {
@@ -152,114 +569,6 @@ public class TvSeriesDetailActivity extends AppCompatActivity implements Episode
         });
     }
 
-    private void playFullScreenVideo() {
-        Intent intent = new Intent(this, FullScreenVideoActivity.class);
-        intent.putExtra("VIDEO_ID", "xbsT5l4hdfA"); // Truyền videoId vào Intent
-        startActivity(intent);
-    }
-
-    private void cLose() {
-        btnClose.setOnClickListener(v -> {
-            Intent resultIntent = new Intent();
-            setResult(RESULT_OK, resultIntent); // báo cho fragment biết có thay đổi
-            finish();
-        });
-    }
-
-    private void getTrailer(long id) {
-        ApiService apiService = RetrofitClient.getApiService(getApplicationContext());
-        Call<List<Trailer> >call = apiService.getSeriesTrailer(id); // Không cần chuyển đổi bằng `Long.valueOf()`
-        call.enqueue(new Callback<List<Trailer>>() {
-            @Override
-            public void onResponse(@NonNull Call<List<Trailer> >call, @NonNull Response<List<Trailer>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    listTrailer= response.body();
-
-                    youTubePlayerView = findViewById(R.id.youtubePlayer);
-                    getLifecycle().addObserver(youTubePlayerView);
-
-                    youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
-                        @Override
-                        public void onReady(@NonNull YouTubePlayer youTubePlayer) {
-                            youTubePlayerInstance = youTubePlayer;
-                            String videoKey = listTrailer.get(0).getKey(); // ID của video YouTube
-                            youTubePlayer.loadVideo(videoKey, 0);
-                        }
-                    });
-                }
-            }
-            @Override
-            public void onFailure(@NonNull Call<List<Trailer>> call, @NonNull Throwable t) {
-                Log.e("Trailer", "API Call failed: " + t.getMessage());
-            }
-        });
-    }
-
-    private void ChangeRecycle() {
-        TextView sameMedia = findViewById(R.id.sameMedia);
-        TextView esp = findViewById(R.id.esp);
-
-        sameMedia.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                GridLayoutManager gridLayoutManager = new GridLayoutManager(TvSeriesDetailActivity.this, 3); // 3 cột
-                recyclerViewEps.setLayoutManager(gridLayoutManager);
-                recyclerViewEps.setAdapter(new MediaAdapter(listMedia, MediaAdapter.TYPE_NORMAL));
-
-            }
-        });
-        esp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                recyclerViewEps.setLayoutManager(new LinearLayoutManager(TvSeriesDetailActivity.this, LinearLayoutManager.VERTICAL, false));
-                recyclerViewEps.setAdapter(new EpisodeAdapter(TvSeriesDetailActivity.this, listEps,TvSeriesDetailActivity.this::onEpisodeClick));
-            }
-        });
-    }
-
-    private void getMediaSame(long id)
-    {
-        ApiService apiService = RetrofitClient.getApiService(getApplicationContext());
-        Call<List<Media> >call = apiService.getSameMedia(id); // Không cần chuyển đổi bằng `Long.valueOf()`
-        call.enqueue(new Callback<List<Media>>() {
-            @Override
-            public void onResponse(@NonNull Call<List<Media> >call, @NonNull Response<List<Media>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    listMedia= response.body();
-                }
-            }
-            @Override
-            public void onFailure(@NonNull Call<List<Media>> call, @NonNull Throwable t) {
-                Log.e("MovieDetail", "API Call failed: " + t.getMessage());
-            }
-        });
-    }
-    private void getEsp(long id) {
-        ApiService apiService = RetrofitClient.getApiService(getApplicationContext());
-        Call<List<Episode>> call = apiService.getEspOfSeries(id); // Không cần chuyển đổi bằng `Long.valueOf()`
-        call.enqueue(new Callback<List<Episode>>() {
-            @Override
-            public void onResponse(@NonNull Call<List<Episode>>call, @NonNull Response<List<Episode>> response) {
-                listEps = response.body();
-                recyclerViewEps = findViewById(R.id.recyclerEpisodes);
-
-                // Thiết lập RecyclerView
-                LinearLayoutManager layoutManager = new LinearLayoutManager(TvSeriesDetailActivity.this, LinearLayoutManager.VERTICAL, false);
-                recyclerViewEps.setLayoutManager(layoutManager);
-                EpsAdapter = new EpisodeAdapter(TvSeriesDetailActivity.this,listEps,TvSeriesDetailActivity.this::onEpisodeClick);
-                recyclerViewEps.setAdapter(EpsAdapter);
-
-                // Dùng SnapHelper để cuộn từng phim một cách mượt mà
-                SnapHelper snapHelper = new LinearSnapHelper();
-                snapHelper.attachToRecyclerView(recyclerViewEps);
-            }
-            @Override
-            public void onFailure(@NonNull Call<List<Episode>> call, @NonNull Throwable t) {
-                Log.e("Tvseries Eps", "API Call failed: " + t.getMessage());
-            }
-        });
-    }
     private void getTvSeriesDetail(Long id) {
         ApiService apiService = RetrofitClient.getApiService(getApplicationContext());
         Call<TVSeries> call = apiService.getTvSeriesDetail(id); // Không cần chuyển đổi bằng `Long.valueOf()`
@@ -269,6 +578,11 @@ public class TvSeriesDetailActivity extends AppCompatActivity implements Episode
                 if (response.isSuccessful() && response.body() != null) {
 
                     TVSeries series= response.body();
+                    release_date=series.getFirstAirDate();
+                    if(series.getIsPrenium()==1){
+                        isPre=true;
+                        binding.premium.setVisibility(View.VISIBLE);
+                    }
                     TextView tvName= (TextView) findViewById(R.id.tvName);
                     tvName.setText(series.getName());
 
@@ -277,6 +591,15 @@ public class TvSeriesDetailActivity extends AppCompatActivity implements Episode
 
                     TextView tvInfo= (TextView) findViewById(R.id.tvInfo);
                     tvInfo.setText(series.getFirstAirDate() + "  |  " + series.getEpisodes().size() + " tập");
+
+                    if (listTrailer.isEmpty()) {
+                        binding.youtubePlayer.setVisibility(View.GONE);
+                        binding.moviePoster.setVisibility(View.VISIBLE);
+                        Glide.with(TvSeriesDetailActivity.this)
+                                .load("https://image.tmdb.org/t/p/w500/" + series.getBackdropPath())
+                                .error(R.drawable.error_image)
+                                .into( binding.moviePoster);
+                    }
 
                     tvOverview.setOnClickListener(new View.OnClickListener() {
 
@@ -306,9 +629,80 @@ public class TvSeriesDetailActivity extends AppCompatActivity implements Episode
         });
 
     }
+    private void getEsp(long id) {
+        ApiService apiService = RetrofitClient.getApiService(getApplicationContext());
+        Call<List<Episode>> call = apiService.getEspOfSeries(id); // Không cần chuyển đổi bằng `Long.valueOf()`
+        call.enqueue(new Callback<List<Episode>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Episode>>call, @NonNull Response<List<Episode>> response) {
+                listEps = response.body();
+                episodeIdOne = listEps.stream()
+                        .filter(ep -> ep.getEpisodeNumber() == 1)
+                        .map(Episode::getId)
+                        .findFirst()
+                        .orElse(null);
 
+            }
+            @Override
+            public void onFailure(@NonNull Call<List<Episode>> call, @NonNull Throwable t) {
+                Log.e("Tvseries Eps", "API Call failed: " + t.getMessage());
+            }
+        });
+    }
     @Override
-    public void onEpisodeClick(String videoKey) {
-        youTubePlayerInstance.loadVideo(videoKey, 0);
+    public void onEpisodeClick(Long episodeId) {
+//        if (getSharedPreferences("MyAppPrefs", MODE_PRIVATE).getString("jwt_token", null) != null) {
+//            if(isPre)
+//            {
+//                if(isPrenium)
+//                {
+//                    ApiService apiService = RetrofitClient.getApiService(getApplicationContext());
+//                    Call<PlayBackResponse> call = apiService.getPlaybackProgress(episodeId); // Không cần chuyển đổi bằng `Long.valueOf()`
+//                    call.enqueue(new Callback<PlayBackResponse>() {
+//                        @Override
+//                        public void onResponse(@NonNull Call<PlayBackResponse >call, @NonNull Response<PlayBackResponse> response) {
+//                            if (response.isSuccessful() && response.body() != null) {
+//                                PlayBackResponse PlayBackResponse = response.body();
+//                                showContinueWatchingDialog(PlayBackResponse.getPosition(),episodeId);
+//                            }
+//                        }
+//                        @Override
+//                        public void onFailure(@NonNull Call<PlayBackResponse> call, @NonNull Throwable t) {
+//                            Intent intent = new Intent(TvSeriesDetailActivity.this, FullScreenVideoActivity.class);
+//                            intent.putExtra("VIDEO_ID", episodeId);
+//                            intent.putExtra("postion",0);// Truyền videoId vào Intent
+//                            startActivity(intent);
+//                        }
+//                    });
+//                }
+//                else {
+//                    showPreniumDialog();
+//                }
+//            }
+//            else {
+//                ApiService apiService = RetrofitClient.getApiService(getApplicationContext());
+//                Call<PlayBackResponse> call = apiService.getPlaybackProgress(episodeId); // Không cần chuyển đổi bằng `Long.valueOf()`
+//                call.enqueue(new Callback<PlayBackResponse>() {
+//                    @Override
+//                    public void onResponse(@NonNull Call<PlayBackResponse >call, @NonNull Response<PlayBackResponse> response) {
+//                        if (response.isSuccessful() && response.body() != null) {
+//
+//                            PlayBackResponse PlayBackResponse = response.body();
+//                            showContinueWatchingDialog(PlayBackResponse.getPosition(),episodeId);
+//                        }
+//                    }
+//                    @Override
+//                    public void onFailure(@NonNull Call<PlayBackResponse> call, @NonNull Throwable t) {
+//                        Intent intent = new Intent(TvSeriesDetailActivity.this, FullScreenVideoActivity.class);
+//                        intent.putExtra("VIDEO_ID", episodeId);
+//                        intent.putExtra("postion",0);// Truyền videoId vào Intent
+//                        startActivity(intent);
+//                    }
+//                });
+//            }
+//
+//        } else {
+//            TvSeriesDetailActivity.showLoginDialog(this);
+//        }
     }
 }

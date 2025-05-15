@@ -17,6 +17,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.material.button.MaterialButton;
 import com.netflixcloneui.R;
 import com.netflixcloneui.data.remote.ApiService;
 import com.netflixcloneui.data.remote.RetrofitClient;
@@ -33,6 +34,7 @@ import retrofit2.Response;
 public class LoginActivity extends AppCompatActivity {
     private EditText etEmail, etPassword;
     private Button btnLogin;
+    private MaterialButton btnGuestLogin;
     private ProgressBar progressBar;
     private TextView tvRegister, tvForgotPassword;
 
@@ -46,7 +48,13 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin = findViewById(R.id.btnLogin);
         progressBar = findViewById(R.id.progressBar);
         tvRegister = findViewById(R.id.tvRegister);
+        btnGuestLogin = findViewById(R.id.btnGuestLogin);
         tvForgotPassword = findViewById(R.id.tvForgotPassword);
+
+        btnGuestLogin.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, BottomNavActivity.class);
+            startActivity(intent);
+        });
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,6 +74,7 @@ public class LoginActivity extends AppCompatActivity {
         tvRegister.setOnClickListener(v -> {
             Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
             startActivity(intent);
+            finish();
         });
 
         tvForgotPassword.setOnClickListener(v -> {
