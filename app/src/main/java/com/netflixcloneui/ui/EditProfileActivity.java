@@ -25,6 +25,7 @@ import com.netflixcloneui.ui.mynetflix.MyNetflixFragment;
 import com.netflixcloneui.viewmodel.UserViewModel;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -101,7 +102,13 @@ public class EditProfileActivity extends AppCompatActivity {
             }
             LocalDate date = null;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                date = LocalDate.parse(dob);
+                try {
+                    // Kiểm tra và chuyển đổi chuỗi ngày sinh thành LocalDate
+                    date = LocalDate.parse(dob); // Mặc định định dạng là yyyy-MM-dd
+                } catch (DateTimeParseException e) {
+                    Toast.makeText(this, "Ngày sinh không đúng định dạng (yyyy-MM-dd)", Toast.LENGTH_SHORT).show();
+                    return;
+                }
             }
             // Gửi request cập nhật
             updateUserProfile(name, dob, image);
