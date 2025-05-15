@@ -158,7 +158,8 @@ public class MyNetflixFragment extends Fragment {
         binding.rcvMyList.setAdapter(myListAdapter);
 
         myNetflixViewModel.getUserMovieList().observe(getViewLifecycleOwner(), movies -> {
-            if (movies != null) {
+            if (movies != null && !movies.isEmpty()) {
+                binding.layoutLikeList.setVisibility(View.VISIBLE);
                 myListAdapter.setMedia(movies);
             }
         });
@@ -171,7 +172,8 @@ public class MyNetflixFragment extends Fragment {
         binding.rcvMyFavorite.setAdapter(favoriteAdapter);
 
         myNetflixViewModel.getFavoriteMovies().observe(getViewLifecycleOwner(), movies -> {
-            if (movies != null) {
+            if (movies != null &&!movies.isEmpty()) {
+                binding.layoutWatchList.setVisibility(View.VISIBLE);
                 favoriteAdapter.setMedia(movies);
             }
         });
