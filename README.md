@@ -36,13 +36,19 @@
 </p>
 
 ### Trang chủ
-![Đăng nhập](home.jpg)
+<p align="center">
+  <img src="home.jpg" alt="Home UI" width="400">
+</p>
 
 ### Chi tiết phim
-![Chi tiet phim](xemphim.jpg)
+<p align="center">
+  <img src="xemphim.jpg" alt="Home UI" width="400">
+</p>
 
 ### Hồ sơ
-![Chi tiet phim](Hoso.jpg)
+<p align="center">
+  <img src="Hoso.jpg" alt="Home UI" width="400">
+</p>
 
 
 ## 📲 Cài đặt và chạy ứng dụng
