@@ -49,3 +49,16 @@ Chúng tôi luôn chào đón các đóng góp để hoàn thiện dự án hơn
 ## 📜 License
 
 Dự án được phát triển cho mục đích học tập, phi thương mại.
+
+## 🖼️ Giao diện ứng dụng
+### Login
+![Trang chủ](dangnhap.png)
+
+### Trang chủ
+![Trang chủ](home.png)
+
+### Chi tiết phim
+![Chi tiet phim](xemphim.png)
+
+### Hồ sơ
+![Chi tiet phim](Ho so.png)
