@@ -4,6 +4,15 @@
 
 ---
 
+## 👨‍💻 **Nhóm 41**
+
+| Họ tên                              | MSSV         |
+| ----------------------------------- | ------------ |
+| Trần Tiến Đạt                       | 22110308     |
+| Võ Phú Hào                          | 22110317     |
+
+---
+
 ## 🚀 Tính năng chính
 
 - 📺 Xem danh sách phim và TV series từ server
