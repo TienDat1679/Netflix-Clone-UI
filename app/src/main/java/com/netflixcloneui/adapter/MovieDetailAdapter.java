@@ -12,7 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.netflixcloneui.screen.MovieDetailActivity;
+import com.netflixcloneui.ui.MovieDetailActivity;
 import com.netflixcloneui.R;
 import com.netflixcloneui.model.Movie;
 

@@ -1,20 +1,32 @@
 package com.netflixcloneui.model;
 
-public class Media {
+import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Objects;
+
+public class Media implements Serializable {
     private Long id;
     private String title;
     private String overview;
     private String posterPath;
     private String backdropPath;
-    private String type; // "movie" hoặc "tv_series"
+    private String releaseDate;
+    private String type; // "movie" or "tv_series"
+    private boolean remind;
+    private int isPrenium;
 
-    public Media(Long id, String title, String overview, String posterPath, String backdropPath, String type) {
+    public Media(Long id, String title, String overview, String posterPath, String backdropPath, String releaseDate, String type, boolean remind, int isPrenium) {
         this.id = id;
         this.title = title;
         this.overview = overview;
         this.posterPath = posterPath;
         this.backdropPath = backdropPath;
+        this.releaseDate = releaseDate;
         this.type = type;
+        this.remind = remind;
+        this.isPrenium = isPrenium;
     }
 
     public Long getId() {
@@ -57,11 +69,60 @@ public class Media {
         this.backdropPath = backdropPath;
     }
 
+    public String getReleaseDate() {
+        return releaseDate;
+    }
+
+    public void setReleaseDate(String releaseDate) {
+        this.releaseDate = releaseDate;
+    }
+
     public String getType() {
         return type;
     }
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public boolean isRemind() {
+        return remind;
+    }
+
+    public void setRemind(boolean remind) {
+        this.remind = remind;
+    }
+
+    public int getIsPrenium() {
+        return isPrenium;
+    }
+
+    public void setIsPrenium(int isPrenium) {
+        this.isPrenium = isPrenium;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Media media = (Media) o;
+        return id != null && id.equals(media.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    public boolean isReleased() {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date today = new Date();
+            Date release = sdf.parse(releaseDate);
+            return !release.after(today); // nếu ngày phát hành <= hôm nay
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return false; // nếu lỗi thì mặc định chưa phát hành
+        }
     }
 }

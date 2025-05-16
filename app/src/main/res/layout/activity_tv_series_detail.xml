@@ -9,32 +9,48 @@
     android:background="#000">
 
     <!-- Hình ảnh Poster -->
-
-    <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
-        android:id="@+id/youtubePlayer"
+    <FrameLayout
+        android:id="@+id/frameLayout"
         android:layout_width="match_parent"
-        android:layout_height="250dp"
+        android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:ignore="MissingClass" />
+        app:layout_constraintEnd_toEndOf="parent">
 
+        <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
+            android:id="@+id/youtubePlayer"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"/>
+
+        <ImageView
+            android:id="@+id/moviePoster"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"/>
+    </FrameLayout>
 
     <!-- Nút đóng -->
-    <ImageView
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/btnClose"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:padding="8dp"
-        android:src="@drawable/icons8_close"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        app:cardCornerRadius="15dp"
+        app:strokeWidth="0dp"
+        android:backgroundTint="@color/gray_1"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_margin="10dp" />
+        android:layout_margin="10dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:src="@drawable/ic_close_white"/>
+    </com.google.android.material.card.MaterialCardView>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/youtubePlayer"
+        app:layout_constraintTop_toBottomOf="@id/frameLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
@@ -43,59 +59,99 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="10dp">
+
+            <LinearLayout
+                android:id="@+id/premium"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                tools:ignore="UseCompoundDrawables">
+
+                <ImageView
+                    android:src="@drawable/netflix_logo"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginEnd="4dp" />
+
+                <TextView
+                    android:text="L O Ạ T  P H I M"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/loat_phim"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
 
             <!-- Tiêu đề phim -->
             <TextView
                 android:id="@+id/tvName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="22sp"
-                android:textColor="#FFF"
-                android:textStyle="bold"
-                android:layout_marginBottom="8dp" />
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:text="Tiêu đề phim"
+                android:textColor="#fff"
+                android:textSize="18sp"
+                android:textStyle="bold"/>
 
             <!-- Thông tin phim -->
             <TextView
                 android:id="@+id/tvInfo"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:textColor="#fff"
+                android:text="2025  |  16 tập"
+                android:textSize="16sp" />
 
-                android:textColor="#AAA"
-                android:textSize="14sp"
-                android:layout_marginBottom="16dp" />
-
-            <!-- Nút Phát -->
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnPlay"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:backgroundTint="#FFF"
-                android:text="▶  Phát"
-                android:textColor="#000"
-                android:textSize="16sp"
-                android:layout_marginBottom="8dp" />
+                android:layout_height="55dp"
+                android:backgroundTint="@color/white"
+                app:cornerRadius="8dp"
+                android:text="Phát"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:icon="@drawable/ic_play"
+                app:iconTint="@color/black"
+                app:iconSize="40dp"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp" />
 
-            <!-- Nút Tải Xuống -->
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnDownload"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:text="⬇  Tải xuống"
-                android:textSize="16sp"
-                android:textColor="#FFF"
-                android:backgroundTint="#444"
-                android:layout_marginBottom="16dp" />
+                android:layout_height="55dp"
+                app:cornerRadius="8dp"
+                android:backgroundTint="@color/gray_1"
+                android:text="Tải xuống"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                app:icon="@drawable/ic_download"
+                app:iconPadding="15dp"
+                app:iconGravity="textStart"
+                app:iconSize="30dp" />
 
             <!-- Mô tả phim -->
             <TextView
                 android:id="@+id/tvOverview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="14sp"
-                android:textColor="#FFF"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                android:ellipsize="end"
+                android:justificationMode="inter_word"
                 android:maxLines="3"
-                android:layout_marginBottom="16dp" />
+                android:textColor="#fff"
+                android:textSize="12dp" />
 
             <!-- Danh sách chức năng -->
             <LinearLayout
@@ -104,25 +160,28 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center"
-                android:layout_marginBottom="20dp">
+                android:layout_marginTop="10dp">
 
                 <!-- Nút Danh sách của tôi -->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="vertical">
+                    android:layout_weight="1.2"
+                    android:orientation="vertical"
+                    android:gravity="center">
                     <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
+                        android:id="@+id/btnAdd"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
                         android:src="@drawable/ic_add"
-                        app:tint="#FFF" />
+                        app:tint="#FFF"
+                        tools:ignore="DuplicateIds" />
                     <TextView
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Danh sách của tôi"
-                        android:textColor="@color/white" />
+                        android:layout_height="match_parent"
+                        android:textSize="10sp"
+                        android:textColor="@color/white"
+                        android:text="Danh sách của tôi"/>
                 </LinearLayout>
 
                 <!-- Nút Thích -->
@@ -132,17 +191,22 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:orientation="vertical">
+
                     <ImageView
                         android:id="@+id/btnLike"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:src="@drawable/like_svgrepo_com"
-                        app:tint="#FFF" />
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:src="@drawable/ic_like"
+                        app:tint="#FFF"/>
+
                     <TextView
+                        android:id="@+id/tv_like"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Xếp hạng"
-                        android:textColor="@color/white" />
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="5dp"
+                        android:textSize="10dp"
+                        android:textColor="@color/white"
+                        android:text="Xếp hạng"/>
                 </LinearLayout>
 
                 <!-- Nút Chia sẻ -->
@@ -152,54 +216,107 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:orientation="vertical">
+
                     <ImageView
+
                         android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:src="@drawable/share_svgrepo_com"
+                        android:layout_height="30dp"
+                        android:src="@drawable/ic_share"
                         app:tint="#FFF" />
+
                     <TextView
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Chia sẻ"
-                        android:textColor="@color/white" />
+                        android:layout_height="match_parent"
+                        android:textColor="@color/white"
+                        android:textSize="10dp"
+                        android:text="Chia sẻ"/>
                 </LinearLayout>
 
             </LinearLayout>
-
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:id="@+id/esp"
-                    android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:textColor="@color/white"
-                    android:textSize="18sp"
-                    android:text="Các tập                       "
-                    android:layout_marginBottom="8dp" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/sameMedia"
-                    android:textStyle="bold"
-                    android:textColor="@color/white"
-                    android:textSize="18sp"
-                    android:text="Nội dung tương tự"
-                    android:layout_marginBottom="8dp" />
-            </LinearLayout>
-            <!-- Danh sách tập phim -->
-
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerEpisodes"
+                android:id="@+id/season"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:nestedScrollingEnabled="false"
-                />
+                android:orientation="horizontal"
+                android:gravity="left"
+                android:layout_marginTop="10dp">
+
+                <Spinner
+                    android:id="@+id/spinnerSeasons"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:popupBackground="@color/black"
+                    android:spinnerMode="dropdown" />
+
+            </LinearLayout>
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/appBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:theme="@style/Theme.AppCompat.DayNight">
+
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/tabLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/black"
+                    android:contentDescription="Navigation tabs"/>
+            </com.google.android.material.appbar.AppBarLayout>
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/viewPager2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
+
+<!--            <androidx.recyclerview.widget.RecyclerView-->
+<!--                android:id="@+id/recyclerEpisodes"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:background="@android:color/transparent"-->
+<!--                android:nestedScrollingEnabled="false" />-->
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+
+    <LinearLayout
+        android:id="@+id/commentBoxContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        android:layout_alignParentBottom="true"
+        android:padding="8dp"
+        android:backgroundTint="@color/black"
+        android:background="@color/white"
+        app:layout_constraintEnd_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <EditText
+            android:id="@+id/etComment"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:focusable="true"
+            android:background="@drawable/edit_text_bg_1"
+            android:focusableInTouchMode="true"
+            android:textSize="20sp"
+            android:padding="12dp"
+            android:textColor="@color/white"
+            android:textColorHint="@color/dark_gray"
+            android:hint="Nhập bình luận..." />
+
+        <ImageButton
+            android:id="@+id/btnSendComment"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:backgroundTint="@color/black"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:src="@drawable/ic_share"/>
+    </LinearLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

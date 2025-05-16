@@ -2,15 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-feature
-        android:name="android.hardware.camera"
-        android:required="false" />
-
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -18,24 +15,34 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.NetflixCloneUI"
+        android:theme="@style/Base.Theme.NetflixCloneUI"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-
         <activity
-            android:name=".screen.ui.my_netflix.PaymentPackageActivity"
+            android:name=".ui.EditProfileActivity"
             android:exported="false" />
         <activity
-            android:name=".screen.ui.my_netflix.PaymentSummaryActivity"
-            android:exported="false"
-            />
-        <!-- <activity -->
-        <!-- android:name=".qr_test" -->
-        <!-- android:exported="false" /> -->
-<!--        <activity
-            android:name=".screen.SearchActivity"
+            android:name=".ui.MainActivity"
             android:exported="false" />
         <activity
+            android:name=".ui.PaymentProcessAcitvity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.WatchListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.NotificationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.PaymentPackageActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.PaymentSummaryActivity"
+            android:exported="false" />
+        <!--
+ <activity
+            android:name=".qr_test"
+            android:exported="false" />
             android:name=".screen.ui.my_netflix.PaymentSummaryActivity"
             android:exported="true"
             android:label="@string/title_activity_bottom_nav">
@@ -44,46 +51,51 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>-->
-
-    <activity
-            android:name=".screen.BottomNavActivity"
+        </activity>
+        -->
+        <activity
+            android:name=".ui.BottomNavActivity"
             android:exported="true"
             android:label="@string/title_activity_bottom_nav">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".screen.auth.ResetPasswordActivity"
+            android:name=".ui.user.ResetPasswordActivity"
             android:exported="false" />
         <activity
-            android:name=".screen.auth.VerifyOtpForgotPasswordActivity"
+            android:name=".ui.user.VerifyOtpForgotPasswordActivity"
             android:exported="false" />
         <activity
-            android:name=".screen.auth.VerifyOtpActivity"
+            android:name=".ui.user.VerifyOtpActivity"
             android:exported="false" />
         <activity
-            android:name=".screen.auth.ForgotPasswordActivity"
+            android:name=".ui.user.ForgotPasswordActivity"
             android:exported="false" />
         <activity
-            android:name=".screen.auth.RegisterActivity"
+            android:name=".ui.user.RegisterActivity"
             android:exported="false" />
         <activity
-            android:name=".screen.auth.LoginActivity"
+            android:name=".ui.user.LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".screen.SplashActivity"
+            android:name=".ui.SearchActivity"
             android:exported="false" />
         <activity
-            android:name=".screen.MovieDetailActivity"
+            android:name=".ui.SplashActivity"
             android:exported="false" />
         <activity
-            android:name=".screen.TvSeriesDetailActivity"
+            android:name=".ui.MovieDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".screen.FullScreenVideoActivity"
+            android:name=".ui.TvSeriesDetailActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.FullScreenVideoActivity"
             android:screenOrientation="landscape"
             android:theme="@style/Theme.AppCompat.NoActionBar"
             tools:ignore="DiscouragedApi" />

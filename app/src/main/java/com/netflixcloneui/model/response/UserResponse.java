@@ -1,0 +1,111 @@
+package com.netflixcloneui.model.response;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Set;
+
+public class UserResponse {
+    String id;
+    String name;
+    String email;
+    Integer otp;
+    int enabled;
+    String dob;
+    Set<RoleResponse> roles;
+    String startDate;
+    String endDate;
+    String image;
+
+    public UserResponse(String id, String name, String email, Integer otp, int enabled, String dob, Set<RoleResponse> roles, String startDate, String endDate, String image) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.otp = otp;
+        this.enabled = enabled;
+        this.dob = dob;
+        this.roles = roles;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.image = image;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Integer getOtp() {
+        return otp;
+    }
+
+    public void setOtp(Integer otp) {
+        this.otp = otp;
+    }
+
+    public int getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(int enabled) {
+        this.enabled = enabled;
+    }
+
+    public String getDob() {
+        return dob;
+    }
+
+    public void setDob(String dob) {
+        this.dob = dob;
+    }
+
+    public Set<RoleResponse> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<RoleResponse> roles) {
+        this.roles = roles;
+    }
+
+    public String getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
+
+    public String getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+}

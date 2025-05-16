@@ -12,11 +12,16 @@ public class Movie {
     private boolean adult;
     private boolean video;
     private int runtime;
+    private Long voteCount;
+    private Long viewCount;
+
+
+    private int isPrenium;
     private List<Trailer> trailers;
     private List<Genre> genres;
     private List<Credit> credits;
 
-    public Movie(Long id, String title, String overview, String releaseDate, String posterPath, String backdropPath, boolean adult, boolean video, int runtime, List<Trailer> trailers, List<Genre> genres, List<Credit> credits) {
+    public Movie(Long id, String title, String overview, String releaseDate, String posterPath, String backdropPath, boolean adult, boolean video, int runtime,Long voteCount,long viewCount,int isPrenium, List<Trailer> trailers, List<Genre> genres, List<Credit> credits) {
         this.id = id;
         this.title = title;
         this.overview = overview;
@@ -26,11 +31,20 @@ public class Movie {
         this.adult = adult;
         this.video = video;
         this.runtime = runtime;
+        this.viewCount=viewCount;
+        this.voteCount=voteCount;
         this.trailers = trailers;
         this.genres = genres;
+        this.isPrenium=isPrenium;
         this.credits = credits;
     }
+    public int getIsPrenium() {
+        return isPrenium;
+    }
 
+    public void setIsPrenium(int isPrenium) {
+        this.isPrenium = isPrenium;
+    }
     public Long getId() {
         return id;
     }
