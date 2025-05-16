@@ -32,7 +32,7 @@
 ## 🖼️ Giao diện ứng dụng
 ### Login
 <p align="center">
-  <img src="dangnhap.jpg" alt="Login UI" width="250">
+  <img src="dangnhap.jpg" alt="Login UI" width="400">
 </p>
 
 ### Trang chủ
