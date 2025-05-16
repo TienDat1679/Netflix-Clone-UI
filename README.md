@@ -61,4 +61,4 @@ Dự án được phát triển cho mục đích học tập, phi thương mại
 ![Chi tiet phim](xemphim.jpg)
 
 ### Hồ sơ
-![Chi tiet phim](Ho so.jpg)
+![Chi tiet phim](Hoso.jpg)
