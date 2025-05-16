@@ -10,6 +10,7 @@
 - 🔍 Tìm kiếm phim theo tên
 - ❤️ Lưu phim yêu thích
 - ⏯️ Ghi nhớ thời gian xem dở
+- 🔔 "Nhắc tôi" khi phim ra mắt
 - 💬 Bình luận cho từng phim
 - 🤖 Gợi ý phim dựa vào hành vi người dùng
 - 🔐 Đăng nhập / Đăng ký
@@ -30,7 +31,9 @@
 
 ## 🖼️ Giao diện ứng dụng
 ### Login
-![Trang chủ](dangnhap.jpg)
+<p align="center">
+  <img src="dangnhap.jpg" alt="Login UI" width="250">
+</p>
 
 ### Trang chủ
 ![Đăng nhập](home.jpg)
