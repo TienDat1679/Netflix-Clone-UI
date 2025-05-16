@@ -27,20 +27,6 @@
 - **Player**: ExoPlayer (nếu có phát video)
 
 ---
-## 🛠️ Cấu trúc chính
-app/
-├── java/
-│   └── com/yourapp/netflixclone/
-│       ├── activities/        # MainActivity, LoginActivity,...
-│       ├── adapters/          # RecyclerView adapters
-│       ├── api/               # Retrofit interfaces
-│       ├── models/            # Movie, User, Comment,...
-│       ├── utils/             # SharedPrefHelper, TokenManager,...
-│       └── ...
-├── res/
-│   ├── layout/                # XML giao diện
-│   ├── drawable/              # Icon, hình nền,...
-│   └── values/                # colors.xml, strings.xml,...
 
 ## 📲 Cài đặt và chạy ứng dụng
 
