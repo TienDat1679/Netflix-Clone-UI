@@ -52,13 +52,13 @@ Dự án được phát triển cho mục đích học tập, phi thương mại
 
 ## 🖼️ Giao diện ứng dụng
 ### Login
-![Trang chủ](dangnhap.png)
+![Trang chủ](dangnhap.jpg)
 
 ### Trang chủ
-![Trang chủ](home.png)
+![Trang chủ](home.jpg)
 
 ### Chi tiết phim
-![Chi tiet phim](xemphim.png)
+![Chi tiet phim](xemphim.jpg)
 
 ### Hồ sơ
-![Chi tiet phim](Ho so.png)
+![Chi tiet phim](Ho so.jpg)
