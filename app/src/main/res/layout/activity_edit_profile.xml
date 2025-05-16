@@ -93,7 +93,7 @@
         android:background="@drawable/edit_text_bg_1"
         android:textColor="@color/white"
         android:padding="12dp"
-        android:text="DOB"/>
+        android:text="Năm-Tháng-Ngày"/>
 
     <Button
         android:id="@+id/btnSave"

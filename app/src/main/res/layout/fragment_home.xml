@@ -164,7 +164,7 @@
                             android:backgroundTint="@color/gray_transparent"
                             app:icon="@drawable/ic_add"
                             android:text="Danh sách của tôi"
-                            android:textSize="13sp"
+                            android:textSize="11sp"
                             app:cornerRadius="8dp" />
                     </RelativeLayout>
                 </androidx.cardview.widget.CardView>

@@ -74,7 +74,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="10dp"
                 android:textColor="@color/white"
-                android:textSize="18sp"
+                android:textSize="15sp"
                 android:backgroundTint="@color/gray_transparent"
                 app:cornerRadius="8dp"
                 android:text="Danh sách của tôi"

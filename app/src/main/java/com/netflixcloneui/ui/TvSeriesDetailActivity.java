@@ -125,9 +125,9 @@ public class TvSeriesDetailActivity extends AppCompatActivity implements Episode
         tvLike = findViewById(R.id.tv_like);
         listTrailer = new ArrayList<>();
         long id = (long) getIntent().getLongExtra("media_id",-1);
+        getSeason(id);
         getEsp(id);
         getTvSeriesDetail(id);
-        getSeason(id);
         btnPlay.setOnClickListener(view -> playFullScreenVideo(episodeIdOne) );
         //getEsp(id);
         getTrailer(id);
@@ -147,7 +147,7 @@ public class TvSeriesDetailActivity extends AppCompatActivity implements Episode
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
-                resizeViewPagerHeight(binding.viewPager2, position);
+//                resizeViewPagerHeight(binding.viewPager2, position);
 
                 Fragment currentFragment = viewPaper2Adapter.getFragment(position);
 
@@ -161,7 +161,7 @@ public class TvSeriesDetailActivity extends AppCompatActivity implements Episode
             }
         });
         // Resize lần đầu khi layout xong
-        binding.viewPager2.post(() -> resizeViewPagerHeight(binding.viewPager2, binding.viewPager2.getCurrentItem()));
+//        binding.viewPager2.post(() -> resizeViewPagerHeight(binding.viewPager2, binding.viewPager2.getCurrentItem()));
 
         new TabLayoutMediator(binding.tabLayout, binding.viewPager2, (tab, position) -> {
             tab.setText(tabTitles[position]);
